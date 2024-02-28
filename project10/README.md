@@ -22,45 +22,70 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
 ## Learning Laravel
+### Laravel 10 Tutorial #4
+1) Update layout.blade.php file :-
+First of all, we will update layout.blade.php file to add Laravel asset and url to css/js/images and plugins paths.
+1. thêm thư viện
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```c 
+<link rel="stylesheet" href="{{ url('admin/plugins/fontawesome-free/css/all.min.css') }}">
+...
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. thêm các trang khác vào
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+ ```c 
+ @include('admin.layout.header')
+ @include('admin.layout.sidebar')
+ ...
+ yield sử dụng khi nội dung thay đổi theo từng trang 
+ gọi trang dashboard
+    @yield('content')
 
-## Laravel Sponsors
+@include('admin.layout.footer')
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+2) Update header.blade.php file :-
+Now we will update the header.blade.php file to add Laravel asset to images paths.
+```c 
+<img src="{{ asset('admin/images/user1-128x128.jpg') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+...
+```
 
-### Premium Partners
+3) Update sidebar.blade.php file :-
+Now we will update sidebar.blade.php file to add Laravel asset to images paths.
+```c 
+<img src="{{ asset('admin/images/user1-128x128.jpg') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+...
+```
+4) Update dashboard.blade.php file :-
+Now we will update dashboard.blade.php file to add Laravel asset to images paths.
+_tạo phần nội dung_
+**extends: mở rộng tối layout**
+>   @extends('admin.layout.layout')
+  @section('content')
+```c 
+<img src="{{ asset('admin/images/user1-128x128.jpg') }}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+...
+```
+5) Create AdminController.php file :-
+Now create Admin folder under /app/Http/Controllers/ and then create **AdminController**.php file under Admin folder by running below artisan command :-
+>php artisan make:controller Admin/AdminController
+```c 
+ //gọi đến trang để hiển thị
+    public function dashboard(){
+        //  admin_dashboard.blade.php
+        return view('admin.dashboard');
+    }
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+6) Create Route :-
+We will create a separate group in the **web.php** file for admin routes so that we can keep them separately with namespace Admin and prefix admin.
+```c 
+// tạo nhóm tuyến đường
+Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
+    Route::get('/dashboard', 'AdminController@dashboard');
+});
+```
+7) You can see the view of the dashboard page by opening below link :-
+http://127.0.0.1:8000/admin/dashboard

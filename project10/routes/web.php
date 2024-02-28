@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+// tạo nhóm tuyến đường
+Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
+    Route::get('/dashboard', 'AdminController@dashboard');
+});
+
