@@ -89,3 +89,14 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 ```
 7) You can see the view of the dashboard page by opening below link :-
 http://127.0.0.1:8000/admin/dashboard
+## Create Admin Panel Login Page
+1) Create Route:- 
+First of all, create a **GET/POST** route for admin login in the Admin route group like below:-
+>Route::match(['get','post'],'/login','AdminController@login');
+
+2) Create Function:-
+Now create a login function in **AdminController** that will return to the **admin_login.blade.php** file that we will create in the next step.
+3) Create **login.blade.php** file :-
+Now we will create a **login.blade.php** file in _/resources/views/admin/_ folder in which we will add content from the login.html page from _AdminLTE/pages/examples/_ folder. 
+4) We will also correct paths in the login.blade.php file. 
+(http://127.0.0.1:8000/admin/login)

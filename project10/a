@@ -1,4 +1,4 @@
-git checkout -b LARAVEL-create-route
+git checkout -b LARAVEL-login
 git add .
-git commit -m "LARAVEL-create-route"
-git push -u origin LARAVEL-create-route
+git commit -m "LARAVEL-login"
+git push -u origin LARAVEL-login
