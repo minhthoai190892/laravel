@@ -22,6 +22,8 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
 ## Learning Laravel
+<!-- database -->
+http://localhost/phpmyadmin/
 ### Laravel 10 Tutorial #4
 1) Update layout.blade.php file :-
 First of all, we will update layout.blade.php file to add Laravel asset and url to css/js/images and plugins paths.

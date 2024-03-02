@@ -18,7 +18,10 @@ Route::get('/', function () {
 });
 // tạo nhóm tuyến đường
 Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
-    Route::get('/dashboard', 'AdminController@dashboard');
     Route::match(['get','post'],'login','AdminController@login');
+    Route::group(['middleware'=>['admin']],function ()  {
+        
+    });
+    Route::get('/dashboard', 'AdminController@dashboard');
 });
 
