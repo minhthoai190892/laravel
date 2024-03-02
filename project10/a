@@ -1,6 +1,6 @@
-git checkout -b LARAVEL-login-Create-Admin-Middleware-to-Protect-Admin-Routes
+git checkout -b LARAVEL-readme
 git add .
-git commit -m "LARAVEL-login-Create-Admin-Middleware-to-Protect-Admin-Routes"
-git push -u origin LARAVEL-login-Create-Admin-Middleware-to-Protect-Admin-Routes
+git commit -m "LARAVEL-readme"
+git push -u origin LARAVEL-readme
 
 

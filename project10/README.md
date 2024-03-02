@@ -102,3 +102,120 @@ Now create a login function in **AdminController** that will return to the **adm
 Now we will create a **login.blade.php** file in _/resources/views/admin/_ folder in which we will add content from the login.html page from _AdminLTE/pages/examples/_ folder. 
 4) We will also correct paths in the login.blade.php file. 
 (http://127.0.0.1:8000/admin/login)
+
+## Create Admin Middleware to Protect Admin Routes
+1) Create admins table:-
+First of all, we will create an **admins table** with migration with the below columns:
+_id, name, type, mobile, email, password, image, status_
+So, we will run the below artisan command to create a migration file for admins:-
+>php artisan make:migration create_admins_table
+
+```
+/**
+     * Run the migrations.
+     * create admins table
+     */
+    public function up(): void
+    {
+        Schema::create('admins', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('type');
+            $table->string('mobile');
+            $table->string('password');
+            $table->string('image');
+            $table->tinyInteger('status');
+
+            $table->string('phone')->unique();
+            $table->string('email')->unique();
+            $table->timestamps();
+        });
+    }
+```
+
+Now we will run below artisan command to create an admins table with the required columns:- 
+>php artisan migrate
+2) Create Admin model:-
+Now we will create an **Admin model** with the below artisan command:-
+>php artisan make:model Admin
+
+We will update the content of the Admin model file to set the protected guard variable for admin and set other variables as shown in the video.
+
+We will also extend the Admin class to Authenticatable and add its namespace as well.
+3) Update **auth.php** file :-
+We will update **auth.php** file located at **config\auth.php** to set guards for admin to assign session in driver and admins in provider as shown in video.
+
+We will also set providers for admins to assign eloquent in driver and Admin class in model.
+```
+
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+    ],
+
+
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],]
+```
+
+4) Create **Admin Middleware** :-
+Now we will create **Admin Middleware** file by running below command :-
+>php artisan make:middleware Admin
+```
+<!-- library  -->
+use Auth;
+
+ /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (!Auth::guard('admin')->check()) {
+            # code...
+            return redirect('/admin/login');
+        }
+        return $next($request);
+    }
+```
+
+5) Update *kernel.php* file :-
+Now we will update *kernel.php* file located at app\http\ folder to register Admin middleware as global as shown in video.
+```
+protected $middlewareAliases = [ 
+    ...
+    'admin' => \App\Http\Middleware\Admin::class,
+]
+```
+
+6) Update **Admin Middleware**
+**Add Auth:guard** check in **Admin Middleware** to protect the admin routes. This check will be false for now as we have not registered the admin guard yet. 
+
+7) Update web.php file :-
+Add admin middleware group and move admin dashboard route under it to protect it from unauthorized access.
+```
+// tạo nhóm tuyến đường
+Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function () {
+    Route::match(['get','post'],'login','AdminController@login');
+    Route::group(['middleware'=>['admin']],function ()  {
+        
+    });
+    Route::get('/dashboard', 'AdminController@dashboard');
+});
+
+
+```
