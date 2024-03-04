@@ -1,0 +1,6 @@
+git checkout -b LARAVEL-Insert-Record-into-Admins-Table-with-Seeder
+git add .
+git commit -m "LARAVEL-Insert-Record-into-Admins-Table-with-Seeder"
+git push -u origin LARAVEL-Insert-Record-into-Admins-Table-with-Seeder
+
+
