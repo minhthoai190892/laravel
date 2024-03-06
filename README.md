@@ -217,4 +217,50 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 
 
 ```
-# 7
+# Insert Record into Admins Table with Seeder
+1) Writing Seeder / Create AdminsTableSeeder file:-
+First of all, we will generate a seeder and create an **AdminsTableSeeder** file where we will add records for the admins table.
+Run below artisan command to generate Seeder and create AdminsTableSeeder file :-
+>php artisan make:seeder AdminsTableSeeder
+```
+<!-- sử dụng thư viện -->
+use App\Models\Admin;
+use Hash;
+
+/**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //We will generate a hash password for the admin by using the Hash::make function 
+        $password = Hash::make('123456');
+        $adminRecords = [['id' => 2, 'name' => 'Admin', 'type' => 'admin', 'mobile' => 156545654, 'email' => 'admin2@admin.com', 'password' => $password, 'image' => '', 'status' => 1],['id' => 3, 'name' => 'Admin', 'type' => 'admin', 'mobile' => 156545654, 'email' => 'admin3@admin.com', 'password' => $password, 'image' => '', 'status' => 1],];
+    Admin::insert($adminRecords);
+    }
+```
+2) Update DatabaseSeeder.php file:-
+Now update the **DatabaseSeeder.php** file located at _database/seeds/_ to add AdminsTableSeeder class
+
+```
+/**
+     * Seed the application's database.
+     */
+    public function run(): void
+    {
+        // \App\Models\User::factory(10)->create();
+
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+        // gọi đến seeder 
+        $this->call(AdminsTableSeeder::class);
+    }
+```
+
+3) Running Seeders / Run below command:-
+Once you have written your seeder, you may need to regenerate Composer's autoloader using the dump-autoload command:
+>composer dump-autoload
+4) Run below command :-
+Now run the last command that will finally insert the admin record into the admins table that we can use for admin login.
+>php artisan db:seed

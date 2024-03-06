@@ -1,6 +1,7 @@
-git checkout -b LARAVEL-Insert-Record-into-Admins-Table-with-Seeder
+git checkout -b LARAVEL-Admin-Panel-Login-Logout-Functionality
 git add .
-git commit -m "LARAVEL-Insert-Record-into-Admins-Table-with-Seeder"
-git push -u origin LARAVEL-Insert-Record-into-Admins-Table-with-Seeder
+git commit -m "LARAVEL-Admin-Panel-Login-Logout-Functionality"
+git push -u origin LARAVEL-Admin-Panel-Login-Logout-Functionality
+
 
 
