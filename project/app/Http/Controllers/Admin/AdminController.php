@@ -73,4 +73,11 @@ class AdminController extends Controller
         return redirect('admin/login');
         
     }
+     /**
+     * Cập nhật password
+     */
+    public function updatePassword(){
+        // trả về trang update password
+        return view('admin.update_password');
+    }
 }

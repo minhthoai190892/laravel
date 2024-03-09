@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Admin-Panel-Login-Logout-Functionality2
+git checkout -b LARAVEL-Update-Admin-Password-I-Integrate-Update-Password-Page-and-Form
 git add .
-git commit -m "LARAVEL-Admin-Panel-Login-Logout-Functionality2"
-git push -u origin LARAVEL-Admin-Panel-Login-Logout-Functionality2
+git commit -m "LARAVEL-Update-Admin-Password-I-Integrate-Update-Password-Page-and-Form"
+git push -u origin LARAVEL-Update-Admin-Password-I-Integrate-Update-Password-Page-and-Form
 
 
 
@@ -9,3 +9,5 @@ git push -u origin LARAVEL-Admin-Panel-Login-Logout-Functionality2
 http://localhost/phpmyadmin/
 # url dashboard
 http://127.0.0.1:8000/admin/dashboard
+
+
