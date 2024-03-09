@@ -452,7 +452,7 @@ cần phải thiết lập lại **admin model**
     We will also keep this route in the admin middleware Route::group to protect it from unauthorized access.
 
 2) Create **updatePassword** function :-
-   Now we will create an **updatePassword** function in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a>  that we will return to setting blade file.
+   Now we will create an **updatePassword** function in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a> that we will return to setting blade file.
     ```
     /**
      * Cập nhật password
@@ -475,3 +475,57 @@ cần phải thiết lập lại **admin model**
     ```
 5) Update <a href='../project/resources/views/admin/layout/sidebar.blade.php'> sidebar page</a> file :-
    Now we will also update admin sidebar to show settings link along with admin name and type who logged in.
+
+# Update Admin Password (II) | Check Current Password via Ajax
+
+1. Update <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file :
+   First of all, we will update "Update Password" form by adding action, name, id to form.
+    ```
+     <form method="POST" action="{{ url('admin/update-password') }}">
+     @csrf
+     ...
+     </form>
+    ```
+
+2)  Create custom.js file :-
+    First of all, we will create <a href='./public/admin/js/custom.js'>custom.js</a> file at /public/admin/js/ folder. Then we will add Jquery/Ajax in this file to check if current password entered by the admin is correct or not.
+
+    Also search for keyword "add csrf token to laravel ajax" and open below link to update jquery code:
+
+    https://stackoverflow.com/questions/3...
+
+3)  Update layout.blade.php file :-
+    Now we will include custom.js file in <a href='resources\views\admin\layout\layout.blade.php'>layout.blade.php</a> file located under admin\layout\ folder.
+
+4)  Create Route :-
+    Now we will create POST route in <a href='routes\web.php'>web.php</a> file for checking current password that we have passed via Ajax URL :-
+    > Route::POST('check-current-password','AdminController@checkCurrentPassword');
+5)  Create **checkCurrentPassword** function :-
+    Now we will create **checkCurrentPassword** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController.php</a> in which we will check if current password entered by admin is correct or not. We will return true or false to Ajax to display the message at update password form.
+    ```
+     /**
+     * kiểm tra mật khẩu hiện tại
+     * @param Request $request nhận một yêu cầu từ người dùng
+     */
+    public function checkCurrentPassword(Request $request)
+    {
+        // lấy hết tất cả yêu cầu của người dùng
+        $data = $request->all();
+        // kiểm tra mật khẩu người dùng nhập vào có giống với mật khẩu trong database không
+        if (Hash::check($data['current_pwd'],Auth::guard('admin')->user()->password)) {
+            // password đúng
+            return true;
+        }else{
+            // password sai
+            return false;
+        }
+    }
+    ```
+6)  Update **update_password.blade.php** file :-
+    Now in <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file, in Password form, below Current password field, we will add one span tag with id to display message that we have returned from Ajax.
+    ```
+        <span id="verifyCurrentPwd"></span>
+    ```
+
+7) Include Hash Class
+Include Hash Class at top of AdminController

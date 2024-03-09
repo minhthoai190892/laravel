@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Auth;
 use Auth;
+// use Illuminate\Support\Facades\Hash;
 use Validator;
-
+use Hash;
 /**
  *  AdminController dùng để quản lý đăng nhập của Admin
  * @method function dashboard()
@@ -38,27 +39,27 @@ class AdminController extends Controller
             // echo "<pre>";
             // print_r($data);
             // die;
-            
+
 
             // tạo quy tắc
-            $rules=[
-                'email'=>'required|email|max:255',
-                'password'=>'required|max:30',
+            $rules = [
+                'email' => 'required|email|max:255',
+                'password' => 'required|max:30',
             ];
-            $customMessages=[
-                'email.required'=>'Email is required',
-                'email.email'=>'Valid Email is required',
-                'password.required'=>'Password is required',
+            $customMessages = [
+                'email.required' => 'Email is required',
+                'email.email' => 'Valid Email is required',
+                'password.required' => 'Password is required',
             ];
-            $this->validate($request,$rules,$customMessages);
+            $this->validate($request, $rules, $customMessages);
 
             // xác minh dữ liệu có đúng trong database không
-            if (Auth::guard('admin')->attempt(['email'=>$data['email'],'password'=>$data['password']])) {
+            if (Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
                 # đi đến trang dashboard
                 return redirect('admin/dashboard');
-            }else{
+            } else {
                 // thông báo lỗi nếu sai
-                return redirect()->back()->with('error_message','Invalid email or password');
+                return redirect()->back()->with('error_message', 'Invalid email or password');
             }
         }
         return view('admin.login');
@@ -66,18 +67,37 @@ class AdminController extends Controller
     /**
      * Đăng xuất người dùng
      */
-    public function logout(){
+    public function logout()
+    {
         // đăng xuất người dùng
         Auth::guard('admin')->logout();
         // trả về trang login
         return redirect('admin/login');
-        
+
     }
-     /**
+    /**
      * Cập nhật password
      */
-    public function updatePassword(){
+    public function updatePassword()
+    {
         // trả về trang update password
         return view('admin.update_password');
+    }
+    /**
+     * kiểm tra mật khẩu hiện tại
+     * @param Request $request nhận một yêu cầu từ người dùng
+     */
+    public function checkCurrentPassword(Request $request)
+    {
+        // lấy hết tất cả yêu cầu của người dùng
+        $data = $request->all();
+        // kiểm tra mật khẩu người dùng nhập vào có giống với mật khẩu trong database không
+        if (Hash::check($data['current_pwd'],Auth::guard('admin')->user()->password)) {
+            // password đúng
+            return 'true';
+        }else{
+            // password sai
+            return 'false';
+        }
     }
 }

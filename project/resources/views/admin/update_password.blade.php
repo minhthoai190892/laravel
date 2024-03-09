@@ -34,46 +34,49 @@
                               </div>
                               <!-- /.card-header -->
                               <!-- form start -->
-                              <form>
-                                  <div class="card-body">
+                              <form method="POST" action="{{ url('admin/update-password') }}">
+                                @csrf
+                                  <diphpv class="card-body">
                                       <div class="form-group">
                                           <label for="addmin_email">Email address</label>
                                           {{-- lấy user từ database --}}
                                           <input type="email" class="form-control" id="addmin_email"
-                                              value="{{ Auth::guard('admin')->user()->email }}">
+                                              value="{{ Auth::guard('admin')->user()->email }}" readonly
+                                              style="background-color: #666 ">
                                       </div>
 
                                       <div class="form-group">
                                           <label for="current_pwd">Current Password</label>
-                                          <input type="password" class="form-control" id="current_password"
+                                          <input type="password" class="form-control" id="current_pwd"
                                               placeholder="Current Password" name="current_pwd">
+                                              <span id="verifyCurrentPwd"></span>
                                       </div>
                                       <div class="form-group">
                                           <label for="new_pwd">New Password</label>
-                                          <input type="password" class="form-control" id="new_password"
-                                              placeholder="New Password" name="new_password">
+                                          <input type="password" class="form-control" id="new_pwd"
+                                              placeholder="New Password" name="new_pwd">
                                       </div>
                                       <div class="form-group">
-                                        <label for="confirm_pwd">Confirm Password</label>
-                                        <input type="password" class="form-control" id="confirm_password"
-                                            placeholder="Confirm Password" name="confirm_password">
-                                    </div>
-                                  </div>
-                                  <!-- /.card-body -->
-                                  <div class="card-footer">
-                                      <button type="submit" class="btn btn-primary">Submit</button>
-                                  </div>
-                              </form>
+                                          <label for="confirm_pwd">Confirm Password</label>
+                                          <input type="password" class="form-control" id="confirm_pwd"
+                                              placeholder="Confirm Password" name="confirm_pwd">
+                                      </div>
                           </div>
-
-
-
+                          <!-- /.card-body -->
+                          <div class="card-footer">
+                              <button type="submit" class="btn btn-primary">Submit</button>
+                          </div>
+                          </form>
                       </div>
 
+
+
                   </div>
-                  <!-- /.row -->
-              </div><!-- /.container-fluid -->
-          </section>
-          <!-- /.content -->
+
+              </div>
+              <!-- /.row -->
+      </div><!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
       </div>
   @endsection
