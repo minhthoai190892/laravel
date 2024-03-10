@@ -1,6 +1,13 @@
-git checkout -b LARAVEL-Insert-Record-into-Admins-Table-with-Seeder
+git checkout -b LARAVEL-Update-Admin-Password-III-Change-Admin-Password
 git add .
-git commit -m "LARAVEL-Insert-Record-into-Admins-Table-with-Seeder"
-git push -u origin LARAVEL-Insert-Record-into-Admins-Table-with-Seeder
+git commit -m "LARAVEL-Update-Admin-Password-III-Change-Admin-Password"
+git push -u origin LARAVEL-Update-Admin-Password-III-Change-Admin-Password
+
+
+
+<!-- database -->
+http://localhost/phpmyadmin/
+# url dashboard
+http://127.0.0.1:8000/admin/dashboard
 
 

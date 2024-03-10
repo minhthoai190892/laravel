@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * create admins table
      */
     public function up(): void
     {
@@ -17,12 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('mobile');
+            $table->string('email')->unique();
             $table->string('password');
             $table->string('image');
             $table->tinyInteger('status');
-
-            $table->string('phone')->unique();
-            $table->string('email')->unique();
             $table->timestamps();
         });
     }
