@@ -523,9 +523,90 @@ cần phải thiết lập lại **admin model**
     ```
 6)  Update **update_password.blade.php** file :-
     Now in <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file, in Password form, below Current password field, we will add one span tag with id to display message that we have returned from Ajax.
+
     ```
         <span id="verifyCurrentPwd"></span>
     ```
 
-7) Include Hash Class
-Include Hash Class at top of AdminController
+7)  Include Hash Class
+    Include Hash Class at top of AdminController
+
+# Update Admin Password (III) | Change Admin Password
+
+1. Update <a href='resources\views\admin\layout\header.blade.php'>header.blade.php</a> file :-
+   First of all, update admin header with Admin name who logged in and Settings page link.
+    ```
+     <li class="nav-item d-none d-sm-inline-block">
+            <a href="index3.html" class="nav-link">Welcome <strong>{{ Auth::guard('admin')->user()->name }}
+                    ({{ Auth::guard('admin')->user()->type }})</strong></a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            {{-- lấy đường dẫn từ web.php --}}
+            <a href="{{ url('admin/dashboard') }}" class="nav-link">Dashboard</a>
+        </li>
+    ```
+
+2) Update **updatePassword** function :-
+   Now we will update **updatePassword** function to update the current password and set the new password entered by the user but first we will check if current password entered is correct or not.
+
+    If not correct we will send back the admin to update password form with error message. And if correct then we will compare new password with confirm password, if correct then we will update new password and return success message otherwise will return error message.
+
+    ```
+    /**
+     * Cập nhật password
+     * @param Request $request nhận một yêu cầu từ người dùng
+     */
+    public function updatePassword(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // lấy hết tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // Check if current password is correct
+            if (Hash::check($data['current_pwd'], Auth::guard('admin')->user()->password)) {
+                // check if new password and confirm password are matching
+                if ($data['new_pwd'] == $data['confirm_pwd']) {
+                    # code...
+                    // TODO Update new password
+                    // - so sánh id
+                    Admin::where('id', Auth::guard('admin')->user()->id)->update(['password' => bcrypt($data['new_pwd'])]);
+                    return redirect()->back()->with('success_message', 'Password has been updated successfully');
+                } else {
+                    # code...
+                    // trả về thông báo lỗi khi mật khẩu hiện tại sai
+                    return redirect()->back()->with('error_message', 'New password and Retype password not match');
+                }
+            } else {
+                // trả về thông báo lỗi khi mật khẩu hiện tại sai
+                return redirect()->back()->with('error_message', 'Your current password is incorrect');
+            }
+        }
+        // trả về trang update password
+        return view('admin.update_password');
+    }
+    ```
+
+3) Update <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file :-
+   Update admin update password page with success and error message div's
+    ```
+       {{-- Show message --}}
+
+                              @if (Session::has('error_message'))
+                                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                      <strong>Error:</strong> {{ Session::get('error_message') }}
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                              @endif
+                              @if (Session::has('success_message'))
+                              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                  <strong>Success:</strong> {{ Session::get('success_message') }}
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                          @endif
+                              {{-- Show message --}}
+    ```
+4 update <a href='routes\web.php'>web.php</a> file:
+>Route::match(['get', 'post'],'update-password', 'AdminController@updatePassword');

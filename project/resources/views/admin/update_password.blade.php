@@ -30,12 +30,31 @@
                           <!-- general form elements -->
                           <div class="card card-primary">
                               <div class="card-header">
-                                  <h3 class="card-title">Update Password</h3>
+                                  <h3 class="card-title">Update Admin Password</h3>
                               </div>
-                              <!-- /.card-header -->
+                              {{--  --}}
+                              {{-- Show message --}}
+                   
+                              @if (Session::has('error_message'))
+                                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                      <strong>Error:</strong> {{ Session::get('error_message') }}
+                                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                              @endif
+                              @if (Session::has('success_message'))
+                              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                  <strong>Success:</strong> {{ Session::get('success_message') }}
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                          @endif
+                              {{-- Show message --}}
                               <!-- form start -->
                               <form method="POST" action="{{ url('admin/update-password') }}">
-                                @csrf
+                                  @csrf
                                   <diphpv class="card-body">
                                       <div class="form-group">
                                           <label for="addmin_email">Email address</label>
@@ -49,7 +68,7 @@
                                           <label for="current_pwd">Current Password</label>
                                           <input type="password" class="form-control" id="current_pwd"
                                               placeholder="Current Password" name="current_pwd">
-                                              <span id="verifyCurrentPwd"></span>
+                                          <span id="verifyCurrentPwd"></span>
                                       </div>
                                       <div class="form-group">
                                           <label for="new_pwd">New Password</label>

@@ -7,7 +7,7 @@ $(document).ready(function () {
         // alert(current_pwd);
         $.ajax({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             type: "POST",
             url: "/admin/check-current-password", //=> tạo tuyến đường trong web.php
@@ -15,11 +15,12 @@ $(document).ready(function () {
             success: function (resp) {
                 if (resp == "false") {
                     // tạo thông báo vào thẻ span ở trang update_password
-                    $('#verifyCurrentPwd').html('Current password is incorrect!');
-                } else if (resp=='true') {
-                    $('#verifyCurrentPwd').html('Current password is correct!');
-
-                } 
+                    $("#verifyCurrentPwd").html(
+                        "Current password is incorrect!"
+                    );
+                } else if (resp == "true") {
+                    $("#verifyCurrentPwd").html("Current password is correct!");
+                }
             },
             error: function () {
                 alert("Error");

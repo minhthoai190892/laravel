@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Auth;
 use Auth;
 // use Illuminate\Support\Facades\Hash;
 use Validator;
 use Hash;
+
 /**
  *  AdminController dùng để quản lý đăng nhập của Admin
  * @method function dashboard()
@@ -75,11 +77,35 @@ class AdminController extends Controller
         return redirect('admin/login');
 
     }
+    
     /**
      * Cập nhật password
+     * @param Request $request nhận một yêu cầu từ người dùng
      */
-    public function updatePassword()
+    public function updatePassword(Request $request)
     {
+        if ($request->isMethod('post')) {
+            // lấy hết tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // Check if current password is correct
+            if (Hash::check($data['current_pwd'], Auth::guard('admin')->user()->password)) {
+                // check if new password and confirm password are matching
+                if ($data['new_pwd'] == $data['confirm_pwd']) {
+                    # code...
+                    // TODO Update new password
+                    // - so sánh id
+                    Admin::where('id', Auth::guard('admin')->user()->id)->update(['password' => bcrypt($data['new_pwd'])]);
+                    return redirect()->back()->with('success_message', 'Password has been updated successfully');
+                } else {
+                    # code...
+                    // trả về thông báo lỗi khi mật khẩu hiện tại sai
+                    return redirect()->back()->with('error_message', 'New password and Retype password not match');
+                }
+            } else {
+                // trả về thông báo lỗi khi mật khẩu hiện tại sai
+                return redirect()->back()->with('error_message', 'Your current password is incorrect');
+            }
+        }
         // trả về trang update password
         return view('admin.update_password');
     }
@@ -92,10 +118,10 @@ class AdminController extends Controller
         // lấy hết tất cả yêu cầu của người dùng
         $data = $request->all();
         // kiểm tra mật khẩu người dùng nhập vào có giống với mật khẩu trong database không
-        if (Hash::check($data['current_pwd'],Auth::guard('admin')->user()->password)) {
+        if (Hash::check($data['current_pwd'], Auth::guard('admin')->user()->password)) {
             // password đúng
             return 'true';
-        }else{
+        } else {
             // password sai
             return 'false';
         }

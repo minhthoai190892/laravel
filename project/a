@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Update-Admin-Password-II-Check-Current-Password-via-Ajax
+git checkout -b LARAVEL-Update-Admin-Password-III-Change-Admin-Password
 git add .
-git commit -m "LARAVEL-Update-Admin-Password-II-Check-Current-Password-via-Ajax"
-git push -u origin LARAVEL-Update-Admin-Password-II-Check-Current-Password-via-Ajax
+git commit -m "LARAVEL-Update-Admin-Password-III-Change-Admin-Password"
+git push -u origin LARAVEL-Update-Admin-Password-III-Change-Admin-Password
 
 
 

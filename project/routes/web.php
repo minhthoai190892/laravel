@@ -22,7 +22,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 
         Route::get('dashboard', 'AdminController@dashboard');
         Route::get('logout', 'AdminController@logout');
-        Route::get('update-password', 'AdminController@updatePassword');
+        Route::match(['get', 'post'],'update-password', 'AdminController@updatePassword');
         Route::post('check-current-password', 'AdminController@checkCurrentPassword');
         
     });
