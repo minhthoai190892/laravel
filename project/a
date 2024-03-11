@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Update-Admin-Password-III-Change-Admin-Password
+git checkout -b LARAVEL-Update-Admin-Details-I-Create-Admin-Details-Page
 git add .
-git commit -m "LARAVEL-Update-Admin-Password-III-Change-Admin-Password"
-git push -u origin LARAVEL-Update-Admin-Password-III-Change-Admin-Password
+git commit -m "LARAVEL-Update-Admin-Details-I-Create-Admin-Details-Page"
+git push -u origin LARAVEL-Update-Admin-Details-I-Create-Admin-Details-Page
 
 
 

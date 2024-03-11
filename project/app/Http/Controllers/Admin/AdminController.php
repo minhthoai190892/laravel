@@ -77,7 +77,7 @@ class AdminController extends Controller
         return redirect('admin/login');
 
     }
-    
+
     /**
      * Cập nhật password
      * @param Request $request nhận một yêu cầu từ người dùng
@@ -125,5 +125,41 @@ class AdminController extends Controller
             // password sai
             return 'false';
         }
+    }
+
+    /**
+     * update Admin Details
+     * @param Request $request nhận một yêu cầu từ người dùng
+     */
+    public function updateDetails(Request $request)
+    {
+        // kiểm tra loại phương thức
+        if ($request->isMethod('post')) {
+            # lấy thông tin đăng nhập mà người dùng nhập vào
+            $data = $request->all();
+            // test hiển thị thông tin đăng nhập người dùng
+            // echo "<pre>";
+            // print_r($data);
+            // die;
+            // tạo quy tắc
+            $rules = [
+                // 'admin_name' => 'required|max:255',
+                // regex: chỉ có alpha và white space
+                'admin_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+                'admin_mobile' => 'required|numeric|digits:10',
+            ];
+            $customMessages = [
+                'admin_name.required' => 'Name is required',
+                'admin_mobile.required' => 'Mobile is required',
+                'admin_mobile.numeric' => 'Valid Mobile is required',
+                'admin_mobile.digits' => 'Valid Mobile is required',
+            ];
+            $this->validate($request, $rules, $customMessages);
+            Admin::where('email', Auth::guard('admin')->user()->email)->update(
+                ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile']]
+            );
+            return redirect()->back()->with('success_message', 'Admin Details has been updated successfully');
+        }
+        return view('admin.update_details');
     }
 }

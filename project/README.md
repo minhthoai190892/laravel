@@ -546,8 +546,8 @@ cần phải thiết lập lại **admin model**
         </li>
     ```
 
-2) Update **updatePassword** function :-
-   Now we will update **updatePassword** function to update the current password and set the new password entered by the user but first we will check if current password entered is correct or not.
+2)  Update **updatePassword** function :-
+    Now we will update **updatePassword** function to update the current password and set the new password entered by the user but first we will check if current password entered is correct or not.
 
     If not correct we will send back the admin to update password form with error message. And if correct then we will compare new password with confirm password, if correct then we will update new password and return success message otherwise will return error message.
 
@@ -585,28 +585,90 @@ cần phải thiết lập lại **admin model**
     }
     ```
 
-3) Update <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file :-
-   Update admin update password page with success and error message div's
-    ```
-       {{-- Show message --}}
+3)  Update <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file :-
+    Update admin update password page with success and error message div's
 
-                              @if (Session::has('error_message'))
-                                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                      <strong>Error:</strong> {{ Session::get('error_message') }}
+    ````
+    {{-- Show message --}}
+
+                                  @if (Session::has('error_message'))
+                                      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                          <strong>Error:</strong> {{ Session::get('error_message') }}
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                  @endif
+                                  @if (Session::has('success_message'))
+                                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                      <strong>Success:</strong> {{ Session::get('success_message') }}
                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                           <span aria-hidden="true">&times;</span>
                                       </button>
                                   </div>
                               @endif
-                              @if (Session::has('success_message'))
-                              <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                  <strong>Success:</strong> {{ Session::get('success_message') }}
-                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                  </button>
-                              </div>
-                          @endif
-                              {{-- Show message --}}
+                                  {{-- Show message --}}
+        ```
+
+    4 update <a href='routes\web.php'>web.php</a> file:
+
+    > Route::match(['get', 'post'],'update-password', 'AdminController@updatePassword');
+    ````
+
+# Update Admin Details (I) | Create Admin Details Page
+
+1. Create Route :-
+   Create GET/POST route for updating admin details in <a href='routes\web.php'>web.php</a> file like below :-
+    > Route::match(['get','post'],'update-details', 'AdminController@updateDetails');
+
+2) Create **updateDetails** function :-
+   Create **updateDetails** function in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a> and return to <a href='resources\views\admin\update_details.blade.php'>update_details.blade.php</a> file.
+
+3) Create update_details.blade.php file :-
+   Now create update_details.blade.php file at resources/views/admin/ folder.
+   We will create update admin details form with admin name, email, image and mobile with email as read only.
+4) Update **updateDetails** function :-
+   Now update **updateDetails** function to get admin name and mobile and update in admins table.
+   We will also validate name and mobile and return to update admin details form in case name and mobile is not valid.
+
     ```
-4 update <a href='routes\web.php'>web.php</a> file:
->Route::match(['get', 'post'],'update-password', 'AdminController@updatePassword');
+
+     /**
+      * update Admin Details
+      * @param Request $request nhận một yêu cầu từ người dùng
+      */
+     public function updateDetails(Request $request)
+     {
+         // kiểm tra loại phương thức
+         if ($request->isMethod('post')) {
+             # lấy thông tin đăng nhập mà người dùng nhập vào
+             $data = $request->all();
+             // test hiển thị thông tin đăng nhập người dùng
+             // echo "<pre>";
+             // print_r($data);
+             // die;
+             // tạo quy tắc
+             $rules = [
+                 // 'admin_name' => 'required|max:255',
+                 // regex: chỉ có alpha và white space
+                 'admin_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+                 'admin_mobile' => 'required|numeric|digits:10',
+             ];
+             $customMessages = [
+                 'admin_name.required' => 'Name is required',
+                 'admin_mobile.required' => 'Mobile is required',
+                 'admin_mobile.numeric' => 'Valid Mobile is required',
+                 'admin_mobile.digits' => 'Valid Mobile is required',
+             ];
+             $this->validate($request, $rules, $customMessages);
+             Admin::where('email', Auth::guard('admin')->user()->email)->update(
+                 ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile']]
+             );
+             return redirect()->back()->with('success_message', 'Admin Details has been updated successfully');
+         }
+         return view('admin.update_details');
+     }
+    ```
+
+5) Update **update_details.blade.php** file :-
+   We will add alert div at <a href='resources\views\admin\update_details.blade.php'>update_details.blade.php</a>file that we will display in case if name or mobile is not valid.
