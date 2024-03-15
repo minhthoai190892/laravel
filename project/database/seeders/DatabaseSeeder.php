@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         // gọi đến seeder 
-        $this->call(AdminsTableSeeder::class);
+        // $this->call(AdminsTableSeeder::class);
+        $this->call(CsmPageTableSeeder::class);
     }
 }

@@ -781,3 +781,66 @@ cần phải thiết lập lại **admin model**
          }
     ```
 
+# Laravel 10 CRUD Operations | Manage CMS / Dynamic Pages (I) | Create Table
+
+1. Create **cms_pages table & model** :-
+   First of all, we will create cms_pages table and model together with migration.
+
+    Create migration file with name create_cms_pages_table for creating cms_pages table with below columns :-
+    id, title, description, url, meta_title, meta_description, meta_keywords, status, created_at and updated_at
+
+    So, we will run below artisan command to create migration file for cms_pages & model simultaneously :-
+
+    > php artisan make:model CmsPage -m
+
+    Open create_cms_pages_table migration file and add all required columns mentioned earlier.
+
+    ```
+     Schema::create('cms_pages', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('url');
+            $table->string('meta_title');
+            $table->string('meta_description');
+            $table->string('meta_keywords');
+            $table->tinyInteger('status');
+            $table->timestamps();
+        });
+    ```
+
+    Now, we will run below artisan command to create cms_pages table with required columns :-
+
+    > php artisan migrate
+
+    Now cms_pages table has been created with all the required columns.
+
+    Now, We will create Seeding for **cms_pages** table to insert few cms pages from file.
+
+2) Writing Seeder / **Create CmsPagesTableSeeder** file :-
+   First of all, we will generate seeder and **create CmsPagesTableSeeder** file from where we will add one cms page for cms_pages table.
+
+    Run below artisan command to generate Seeder and **create CmsPagesTableSeeder** file :-
+
+    > php artisan make:seeder CmsPagesTableSeeder
+
+    Above command will **create CmsPagesTableSeeder.php** file at \database\seeders\
+
+    Now open CmsPagesTableSeeder file and add record for cms page.
+
+    ```
+     //
+        $cmsPagesRecords=[
+            ['id'=>1,'title'=>'Abount Us','description'=>'Content is coming soon','url'=>'abount-us','meta_title'=>'Abount Us','meta_description'=>'Abount Us Content','meta_keywords'=>'about us,abount','status'=>1],
+            ['id'=>2,'title'=>'Terms & Conditions','description'=>'Content is coming soon','url'=>'terms-conditions','meta_title'=>'Terms & Conditions','meta_description'=>'Terms & Conditions Content','meta_keywords'=>'terms,terms conditions','status'=>1],
+            ['id'=>3,'title'=>'Privacy Policy','description'=>'Content is coming soon','url'=>'privacy-policy','meta_title'=>'Privacy Policy','meta_description'=>'Privacy Policy Content','meta_keywords'=>'privacy policy','status'=>1],
+        ];
+        // thêm dữ liệu vào bảng
+        CmsPage::insert($cmsPagesRecords);
+    ```
+
+3) Run below command :-
+   Now run below commands that will finally insert cms pages into cms_pages table.
+   composer dump-autoload (if required)
+   >php artisan db:seed
+# Laravel CRUD | Manage CMS Dynamic Pages (II) | Create Resource Controller

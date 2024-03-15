@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Update-Admin-Sidebar-Highlight-Current-Open-Module
+git checkout -b LARAVEL-Laravel-10-CRUD-Operations-Manage-CMS-Dynamic-Pages-I-Create-Table
 git add .
-git commit -m "LARAVEL-Update-Admin-Sidebar-Highlight-Current-Open-Module"
-git push -u origin LARAVEL-Update-Admin-Sidebar-Highlight-Current-Open-Module
+git commit -m "LARAVEL-Laravel-10-CRUD-Operations-Manage-CMS-Dynamic-Pages-I-Create-Table"
+git push -u origin LARAVEL-Laravel-10-CRUD-Operations-Manage-CMS-Dynamic-Pages-I-Create-Table
 
 
 
