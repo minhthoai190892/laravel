@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Laravel-10-CRUD-Operations-Manage-CMS-Dynamic-Pages-I-Create-Table
+git checkout -b LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller
 git add .
-git commit -m "LARAVEL-Laravel-10-CRUD-Operations-Manage-CMS-Dynamic-Pages-I-Create-Table"
-git push -u origin LARAVEL-Laravel-10-CRUD-Operations-Manage-CMS-Dynamic-Pages-I-Create-Table
+git commit -m "LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller"
+git push -u origin LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller
 
 
 

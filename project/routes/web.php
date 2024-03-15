@@ -25,6 +25,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::match(['get', 'post'],'update-password', 'AdminController@updatePassword');
         Route::match(['get', 'post'],'update-details', 'AdminController@updateDetails');
         Route::post('check-current-password', 'AdminController@checkCurrentPassword');
-        
+        // hiển thị CMS Pages (CRUD - READ)
+        Route::get('cms-pages', 'CmsController@index');
     });
 });

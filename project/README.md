@@ -842,5 +842,85 @@ cần phải thiết lập lại **admin model**
 3) Run below command :-
    Now run below commands that will finally insert cms pages into cms_pages table.
    composer dump-autoload (if required)
-   >php artisan db:seed
+    > php artisan db:seed
+
 # Laravel CRUD | Manage CMS Dynamic Pages (II) | Create Resource Controller
+
+1. Create Resource **CmsController** :-
+   First of all, we will create Resource **CmsController** under app/Http/Controllers/Admin folder that will automatically create default methods for CRUD operations.
+
+    Create **CmsController** by running below artisan command :-
+
+    > php artisan make:controller Admin/CmsController --resource --model=CmsPage
+
+2) Create Route :-
+   Create GET route in **web.php** file in admin middleware group prefixed with admin and having namespace Admin for displaying cms pages in admin panel :-
+   // CMS Pages
+    > Route::get('cms-pages','CmsController@index');
+3) Update _index_ function :-
+   Now update _index_ function in **CmsController** to write query to display all the cms pages in admin panel and return to cms_pages.blade.php file that we will create under /resources/views/admin/pages/ folder.
+
+    ```
+     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //lấy tất cả các trang và chuyển đổi sang mảng
+        $CmsPages = CmsPage::get()->toArray();
+        // xem mảng danh sách
+        // dd($CmsPages);
+        // hiển thị trang web
+        return view('admin.pages.cms_pages')->with(compact('CmsPages'));
+    }
+    ```
+
+4) Create **cms_pages.blade.php** file :-
+   Now create **cms_pages.blade.php** file under /resources/views/admin/pages/ folder in which we will add content from LTE admin template data.html file located at folder /pages/tables/data.html and will display cms pages within foreach loop.
+
+```
+ <div class="card-body">
+                   <table id="cmspages" class="table table-bordered table-striped">
+                     <thead>
+                     <tr>
+                       <th>ID</th>
+                       <th>Title</th>
+                       <th>URL</th>
+                       <th>Create on</th>
+                       <th>Actions</th>
+                     </tr>
+                     </thead>
+                     <tbody>
+                         @foreach ($CmsPages as $page )
+                         <tr>
+                             <td>{{ $page['id'] }}</td>
+                             <td>{{ $page['title'] }}</td>
+                             <td>{{ $page['url'] }}</td>
+                             <td>{{ $page['created_at'] }}</td>
+
+                           </tr>
+                         @endforeach
+
+                     </tbody>
+
+                   </table>
+             </div>
+```
+
+5. Update **layout.blade.php** file :-
+   Now update **layout.blade.php** file to add DataTable jQuery script for cms pages to display the cms pages in datatable.
+    ```
+     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+     <script>
+         $(function() {
+             $("#cmspages").DataTable();
+         });
+     </script>
+    ```
+
+6) Update **sidebar.blade.php** file :-
+   Update Admin sidebar to add CMS Pages tab in which we will display "View CMS Pages" link and will highlight it when CMS Pages module selected.
+
+
+# Laravel CRUD | Manage CMS Pages (III) | Active/Inactive Status for Pages

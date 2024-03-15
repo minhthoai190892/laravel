@@ -14,9 +14,10 @@
     <link rel="stylesheet" href="{{ url('admin/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href= "{{ url('admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ url('admin/css/adminlte.min.css') }}">
-
+    
 </head>
 
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -24,8 +25,8 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="{{ asset('admin/images/AdminLTELogo.png') }}" alt="AdminLTELogo" height="60"
-                width="60">
+            <img class="animation__wobble" src="{{ asset('admin/images/AdminLTELogo.png') }}" alt="AdminLTELogo"
+                height="60" width="60">
         </div>
 
         <!-- Navbar -->
@@ -65,7 +66,7 @@
 
     <!-- PAGE PLUGINS -->
     <!-- jQuery Mapael -->
-    
+
 
     <script src="{{ url('admin/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
     <script src="{{ url('admin/plugins/raphael/raphael.min.js') }}"></script>
@@ -80,7 +81,18 @@
     <script src="{{ url('admin/js/pages/dashboard2.js') }}"></script>
     {{-- custom JS --}}
     <script src="{{ url('admin/js/custom.js') }}"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="{{ url('admin/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url('admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ url('admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+    <script>
+        $(function() {
+            $("#cmspages").DataTable();
+        });
+    </script>
 </body>
 
 </html>
