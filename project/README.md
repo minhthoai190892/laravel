@@ -546,8 +546,8 @@ cần phải thiết lập lại **admin model**
         </li>
     ```
 
-2) Update **updatePassword** function :-
-   Now we will update **updatePassword** function to update the current password and set the new password entered by the user but first we will check if current password entered is correct or not.
+2)  Update **updatePassword** function :-
+    Now we will update **updatePassword** function to update the current password and set the new password entered by the user but first we will check if current password entered is correct or not.
 
     If not correct we will send back the admin to update password form with error message. And if correct then we will compare new password with confirm password, if correct then we will update new password and return success message otherwise will return error message.
 
@@ -585,28 +585,342 @@ cần phải thiết lập lại **admin model**
     }
     ```
 
-3) Update <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file :-
-   Update admin update password page with success and error message div's
-    ```
-       {{-- Show message --}}
+3)  Update <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file :-
+    Update admin update password page with success and error message div's
 
-                              @if (Session::has('error_message'))
-                                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                      <strong>Error:</strong> {{ Session::get('error_message') }}
+    ````
+    {{-- Show message --}}
+
+                                  @if (Session::has('error_message'))
+                                      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                          <strong>Error:</strong> {{ Session::get('error_message') }}
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                  @endif
+                                  @if (Session::has('success_message'))
+                                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                      <strong>Success:</strong> {{ Session::get('success_message') }}
                                       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                           <span aria-hidden="true">&times;</span>
                                       </button>
                                   </div>
                               @endif
-                              @if (Session::has('success_message'))
-                              <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                  <strong>Success:</strong> {{ Session::get('success_message') }}
-                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                  </button>
-                              </div>
-                          @endif
-                              {{-- Show message --}}
+                                  {{-- Show message --}}
+        ```
+
+    4 update <a href='routes\web.php'>web.php</a> file:
+
+    > Route::match(['get', 'post'],'update-password', 'AdminController@updatePassword');
+    ````
+
+# Update Admin Details (I) | Create Admin Details Page
+
+1. Create Route :-
+   Create GET/POST route for updating admin details in <a href='routes\web.php'>web.php</a> file like below :-
+    > Route::match(['get','post'],'update-details', 'AdminController@updateDetails');
+
+2) Create **updateDetails** function :-
+   Create **updateDetails** function in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a> and return to <a href='resources\views\admin\update_details.blade.php'>update_details.blade.php</a> file.
+
+3) Create update_details.blade.php file :-
+   Now create update_details.blade.php file at resources/views/admin/ folder.
+   We will create update admin details form with admin name, email, image and mobile with email as read only.
+4) Update **updateDetails** function :-
+   Now update **updateDetails** function to get admin name and mobile and update in admins table.
+   We will also validate name and mobile and return to update admin details form in case name and mobile is not valid.
+
     ```
-4 update <a href='routes\web.php'>web.php</a> file:
->Route::match(['get', 'post'],'update-password', 'AdminController@updatePassword');
+
+     /**
+      * update Admin Details
+      * @param Request $request nhận một yêu cầu từ người dùng
+      */
+     public function updateDetails(Request $request)
+     {
+         // kiểm tra loại phương thức
+         if ($request->isMethod('post')) {
+             # lấy thông tin đăng nhập mà người dùng nhập vào
+             $data = $request->all();
+             // test hiển thị thông tin đăng nhập người dùng
+             // echo "<pre>";
+             // print_r($data);
+             // die;
+             // tạo quy tắc
+             $rules = [
+                 // 'admin_name' => 'required|max:255',
+                 // regex: chỉ có alpha và white space
+                 'admin_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+                 'admin_mobile' => 'required|numeric|digits:10',
+             ];
+             $customMessages = [
+                 'admin_name.required' => 'Name is required',
+                 'admin_mobile.required' => 'Mobile is required',
+                 'admin_mobile.numeric' => 'Valid Mobile is required',
+                 'admin_mobile.digits' => 'Valid Mobile is required',
+             ];
+             $this->validate($request, $rules, $customMessages);
+             Admin::where('email', Auth::guard('admin')->user()->email)->update(
+                 ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile']]
+             );
+             return redirect()->back()->with('success_message', 'Admin Details has been updated successfully');
+         }
+         return view('admin.update_details');
+     }
+    ```
+
+5) Update **update_details.blade.php** file :-
+   We will add alert div at <a href='resources\views\admin\update_details.blade.php'>update_details.blade.php</a>file that we will display in case if name or mobile is not valid.
+
+# Update Admin Details (II) | Upload Admin Image | Install Intervention
+
+1. Install Intervention Package :-
+   Simply run below composer command to install Intervention Package :-
+    > composer require intervention/image:2.7.\*
+    ## fix bug
+    https://youtu.be/-E3amn3gGFo?t=490
+    1. add Intervention\Image\ImageServiceProvider::class, in **providers** of **app.php**
+    1. add 'Image' => Intervention\Image\Facades\Image::class in **aliases** of **app.php**
+
+2) Update **update_admin_details.blade.php** file :-
+   Add **enctype="multipart/form-data"** in update admin details form to accept files and we will also add condition to show admin image and add another hidden field for current admin image.
+
+    ```
+      <form method="POST" action="{{ url('admin/update-details') }}" enctype="multipart/form-data">
+           <div class="form-group">
+                  <label for="admin_image">Photo</label>
+                  <input type="file" class="form-control" id="admin_image" name="admin_image">
+                  @if (!empty(Auth::guard('admin')->user()->image))
+                      <a href="{{ url('admin/images/photos/'.Auth::guard('admin')->user()->image) }}"
+                          target="_blank" rel="noopener noreferrer">view</a>
+                          <input type="hidden" name="current_image" value="{{ Auth::guard('admin')->user()->image }}">
+                  @endif
+              </div>
+      </form>
+    ```
+
+3) Update **updateAdminDetails** function :-
+   Now we will update **updateAdminDetails** function to add validation for image and will add upload image script and finally save the image name in admins table as well.
+
+    We will create admin_photos folder under admin_images folder where we will store all admin images.
+
+    ```
+      if ($request->hasFile('admin_image')) {
+                $image_tmp = $request->file('admin_image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/images/photos/'.$imageName;
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                }
+            } else if (
+                !empty($data['current_image'])
+            ) {
+                # code...
+                $imageName = $data['current_image'];
+            } else {
+                # code...
+                $imageName='';
+            }
+
+               Admin::where('email', Auth::guard('admin')->user()->email)->update(
+                ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile'], 'image' => $imageName]
+            );
+    ```
+
+# Update Admin Sidebar | Highlight Current Open Module
+
+1. Update **sidebar.blade.php** file :-
+   First of all, we will update admin sidebar to show admin photo and admin name.
+    ```
+      <div class="image">
+               {{-- hình ảnh của admin --}}
+                 @if (!empty(Auth::guard('admin')->user()->image))
+                     <img src="{{ url('admin/images/photos/' . Auth::guard('admin')->user()->image) }}"
+                         class="img-circle elevation-2" alt="User Image">
+                 @else
+                 {{-- hình ảnh mặc định --}}
+                     <img src="{{ asset('admin/images/AdminLTELogo.png') }}" class="img-circle elevation-2"
+                         alt="User Image">
+                 @endif
+             </div>
+    ```
+
+2) Update **dashboard** function :-
+   Update **dashboard** function with page session having **dashboard** value.
+    ```
+     <!-- add library -->
+     use Session;
+         public function dashboard()
+         {
+             Session::put('page','dashboard');
+             return view('admin.dashboard');
+         }
+    ```
+3) Update **updatePassword** function :-
+   Update **updatePassword** function with page session having update-password value.
+    ```
+        public function updatePassword(Request $request)
+        {
+         Session::put('page','update-password');
+         ...
+         }
+    ```
+4) Update **updateDetails** function :-
+   Update **updateDetails** function with page session having update-password value.
+    ```
+        public function updateDetails(Request $request)
+        {
+         Session::put('page','update-details');
+         ...
+         }
+    ```
+
+# Laravel 10 CRUD Operations | Manage CMS / Dynamic Pages (I) | Create Table
+
+1. Create **cms_pages table & model** :-
+   First of all, we will create cms_pages table and model together with migration.
+
+    Create migration file with name create_cms_pages_table for creating cms_pages table with below columns :-
+    id, title, description, url, meta_title, meta_description, meta_keywords, status, created_at and updated_at
+
+    So, we will run below artisan command to create migration file for cms_pages & model simultaneously :-
+
+    > php artisan make:model CmsPage -m
+
+    Open create_cms_pages_table migration file and add all required columns mentioned earlier.
+
+    ```
+     Schema::create('cms_pages', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->string('url');
+            $table->string('meta_title');
+            $table->string('meta_description');
+            $table->string('meta_keywords');
+            $table->tinyInteger('status');
+            $table->timestamps();
+        });
+    ```
+
+    Now, we will run below artisan command to create cms_pages table with required columns :-
+
+    > php artisan migrate
+
+    Now cms_pages table has been created with all the required columns.
+
+    Now, We will create Seeding for **cms_pages** table to insert few cms pages from file.
+
+2) Writing Seeder / **Create CmsPagesTableSeeder** file :-
+   First of all, we will generate seeder and **create CmsPagesTableSeeder** file from where we will add one cms page for cms_pages table.
+
+    Run below artisan command to generate Seeder and **create CmsPagesTableSeeder** file :-
+
+    > php artisan make:seeder CmsPagesTableSeeder
+
+    Above command will **create CmsPagesTableSeeder.php** file at \database\seeders\
+
+    Now open CmsPagesTableSeeder file and add record for cms page.
+
+    ```
+     //
+        $cmsPagesRecords=[
+            ['id'=>1,'title'=>'Abount Us','description'=>'Content is coming soon','url'=>'abount-us','meta_title'=>'Abount Us','meta_description'=>'Abount Us Content','meta_keywords'=>'about us,abount','status'=>1],
+            ['id'=>2,'title'=>'Terms & Conditions','description'=>'Content is coming soon','url'=>'terms-conditions','meta_title'=>'Terms & Conditions','meta_description'=>'Terms & Conditions Content','meta_keywords'=>'terms,terms conditions','status'=>1],
+            ['id'=>3,'title'=>'Privacy Policy','description'=>'Content is coming soon','url'=>'privacy-policy','meta_title'=>'Privacy Policy','meta_description'=>'Privacy Policy Content','meta_keywords'=>'privacy policy','status'=>1],
+        ];
+        // thêm dữ liệu vào bảng
+        CmsPage::insert($cmsPagesRecords);
+    ```
+
+3) Run below command :-
+   Now run below commands that will finally insert cms pages into cms_pages table.
+   composer dump-autoload (if required)
+    > php artisan db:seed
+
+# Laravel CRUD | Manage CMS Dynamic Pages (II) | Create Resource Controller
+
+1. Create Resource **CmsController** :-
+   First of all, we will create Resource **CmsController** under app/Http/Controllers/Admin folder that will automatically create default methods for CRUD operations.
+
+    Create **CmsController** by running below artisan command :-
+
+    > php artisan make:controller Admin/CmsController --resource --model=CmsPage
+
+2) Create Route :-
+   Create GET route in **web.php** file in admin middleware group prefixed with admin and having namespace Admin for displaying cms pages in admin panel :-
+   // CMS Pages
+    > Route::get('cms-pages','CmsController@index');
+3) Update _index_ function :-
+   Now update _index_ function in **CmsController** to write query to display all the cms pages in admin panel and return to cms_pages.blade.php file that we will create under /resources/views/admin/pages/ folder.
+
+    ```
+     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //lấy tất cả các trang và chuyển đổi sang mảng
+        $CmsPages = CmsPage::get()->toArray();
+        // xem mảng danh sách
+        // dd($CmsPages);
+        // hiển thị trang web
+        return view('admin.pages.cms_pages')->with(compact('CmsPages'));
+    }
+    ```
+
+4) Create **cms_pages.blade.php** file :-
+   Now create **cms_pages.blade.php** file under /resources/views/admin/pages/ folder in which we will add content from LTE admin template data.html file located at folder /pages/tables/data.html and will display cms pages within foreach loop.
+
+```
+ <div class="card-body">
+                   <table id="cmspages" class="table table-bordered table-striped">
+                     <thead>
+                     <tr>
+                       <th>ID</th>
+                       <th>Title</th>
+                       <th>URL</th>
+                       <th>Create on</th>
+                       <th>Actions</th>
+                     </tr>
+                     </thead>
+                     <tbody>
+                         @foreach ($CmsPages as $page )
+                         <tr>
+                             <td>{{ $page['id'] }}</td>
+                             <td>{{ $page['title'] }}</td>
+                             <td>{{ $page['url'] }}</td>
+                             <td>{{ $page['created_at'] }}</td>
+
+                           </tr>
+                         @endforeach
+
+                     </tbody>
+
+                   </table>
+             </div>
+```
+
+5. Update **layout.blade.php** file :-
+   Now update **layout.blade.php** file to add DataTable jQuery script for cms pages to display the cms pages in datatable.
+    ```
+     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+     <script src="https://cdn.datatables.net/2.0.2/js/dataTables.js"></script>
+     <script>
+         $(function() {
+             $("#cmspages").DataTable();
+         });
+     </script>
+    ```
+
+6) Update **sidebar.blade.php** file :-
+   Update Admin sidebar to add CMS Pages tab in which we will display "View CMS Pages" link and will highlight it when CMS Pages module selected.
+
+
+# Laravel CRUD | Manage CMS Pages (III) | Active/Inactive Status for Pages

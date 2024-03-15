@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Update-Admin-Password-III-Change-Admin-Password
+git checkout -b LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller
 git add .
-git commit -m "LARAVEL-Update-Admin-Password-III-Change-Admin-Password"
-git push -u origin LARAVEL-Update-Admin-Password-III-Change-Admin-Password
+git commit -m "LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller"
+git push -u origin LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller
 
 
 
