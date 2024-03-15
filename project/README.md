@@ -732,3 +732,52 @@ cần phải thiết lập lại **admin model**
                 ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile'], 'image' => $imageName]
             );
     ```
+
+# Update Admin Sidebar | Highlight Current Open Module
+
+1. Update **sidebar.blade.php** file :-
+   First of all, we will update admin sidebar to show admin photo and admin name.
+    ```
+      <div class="image">
+               {{-- hình ảnh của admin --}}
+                 @if (!empty(Auth::guard('admin')->user()->image))
+                     <img src="{{ url('admin/images/photos/' . Auth::guard('admin')->user()->image) }}"
+                         class="img-circle elevation-2" alt="User Image">
+                 @else
+                 {{-- hình ảnh mặc định --}}
+                     <img src="{{ asset('admin/images/AdminLTELogo.png') }}" class="img-circle elevation-2"
+                         alt="User Image">
+                 @endif
+             </div>
+    ```
+
+2) Update **dashboard** function :-
+   Update **dashboard** function with page session having **dashboard** value.
+    ```
+     <!-- add library -->
+     use Session;
+         public function dashboard()
+         {
+             Session::put('page','dashboard');
+             return view('admin.dashboard');
+         }
+    ```
+3) Update **updatePassword** function :-
+   Update **updatePassword** function with page session having update-password value.
+    ```
+        public function updatePassword(Request $request)
+        {
+         Session::put('page','update-password');
+         ...
+         }
+    ```
+4) Update **updateDetails** function :-
+   Update **updateDetails** function with page session having update-password value.
+    ```
+        public function updateDetails(Request $request)
+        {
+         Session::put('page','update-details');
+         ...
+         }
+    ```
+

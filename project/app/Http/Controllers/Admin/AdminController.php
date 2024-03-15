@@ -5,16 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Http\Request;
-// use Faker\Provider\Image;
-// use Illuminate\Support\Facades\Auth;
 use Auth;
-// use Illuminate\Support\Facades\Hash;
 use Validator;
 use Hash;
-// use Image;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Facades\Image;
+use Session;
 
 /**
  *  AdminController dùng để quản lý đăng nhập của Admin
@@ -29,6 +24,7 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        Session::put('page','dashboard');
         return view('admin.dashboard');
     }
     /**
@@ -89,6 +85,8 @@ class AdminController extends Controller
      */
     public function updatePassword(Request $request)
     {
+        Session::put('page','update-password');
+
         if ($request->isMethod('post')) {
             // lấy hết tất cả yêu cầu của người dùng
             $data = $request->all();
@@ -138,6 +136,8 @@ class AdminController extends Controller
      */
     public function updateDetails(Request $request)
     {
+        Session::put('page','update-details');
+
         // kiểm tra loại phương thức
         if ($request->isMethod('post')) {
             # lấy thông tin đăng nhập mà người dùng nhập vào
