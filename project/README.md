@@ -672,3 +672,63 @@ cần phải thiết lập lại **admin model**
 
 5) Update **update_details.blade.php** file :-
    We will add alert div at <a href='resources\views\admin\update_details.blade.php'>update_details.blade.php</a>file that we will display in case if name or mobile is not valid.
+
+# Update Admin Details (II) | Upload Admin Image | Install Intervention
+
+1. Install Intervention Package :-
+   Simply run below composer command to install Intervention Package :-
+    > composer require intervention/image:2.7.\*
+    ## fix bug
+    https://youtu.be/-E3amn3gGFo?t=490
+    1. add Intervention\Image\ImageServiceProvider::class, in **providers** of **app.php**
+    1. add 'Image' => Intervention\Image\Facades\Image::class in **aliases** of **app.php**
+
+2) Update **update_admin_details.blade.php** file :-
+   Add **enctype="multipart/form-data"** in update admin details form to accept files and we will also add condition to show admin image and add another hidden field for current admin image.
+
+    ```
+      <form method="POST" action="{{ url('admin/update-details') }}" enctype="multipart/form-data">
+           <div class="form-group">
+                  <label for="admin_image">Photo</label>
+                  <input type="file" class="form-control" id="admin_image" name="admin_image">
+                  @if (!empty(Auth::guard('admin')->user()->image))
+                      <a href="{{ url('admin/images/photos/'.Auth::guard('admin')->user()->image) }}"
+                          target="_blank" rel="noopener noreferrer">view</a>
+                          <input type="hidden" name="current_image" value="{{ Auth::guard('admin')->user()->image }}">
+                  @endif
+              </div>
+      </form>
+    ```
+
+3) Update **updateAdminDetails** function :-
+   Now we will update **updateAdminDetails** function to add validation for image and will add upload image script and finally save the image name in admins table as well.
+
+    We will create admin_photos folder under admin_images folder where we will store all admin images.
+
+    ```
+      if ($request->hasFile('admin_image')) {
+                $image_tmp = $request->file('admin_image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/images/photos/'.$imageName;
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                }
+            } else if (
+                !empty($data['current_image'])
+            ) {
+                # code...
+                $imageName = $data['current_image'];
+            } else {
+                # code...
+                $imageName='';
+            }
+
+               Admin::where('email', Auth::guard('admin')->user()->email)->update(
+                ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile'], 'image' => $imageName]
+            );
+    ```

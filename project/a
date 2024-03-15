@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Update-Admin-Details-I-Create-Admin-Details-Page
+git checkout -b LARAVEL-Update-Admin-Details-II-Upload-Admin-Image-Install-Intervention
 git add .
-git commit -m "LARAVEL-Update-Admin-Details-I-Create-Admin-Details-Page"
-git push -u origin LARAVEL-Update-Admin-Details-I-Create-Admin-Details-Page
+git commit -m "LARAVEL-Update-Admin-Details-II-Upload-Admin-Image-Install-Intervention"
+git push -u origin LARAVEL-Update-Admin-Details-II-Upload-Admin-Image-Install-Intervention
 
 
 

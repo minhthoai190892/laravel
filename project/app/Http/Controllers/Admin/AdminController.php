@@ -5,11 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+// use Faker\Provider\Image;
 // use Illuminate\Support\Facades\Auth;
 use Auth;
 // use Illuminate\Support\Facades\Hash;
 use Validator;
 use Hash;
+// use Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Facades\Image;
 
 /**
  *  AdminController dùng để quản lý đăng nhập của Admin
@@ -147,16 +152,45 @@ class AdminController extends Controller
                 // regex: chỉ có alpha và white space
                 'admin_name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
                 'admin_mobile' => 'required|numeric|digits:10',
+                'admin_image' => 'image',
             ];
             $customMessages = [
                 'admin_name.required' => 'Name is required',
+                'admin_name.regex' => 'Valid name is required',
+                'admin_name.max' => 'Valid name is required',
                 'admin_mobile.required' => 'Mobile is required',
                 'admin_mobile.numeric' => 'Valid Mobile is required',
                 'admin_mobile.digits' => 'Valid Mobile is required',
+                'admin_image.image' => 'Valid Image is required',
             ];
             $this->validate($request, $rules, $customMessages);
+         
+            // update admin image
+            // kiểm tra file hình ảnh
+            if ($request->hasFile('admin_image')) {
+                $image_tmp = $request->file('admin_image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/images/photos/'.$imageName;
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                }
+            } else if (
+                !empty($data['current_image'])
+            ) {
+                # code...
+                $imageName = $data['current_image'];
+            } else {
+                # code...
+                $imageName='';
+            }
+
             Admin::where('email', Auth::guard('admin')->user()->email)->update(
-                ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile']]
+                ['name' => $data['admin_name'], 'mobile' => $data['admin_mobile'], 'image' => $imageName]
             );
             return redirect()->back()->with('success_message', 'Admin Details has been updated successfully');
         }

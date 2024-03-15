@@ -54,17 +54,17 @@
 
 
                               @if ($errors->any())
-                              <div class="alert alert-danger">
-                                  <ul>
-                                      @foreach ($errors->all() as $error)
-                                      <li>{{ $error }}</li>
-                                      @endforeach
-                                  </ul>
-                              </div>
+                                  <div class="alert alert-danger">
+                                      <ul>
+                                          @foreach ($errors->all() as $error)
+                                              <li>{{ $error }}</li>
+                                          @endforeach
+                                      </ul>
+                                  </div>
                               @endif
                               {{-- Show message --}}
                               <!-- form start -->
-                              <form method="POST" action="{{ url('admin/update-details') }}">
+                              <form method="POST" action="{{ url('admin/update-details') }}" enctype="multipart/form-data">
                                   @csrf
                                   <div class="card-body">
                                       <div class="form-group">
@@ -78,15 +78,23 @@
                                       <div class="form-group">
                                           <label for="admin_name">Name</label>
                                           <input type="text" class="form-control" id="admin_name" placeholder="Name"
-                                              name="admin_name"  value="{{ Auth::guard('admin')->user()->name }}">
-                                     
+                                              name="admin_name" value="{{ Auth::guard('admin')->user()->name }}">
+
                                       </div>
                                       <div class="form-group">
                                           <label for="admin_mobile">Mobile</label>
                                           <input type="text" class="form-control" id="admin_mobile" placeholder="Mobile"
-                                              name="admin_mobile"  value="{{ Auth::guard('admin')->user()->mobile }}">
+                                              name="admin_mobile" value="{{ Auth::guard('admin')->user()->mobile }}">
                                       </div>
-
+                                      <div class="form-group">
+                                          <label for="admin_image">Photo</label>
+                                          <input type="file" class="form-control" id="admin_image" name="admin_image">
+                                          @if (!empty(Auth::guard('admin')->user()->image))
+                                              <a href="{{ url('admin/images/photos/'.Auth::guard('admin')->user()->image) }}"
+                                                  target="_blank" rel="noopener noreferrer">view</a>
+                                                  <input type="hidden" name="current_image" value="{{ Auth::guard('admin')->user()->image }}">
+                                          @endif
+                                      </div>
                                   </div>
                                   <!-- /.card-body -->
                                   <div class="card-footer">
