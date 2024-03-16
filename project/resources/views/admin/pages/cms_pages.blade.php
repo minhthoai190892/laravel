@@ -52,6 +52,7 @@
                                                   <td>{{ $page['title'] }}</td>
                                                   <td>{{ $page['url'] }}</td>
                                                   <td>{{ $page['created_at'] }}</td>
+                                                  {{-- kiểm tra trạng thái --}}
                                                   @if ($page['status'] == 1)
                                                       <td><a href="javascript:void(0)" class="updateCmsPageStatus"
                                                               id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}><i

@@ -922,5 +922,93 @@ cần phải thiết lập lại **admin model**
 6) Update **sidebar.blade.php** file :-
    Update Admin sidebar to add CMS Pages tab in which we will display "View CMS Pages" link and will highlight it when CMS Pages module selected.
 
-
 # Laravel CRUD | Manage CMS Pages (III) | Active/Inactive Status for Pages
+
+1. Update **cms_pages.blade.php** file :-
+   Add id, class and page_id attributes for Active and Inactive status for cms_pages at **cms_pages.blade.php** file that are required to update the status with jquery and ajax.
+    ```
+     {{-- kiểm tra trạng thái --}}
+        @if ($page['status'] == 1)
+            <td><a href="javascript:void(0)" class="updateCmsPageStatus"
+                    id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}><i
+                        class="fas fa-toggle-on" status="Active"></i></a></td>
+        @else
+            <td><a href="javascript:void(0)" class="updateCmsPageStatus"
+                    id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}
+                    style="color: grey"><i
+                        class="fas fa-toggle-off" status="Inactive"></i></a></td>
+        @endif
+    ```
+
+2)  Update **custom.js** file :-
+    **Add updateCmsPageStatus** jquery function in **custom.js** file in which we will pass status and page_id that we will return to ajax via admin/update-cms-page-status route.
+    ```
+    $(document).on('click','.updateCmsPageStatus',function () {
+    // <a href="javascript:void(0)" class="updateCmsPageStatus"> <i
+    // class="fas fa-toggle-on" status="Active"></i> </a>
+    // parent: $(this) -> <a>
+    // children: <i>
+    // attr: status="Active"
+    var status = $(this).children('i').attr('status');
+    var page_id = $(this).attr('page_id');
+    // alert( page_id);
+    $.ajax({
+    headers: {
+    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+    },
+    type: "POST",
+    url:'/admin/update-cms-page-status',
+    data:{status:status,page_id:page_id},
+    success:function (resp) {
+    // kiểm tra kết quả json trả về
+    if (resp['status'] == 0) {
+    $('#page-'+page_id).html('<i class="fas fa-toggle-off" style="color: grey" status="Inactive"></i>');
+    } else if (resp['status'] == 1) {
+    $('#page-'+page_id).html('<i class="fas fa-toggle-on" style="color: #007bff" status="Active"></i>');
+                }
+            },
+            error:function (){
+                alert("Error");
+            }
+        });
+    })
+    ```
+3)  Create Route :-
+    Now we will create below Post route in admin middleware group in **web.php** file for updating status that we pass via ajax in last step.
+    > Route::post('update-cms-page-status','CmsController@update');
+4)  Update "**update**" function :-
+    Now we will update "update" function in **CmsController** to update the status of cms page in cms_pages table and return back the updated status to ajax via json.
+
+    ```
+     /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, CmsPage $cmsPage)
+    {
+        //kiểm tra yêu cầu từ ajax
+        if ($request->ajax()) {
+            # lấy tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // echo "<pre>";print_r($data);die;
+            // Kiểm tra và thay đổi trạng thái của status
+            if ($data['status'] =="Active") {
+                # code...
+                $status =0;
+            }else{
+                $status =1;
+
+            }
+            // cập nhập dữ liệu trong csdl
+            CmsPage::where('id',$data['page_id'])->update(['status'=>$status]);
+            // trả về phản hồi json status and page_id
+            return response()->json(['status'=>$status,'page_id'=>$data['page_id']]);
+        }
+    }
+
+    ```
+
+5)  Update **custom.js** file :-
+    Update **custom.js** file again to get the status and page id in ajax response and update status in cms_pages.blade.php file.
+
+6)  Update sidebar.blade.php file :-
+    Update Admin sidebar to add CMS Pages tab in which we will display "View CMS Pages" link and will highlight it when CMS Pages module selected.
