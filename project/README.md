@@ -1047,7 +1047,81 @@ cần phải thiết lập lại **admin model**
 
     ``
 
-4) Create <a href='resources/views/admin/pages/add_edit_cmspage.blade.php'>add_edit_cmspage.blade.php</a>  file :-
+    ```
+
+4) Create <a href='resources/views/admin/pages/add_edit_cmspage.blade.php'>add_edit_cmspage.blade.php</a> file :-
    Now we will create **add_edit_cmspage.blade.php** file at path /resources/views/admin/pages/ and will add admin design to it.
 5) Update <a href='resources\views\admin\layout\layout.blade.php'>layout.blade.php</a> file :-
    Add select2 CSS/JS files for advance html form that is having better select box script .
+
+# CMS / Dynamic Pages (V) | Add CMS Page Functionality
+
+1. Update **edit** function :-
+   Now we will update "**edit**" function at CmsController to add Laravel validations to make sure correct cms page details added.
+    ```
+      // kiểm tra loại phương thức
+         if ($request->isMethod('POST')) {
+             # lấy hết tất cả yêu cầu của người dùng
+             $data = $request->all();
+             // echo '<pre>';print_r($data);die;
+             // CMS page validation
+             $rules=[
+                 'title' => 'required',
+                 'url' => 'required',
+                 'description' => 'required',
+             ];
+             $customMessage=[
+                 'title.required' => 'Page Title is required',
+                 'url.required' => 'Page URL is required',
+                 'description.required' => 'Page Description is required',
+             ];
+             $this->validate($request,$rules,$customMessage);
+             $cmspage->title = $data['title'];
+             $cmspage->url = $data['url'];
+             $cmspage->description = $data['description'];
+             $cmspage->meta_title = $data['meta_title'];
+             $cmspage->meta_description = $data['meta_description'];
+             $cmspage->meta_keywords = $data['meta_keywords'];
+             $cmspage->status =1;
+             $cmspage->save();
+             return redirect('admin/cms-pages')->with('success_message', $message );
+         }
+    ```
+
+2) Include Header Statements :-
+   Make sure to include Session and CmsPage model at top of CmsController :-
+   use App\Models\CmsPage;
+   use Session;
+3) Update **add_edit_cmspage.blade.php** file :-
+   Now show error message above form at **add_edit_cmspage.blade.php** file.
+    ```
+     {{-- Show message --}}
+          @if ($errors->any())
+              <div class="alert alert-danger">
+                  <ul>
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
+        {{-- Show message --}}
+    ```
+4) Update edit function :-
+   Now we will update "edit" function at CmsController to add query for adding cms page details in cms_pages table and return the user to cms pages with success message.
+5) Update **cms_pages.blade.php** file :-
+   We will show success message in categories page if category successfully added.
+    ```
+         {{-- Show message --}}
+          @if (Session::has('success_message'))
+              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <strong>Success:</strong> {{ Session::get('success_message') }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+          @endif
+          {{-- Show message --}}
+    ```
+6) Update database.php file :-
+   If Undefined array key error comes for any of the fields that you left empty like meta_title, meta_decription or meta_keywords then update **strict to false** in database.php file 
