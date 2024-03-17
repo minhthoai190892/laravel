@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-CMS-/-Dynamic-Pages-(V)-|-Add-CMS-Page-Functionality
+git checkout -b LARAVEL-CMS-/-Dynamic-Pages-V-|-Add-CMS-Page-Functionality
 git add .
-git commit -m "LARAVEL-CMS-/-Dynamic-Pages-(V)-|-Add-CMS-Page-Functionality"
-git push -u origin LARAVEL-CMS-/-Dynamic-Pages-(V)-|-Add-CMS-Page-Functionality
+git commit -m "LARAVEL-CMS-/-Dynamic-Pages-V-|-Add-CMS-Page-Functionality"
+git push -u origin LARAVEL-CMS-/-Dynamic-Pages-V-|-Add-CMS-Page-Functionality
 
 
 
