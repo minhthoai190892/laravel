@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Laravel-CRUD-Manage-CMS-Pages-III-Active_Inactive-Status-for-Pages-readme
+git checkout -b LARAVEL-CMS-Dynamic-Pages-IV-Add/Edit-CMS-Pages
 git add .
-git commit -m "LARAVEL-Laravel-CRUD-Manage-CMS-Pages-III-Active_Inactive-Status-for-Pages-readme"
-git push -u origin LARAVEL-Laravel-CRUD-Manage-CMS-Pages-III-Active_Inactive-Status-for-Pages-readme
+git commit -m "LARAVEL-CMS-Dynamic-Pages-IV-Add/Edit-CMS-Pages"
+git push -u origin LARAVEL-CMS-Dynamic-Pages-IV-Add/Edit-CMS-Pages
 
 
 
@@ -11,5 +11,4 @@ http://localhost/phpmyadmin/
 http://127.0.0.1:8000/admin/dashboard
 
 
-https://youtu.be/QDYd5c3eVX4?list=PLLUtELdNs2Zajvlp0n4Ze7h_Oh9b7131R&t=75
 

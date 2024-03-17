@@ -32,6 +32,10 @@
                           <div class="card">
                               <div class="card-header">
                                   <h3 class="card-title">CMS Pages</h3>
+                                  <a style="max-width: 150px;float: right;display: inline-block;"
+                                      class="btn btn-block btn-primary" href="{{ url('admin/add-edit-cms-page') }}"
+                                      target="_blank" rel="noopener noreferrer">Add CMS Page</a>
+
                               </div>
                               <!-- /.card-header -->
                               <div class="card-body">
@@ -60,8 +64,8 @@
                                                   @else
                                                       <td><a href="javascript:void(0)" class="updateCmsPageStatus"
                                                               id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}
-                                                              style="color: grey"><i
-                                                                  class="fas fa-toggle-off" status="Inactive"></i></a></td>
+                                                              style="color: grey"><i class="fas fa-toggle-off"
+                                                                  status="Inactive"></i></a></td>
                                                   @endif
                                               </tr>
                                           @endforeach

@@ -48,9 +48,20 @@ class CmsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(CmsPage $cmsPage)
+    public function edit(Request $request,$id=null)
     {
-        //
+        //kiểm tra id có hay không
+        if ($id=='') {
+            # không có id 
+            $title= 'Add CMS Page';
+        } else {
+            # có id 
+            $title= 'Edit CMS Page';
+
+        }
+        // trả về đăng add hoặc edit 
+        return view('admin.pages.add_edit_cmspage')->with(compact('title'));
+        
     }
 
     /**

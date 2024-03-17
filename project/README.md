@@ -1012,3 +1012,42 @@ cần phải thiết lập lại **admin model**
 
 6)  Update sidebar.blade.php file :-
     Update Admin sidebar to add CMS Pages tab in which we will display "View CMS Pages" link and will highlight it when CMS Pages module selected.
+
+# CMS / Dynamic Pages (IV) | Add/Edit CMS Pages
+
+1. Update **cms_pages.blade.php** file :-
+   First of all, we will show "Add CMS Page" link at top right side of the cms pages in admin panel.
+    > <a style="max-width: 150px;float: right;display: inline-block;" class="btn btn-block btn-primary" href="{{ url('admin/add-edit-cms-page') }}"target="\_blank" rel="noopener noreferrer">Add CMS Page</a>
+
+2) Create Route :-
+   Create GET/POST route for Add/Edit CMS Page in web.php file under admin group with id parameter as optional (that is required in case of edit cms page) like below :-
+    > Route::match(['get','post'],'add-edit-cms-page','CmsController@edit');
+3) Update edit function :-
+   Now we will update "**edit**" function in **CmsController** with parameter $id as optional. We will add condition to execute "Add CMS Page" functionality in case $id is empty otherwise "Edit CMS Page" functionality if $id is coming.
+
+    ```
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Request $request,$id=null)
+    {
+        //kiểm tra id có hay không
+        if ($id=='') {
+            # không có id
+            $title= 'Add CMS Page';
+        } else {
+            # có id
+            $title= 'Edit CMS Page';
+
+        }
+        // trả về đăng add hoặc edit
+        return view('admin.pages.add_edit_cmspage')->with(compact('title'));
+
+    }
+
+    ``
+
+4) Create <a href='resources/views/admin/pages/add_edit_cmspage.blade.php'>add_edit_cmspage.blade.php</a>  file :-
+   Now we will create **add_edit_cmspage.blade.php** file at path /resources/views/admin/pages/ and will add admin design to it.
+5) Update <a href='resources\views\admin\layout\layout.blade.php'>layout.blade.php</a> file :-
+   Add select2 CSS/JS files for advance html form that is having better select box script .
