@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller
+git checkout -b LARAVEL-CMS-Dynamic-Pages-IV-Add/Edit-CMS-Pages
 git add .
-git commit -m "LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller"
-git push -u origin LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resource-Controller
+git commit -m "LARAVEL-CMS-Dynamic-Pages-IV-Add/Edit-CMS-Pages"
+git push -u origin LARAVEL-CMS-Dynamic-Pages-IV-Add/Edit-CMS-Pages
 
 
 
@@ -9,5 +9,6 @@ git push -u origin LARAVEL-Laravel-CRUD-Manage-CMS-Dynamic-Pages-II-Create-Resou
 http://localhost/phpmyadmin/
 # url dashboard
 http://127.0.0.1:8000/admin/dashboard
+
 
 
