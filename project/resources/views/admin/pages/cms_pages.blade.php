@@ -28,7 +28,16 @@
                       <div class="col-12">
 
                           <!-- /.card -->
-
+                            {{-- Show message --}}
+                          @if (Session::has('success_message'))
+                              <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                  <strong>Success:</strong> {{ Session::get('success_message') }}
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                          @endif
+                          {{-- Show message --}}
                           <div class="card">
                               <div class="card-header">
                                   <h3 class="card-title">CMS Pages</h3>
@@ -55,7 +64,7 @@
                                                   <td>{{ $page['id'] }}</td>
                                                   <td>{{ $page['title'] }}</td>
                                                   <td>{{ $page['url'] }}</td>
-                                                  <td>{{ $page['created_at'] }}</td>
+                                                  <td>{{ date('F j, Y,g:i a', strtotime($page['created_at'])) }}</td>
                                                   {{-- kiểm tra trạng thái --}}
                                                   @if ($page['status'] == 1)
                                                       <td><a href="javascript:void(0)" class="updateCmsPageStatus"

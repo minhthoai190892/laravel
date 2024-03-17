@@ -40,6 +40,19 @@
                       <div class="card-body">
                           <div class="row">
                               <div class="col-12">
+                                  {{-- Show message --}}
+                                  @if ($errors->any())
+                                      <div class="alert alert-danger">
+                                          <ul>
+                                              @foreach ($errors->all() as $error)
+                                                  <li>{{ $error }}</li>
+                                              @endforeach
+                                          </ul>
+                                      </div>
+                                  @endif
+                                 
+                                  {{-- Show message --}}
+
                                   <form name="cmsForm" id="cmsForm" action="{{ url('admin/add-edit-cms-page') }}"
                                       method="POST">
                                       @csrf
@@ -54,31 +67,28 @@
                                               <input type="text" class="form-control" id="url"name="url"
                                                   placeholder="Enter Page URL">
                                           </div>
-                                          <div class="form-group">
-                                              <label for="url">URL*</label>
-                                              <input type="text" class="form-control" id="url"name="url"
-                                                  placeholder="Enter Page URL">
-                                          </div>
+
                                           <!-- textarea -->
                                           <div class="form-group">
                                               <label for="description">Description</label>
                                               <textarea class="form-control" id="description" name="description"rows="3" placeholder="Enter Description"></textarea>
                                           </div>
                                           <div class="form-group">
-                                              <label for="meta_title">Meta Title*</label>
+                                              <label for="meta_title">Meta Title</label>
                                               <input type="text" class="form-control" id="meta_title"name="meta_title"
                                                   placeholder="Enter Meta Title">
                                           </div>
                                           <div class="form-group">
-                                              <label for="meta_description">Meta Description*</label>
-                                              <input type="text" class="form-control" id="meta_description"name="meta_description"
+                                              <label for="meta_description">Meta Description</label>
+                                              <input type="text" class="form-control"
+                                                  id="meta_description"name="meta_description"
                                                   placeholder="Enter Meta Description">
                                           </div>
                                           <div class="form-group">
-                                            <label for="meta_keywords">Meta Keywords*</label>
-                                            <input type="text" class="form-control" id="meta_keywords"name="meta_keywords"
-                                                placeholder="Enter Meta Keywords">
-                                        </div>
+                                              <label for="meta_keywords">Meta Keywords</label>
+                                              <input type="text" class="form-control"
+                                                  id="meta_keywords"name="meta_keywords" placeholder="Enter Meta Keywords">
+                                          </div>
                                       </div>
                                       <!-- /.card-body -->
 

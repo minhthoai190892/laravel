@@ -48,20 +48,48 @@ class CmsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request,$id=null)
+    public function edit(Request $request, $id = null)
     {
         //kiểm tra id có hay không
-        if ($id=='') {
+        if ($id == '') {
             # không có id 
-            $title= 'Add CMS Page';
+            $title = 'Add CMS Page';
+            $cmspage= new CmsPage;
+            $message = 'CMS Page added successfully';
         } else {
             # có id 
-            $title= 'Edit CMS Page';
-
+            $title = 'Edit CMS Page';
+        }
+        // kiểm tra loại phương thức
+        if ($request->isMethod('POST')) {
+            # lấy hết tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // echo '<pre>';print_r($data);die;
+            // CMS page validation
+            $rules=[
+                'title' => 'required',
+                'url' => 'required',
+                'description' => 'required',
+            ];
+            $customMessage=[
+                'title.required' => 'Page Title is required',
+                'url.required' => 'Page URL is required',
+                'description.required' => 'Page Description is required',
+            ];
+            $this->validate($request,$rules,$customMessage);
+            $cmspage->title = $data['title'];
+            $cmspage->url = $data['url'];
+            $cmspage->description = $data['description'];
+            $cmspage->meta_title = $data['meta_title'];
+            $cmspage->meta_description = $data['meta_description'];
+            $cmspage->meta_keywords = $data['meta_keywords'];
+            $cmspage->status =1;
+            $cmspage->save();
+            return redirect('admin/cms-pages')->with('success_message', $message );
         }
         // trả về đăng add hoặc edit 
         return view('admin.pages.add_edit_cmspage')->with(compact('title'));
-        
+
     }
 
     /**
@@ -75,17 +103,17 @@ class CmsController extends Controller
             $data = $request->all();
             // echo "<pre>";print_r($data);die;
             // Kiểm tra và thay đổi trạng thái của status
-            if ($data['status'] =="Active") {
+            if ($data['status'] == "Active") {
                 # code...
-                $status =0;
-            }else{
-                $status =1;
+                $status = 0;
+            } else {
+                $status = 1;
 
             }
             // cập nhập dữ liệu trong csdl
-            CmsPage::where('id',$data['page_id'])->update(['status'=>$status]);
+            CmsPage::where('id', $data['page_id'])->update(['status' => $status]);
             // trả về phản hồi json status and page_id
-            return response()->json(['status'=>$status,'page_id'=>$data['page_id']]);
+            return response()->json(['status' => $status, 'page_id' => $data['page_id']]);
         }
     }
 
