@@ -1171,3 +1171,30 @@ cần phải thiết lập lại **admin model**
       </form>
 
     ```
+
+# CMS / Dynamic Pages (VII) | Delete CMS Page Functionality
+
+1. Update **cms_pages.blade.php** file :-
+   First of all, we will update the <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a> file to **add delete** CMS Page link with every CMS Page listing.
+    ```
+     <a href="{{ url('admin/add-delete-cms-page/' . $page['id']) }}"><i class="fas fa-trash"></i></a>
+    ```
+
+2) Create Route :-
+   Now we will create GET route with parameter page id to delete cms page in web.php file like below :-
+
+    > Route::get('delete-cms-page/{id}','CmsController@destroy');
+
+3) Update destroy function :-
+   Now we will update **destroy** function in **CmsController** that automatically gets created earlier as the part of the CRUD operations by generating Resource Controller. Now we will write the query to delete the cms page with page id that we will get as parameter. After deleting the cms page, we will return to cms pages with success message.
+    ```
+        /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        //delete cms page
+        CmsPage::where('id', $id)->delete();
+        return redirect()->back()->with('success_message', 'Delete successfully' );
+    }
+    ```

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CmsPage;
 use Illuminate\Http\Request;
-
+use Session;
 class CmsController extends Controller
 {
     /**
@@ -13,6 +13,7 @@ class CmsController extends Controller
      */
     public function index()
     {
+        Session::put('page','cms-pages');
         //lấy tất cả các trang và chuyển đổi sang mảng
         $CmsPages = CmsPage::get()->toArray();
         // xem mảng danh sách
@@ -50,6 +51,8 @@ class CmsController extends Controller
      */
     public function edit(Request $request, $id = null)
     {
+        Session::put('page','cms-pages');
+
         //kiểm tra id có hay không
         if ($id == '') {
             # không có id 
@@ -123,8 +126,10 @@ class CmsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CmsPage $cmsPage)
+    public function destroy($id)
     {
-        //
+        //delete cms page
+        CmsPage::where('id', $id)->delete();
+        return redirect()->back()->with('success_message', 'Delete successfully' );
     }
 }

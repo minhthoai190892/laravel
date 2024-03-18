@@ -12,12 +12,12 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-              {{-- hình ảnh của admin --}}
+                {{-- hình ảnh của admin --}}
                 @if (!empty(Auth::guard('admin')->user()->image))
                     <img src="{{ url('admin/images/photos/' . Auth::guard('admin')->user()->image) }}"
                         class="img-circle elevation-2" alt="User Image">
                 @else
-                {{-- hình ảnh mặc định --}}
+                    {{-- hình ảnh mặc định --}}
                     <img src="{{ asset('admin/images/AdminLTELogo.png') }}" class="img-circle elevation-2"
                         alt="User Image">
                 @endif
@@ -65,16 +65,16 @@
 
                 </li>
                 <li class="nav-item menu-open">
-                  @if (Session::get('page') == 'update-password'||Session::get('page') == 'update-details')
-                  @php
-                      $active = 'active';
-                  @endphp
-              @else
-                  @php
-                      $active = '';
-                  @endphp
-              @endif
-                    <a href="#" class="nav-link {{$active}}">
+                    @if (Session::get('page') == 'update-password' || Session::get('page') == 'update-details')
+                        @php
+                            $active = 'active';
+                        @endphp
+                    @else
+                        @php
+                            $active = '';
+                        @endphp
+                    @endif
+                    <a href="#" class="nav-link {{ $active }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Settings
@@ -107,7 +107,7 @@
                                     $active = '';
                                 @endphp
                             @endif
-                            <a href="{{ url('admin/update-details') }}" class="nav-link {{$active}}">
+                            <a href="{{ url('admin/update-details') }}" class="nav-link {{ $active }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Update Admin Details</p>
                             </a>
@@ -115,9 +115,17 @@
 
                     </ul>
                 </li>
-
-                <li class="nav-item">
-                    <a href="{{ url('admin/cms-pages') }}" class="nav-link">
+                @if (Session::get('page') == 'cms-pages')
+                    @php
+                        $active = 'active';
+                    @endphp
+                @else
+                    @php
+                        $active = '';
+                    @endphp
+                @endif
+                <li class="nav-item" >
+                    <a href="{{ url('admin/cms-pages') }}" class="nav-link {{ $active }}" >
                         <i class="nav-icon fas fa-copy"></i>
                         <p>
                             CSM Page

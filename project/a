@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-21-CMS-Dynamic-Pages-VI-Edit-CMS-Page-Functionality
+git checkout -b LARAVEL-22-CMS-Dynamic-Pages-VII-Delete-CMS-Page-Functionality
 git add .
-git commit -m "LARAVEL-21-CMS-Dynamic-Pages-VI-Edit-CMS-Page-Functionality"
-git push -u origin LARAVEL-21-CMS-Dynamic-Pages-VI-Edit-CMS-Page-Functionality
+git commit -m "LARAVEL-22-CMS-Dynamic-Pages-VII-Delete-CMS-Page-Functionality"
+git push -u origin LARAVEL-22-CMS-Dynamic-Pages-VII-Delete-CMS-Page-Functionality
 
 
 
