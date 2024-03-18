@@ -59,6 +59,9 @@ class CmsController extends Controller
         } else {
             # có id 
             $title = 'Edit CMS Page';
+            // tìm id 
+            $cmspage=  CmsPage::find($id);
+            $message = 'CMS Page updated successfully';
         }
         // kiểm tra loại phương thức
         if ($request->isMethod('POST')) {
@@ -88,7 +91,7 @@ class CmsController extends Controller
             return redirect('admin/cms-pages')->with('success_message', $message );
         }
         // trả về đăng add hoặc edit 
-        return view('admin.pages.add_edit_cmspage')->with(compact('title'));
+        return view('admin.pages.add_edit_cmspage')->with(compact('title','cmspage'));
 
     }
 

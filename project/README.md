@@ -1124,4 +1124,50 @@ cần phải thiết lập lại **admin model**
           {{-- Show message --}}
     ```
 6) Update database.php file :-
-   If Undefined array key error comes for any of the fields that you left empty like meta_title, meta_decription or meta_keywords then update **strict to false** in database.php file 
+   If Undefined array key error comes for any of the fields that you left empty like meta_title, meta_decription or meta_keywords then update **strict to false** in database.php file
+
+# CMS / Dynamic Pages (VI) | Edit CMS Page Functionality
+
+1. Update edit function:-
+   Now we will update the "**edit**" function at CmsController to add a query for editing cms page details in the cms_pages table and return the user to cms pages with a success message.
+    ```
+     //kiểm tra id có hay không
+        if ($id == '') {
+            # không có id
+            $title = 'Add CMS Page';
+            $cmspage= new CmsPage;
+            $message = 'CMS Page added successfully';
+        } else {
+            # có id
+            $title = 'Edit CMS Page';
+            // tìm id
+            $cmspage=  CmsPage::find($id);
+            $message = 'CMS Page updated successfully';
+        }
+    ```
+
+2) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a> file :-
+   Now we will update the cms pages file to update form action and show data in fields in case the cms page already has data.
+    ```
+    <a href="{{ url('admin/add-edit-cms-page/' . $page['id']) }}"> <i class="fas fa-edit"></i></a>
+    ```
+3) update <a href='resources\views\admin\pages\add_edit_cmspage.blade.php'>add_edit_cmspage.blade.php</a>
+
+    ```
+      <form name="cmsForm" id="cmsForm"
+              @if (empty($cmspage['id'])) action="{{ url('admin/add-edit-cms-page') }}"
+          @else
+          action="{{ url('admin/add-edit-cms-page/' . $cmspage['id']) }}" @endif
+              method="POST">
+              @csrf
+              <!-- sử dụng if để kiểm tra xem là tạo mới hay cập nhật -->
+               <div class="form-group">
+                      <label for="title">Title*</label>
+                      <input type="text" class="form-control" id="title" name="title"
+                          placeholder="Enter Title"
+                          @if (!empty($cmspage['title'])) value="{{ $cmspage['title'] }}" @endif>
+                  </div>
+                  ....
+      </form>
+
+    ```

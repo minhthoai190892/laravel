@@ -28,7 +28,7 @@
                       <div class="col-12">
 
                           <!-- /.card -->
-                            {{-- Show message --}}
+                          {{-- Show message --}}
                           @if (Session::has('success_message'))
                               <div class="alert alert-success alert-dismissible fade show" role="alert">
                                   <strong>Success:</strong> {{ Session::get('success_message') }}
@@ -65,17 +65,24 @@
                                                   <td>{{ $page['title'] }}</td>
                                                   <td>{{ $page['url'] }}</td>
                                                   <td>{{ date('F j, Y,g:i a', strtotime($page['created_at'])) }}</td>
+
                                                   {{-- kiểm tra trạng thái --}}
-                                                  @if ($page['status'] == 1)
-                                                      <td><a href="javascript:void(0)" class="updateCmsPageStatus"
+                                                  <td>
+                                                      @if ($page['status'] == 1)
+                                                          <a href="javascript:void(0)" class="updateCmsPageStatus"
                                                               id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}><i
-                                                                  class="fas fa-toggle-on" status="Active"></i></a></td>
-                                                  @else
-                                                      <td><a href="javascript:void(0)" class="updateCmsPageStatus"
+                                                                  class="fas fa-toggle-on" status="Active"></i></a>
+                                                      @else
+                                                          <a href="javascript:void(0)" class="updateCmsPageStatus"
                                                               id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}
                                                               style="color: grey"><i class="fas fa-toggle-off"
-                                                                  status="Inactive"></i></a></td>
-                                                  @endif
+                                                                  status="Inactive"></i></a>
+                                                      @endif
+                                                      &nbsp;
+                                                      <a href="{{ url('admin/add-edit-cms-page/' . $page['id']) }}"> <i
+                                                              class="fas fa-edit"></i></a>
+
+                                                  </td>
                                               </tr>
                                           @endforeach
 

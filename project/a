@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-CMS-Dynamic-Pages-V-Add-CMS-Page-Functionality
+git checkout -b LARAVEL-21-CMS-Dynamic-Pages-VI-Edit-CMS-Page-Functionality
 git add .
-git commit -m "LARAVEL-CMS-Dynamic-Pages-V-Add-CMS-Page-Functionality"
-git push -u origin LARAVEL-CMS-Dynamic-Pages-V-Add-CMS-Page-Functionality
+git commit -m "LARAVEL-21-CMS-Dynamic-Pages-VI-Edit-CMS-Page-Functionality"
+git push -u origin LARAVEL-21-CMS-Dynamic-Pages-VI-Edit-CMS-Page-Functionality
 
 
 
@@ -10,5 +10,7 @@ http://localhost/phpmyadmin/
 # url dashboard
 http://127.0.0.1:8000/admin/dashboard
 
+
+<a href=''></a>
 
 
