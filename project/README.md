@@ -1198,3 +1198,63 @@ cần phải thiết lập lại **admin model**
         return redirect()->back()->with('success_message', 'Delete successfully' );
     }
     ```
+# 23 Make Admin Panel in Laravel 10 | Integrate SweetAlert2 jQuery Alert
+1) Simple JavaScript Alert
+    1) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
+        ```
+        {{-- simple aler --}}
+            <a  href="{{ url('admin/delete-cms-page/' . $page['id']) }}" class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
+                <i class="fas fa-trash"></i></a>
+        ```
+    2) Update <a href='public\admin\js\custom.js'>custom.js</a> 
+        ```
+        $(document).on("click", ".confirmDelete", function (e) {
+         var name = $(this).attr("name");
+
+            if (confirm("Are you sure you want to delete this " + name + "?")) {
+         return true;
+             }
+            return false;
+        });
+
+        ```
+2) SweetAlert 2 Javascript Library
+    <a href='https://sweetalert2.github.io/'>SweetAlert 2 Javascript Library</a> 
+    1) install sweetalert2
+        >npm install sweetalert2
+    2) update  <a href='resources\views\admin\layout\layout.blade.php'>SweetAlert 2 Javascript Library</a> 
+        ><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    3) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
+        ```
+        {{-- simple aler --}}
+           <a  href="javascript:void(0)"  <?php /*href="{{ url('admin/delete-cms-page/' . $page['id']) }}"*/?> class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
+                <i class="fas fa-trash"></i></a>
+        ```
+
+     4) Update <a href='public\admin\js\custom.js'>custom.js</a> 
+        ```
+        $(document).on("click", ".confirmDelete", function (e) {
+            var record = $(this).attr("record");
+            var recordid = $(this).attr("recordid");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success",
+                    });
+                    window.location.href='/admin/delete-'+record+'/'+recordid;
+                }
+            });
+        });
+
+
+        ```

@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-22-CMS-Dynamic-Pages-VII-Delete-CMS-Page-Functionality
+git checkout -b LARAVEL-23-Make-Admin-Panel-in-Laravel-10-|-Integrate-SweetAlert2-jQuery-Alert
 git add .
-git commit -m "LARAVEL-22-CMS-Dynamic-Pages-VII-Delete-CMS-Page-Functionality"
-git push -u origin LARAVEL-22-CMS-Dynamic-Pages-VII-Delete-CMS-Page-Functionality
+git commit -m "LARAVEL-23-Make-Admin-Panel-in-Laravel-10-|-Integrate-SweetAlert2-jQuery-Alert"
+git push -u origin LARAVEL-23-Make-Admin-Panel-in-Laravel-10-|-Integrate-SweetAlert2-jQuery-Alert
 
 
 
