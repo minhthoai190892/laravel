@@ -1309,4 +1309,60 @@ cần phải thiết lập lại **admin model**
 
         {{-- ! hiển thị dữ liệu từ cookie remember me --}}
             @if (isset($\_COOKIE['email'])) checked @endif
+
     ```
+
+    ```
+
+# 25 Roles and Permissions in Laravel 10 (I) | Display Subadmins in Admin Panel
+
+1. Update <a href='resources\views\admin\layout\sidebar.blade.php'>sidebar.blade.php</a> file :-
+   Now, update **sidebar.blade.php** file to show Add/View Sub-Admins links at admin sidebar.
+
+    ```
+         {{-- ! Sub Admins --}}
+
+                @if (Session::get('page') == 'subadmins')
+                    @php
+                        $active = 'active';
+                    @endphp
+                @else
+                    @php
+                        $active = '';
+                    @endphp
+                @endif
+                <li class="nav-item">
+                    <a href="{{ url('admin/subadmins') }}" class="nav-link {{ $active }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Subadmins
+                        </p>
+                    </a>
+                </li>
+                {{-- ! Sub Admins --}}
+    ```
+
+2) Create Route <a href='routes\web.php'>web.php</a>
+   Now create GET Route for displaying subadmins in admin panel.
+    > Route::get('subadmins', 'AdminController@subadmins');
+3) Create subadmins function :-
+   Now we will create subadmins function in <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> where we will add query to select all subadmins from admins table to show in **subadmins.blade.php** file that we will create in our next step.
+
+    ```
+      /**
+     * show sub admins
+     */
+    public function subadmins(){
+        Session::put('page', 'subadmins');
+
+        // * lấy tất cả các sub admins với loại subadmin
+        $subadmins = Admin::where('type','subadmin')->get();
+        //  echo "<pre>";
+        //     print_r($subadmins);
+        //     die;
+        return view('admin.subadmins.subadmins')->with(compact('subadmins'));
+    }
+    ```
+
+4) Create <a href='resources\views\admin\subadmins\subadmins.blade.php'>subadmins.blade.php</a> file :-
+   Now create subadmins folder under \resources\views\admin\ and then create **subadmins.blade.php** file under that subadmins folder.

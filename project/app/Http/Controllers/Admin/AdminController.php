@@ -208,4 +208,17 @@ class AdminController extends Controller
         }
         return view('admin.update_details');
     }
+    /**
+     * show sub admins 
+     */
+    public function subadmins(){
+        Session::put('page', 'subadmins');
+
+        // * lấy tất cả các sub admins với loại subadmin
+        $subadmins = Admin::where('type','subadmin')->get();
+        //  echo "<pre>";
+        //     print_r($subadmins);
+        //     die;
+        return view('admin.subadmins.subadmins')->with(compact('subadmins'));
+    }
 }
