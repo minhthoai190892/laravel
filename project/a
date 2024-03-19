@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-23-Make-Admin-Panel-in-Laravel-10-Integrate-SweetAlert2-jQuery-Alert
+git checkout -b LARAVEL-24-Remember-me-Laravel-functionality-Remember-me-functionality-in-Login-Page
 git add .
-git commit -m "LARAVEL-23-Make-Admin-Panel-in-Laravel-10-Integrate-SweetAlert2-jQuery-Alert"
-git push -u origin LARAVEL-23-Make-Admin-Panel-in-Laravel-10-Integrate-SweetAlert2-jQuery-Alert
+git commit -m "LARAVEL-24-Remember-me-Laravel-functionality-Remember-me-functionality-in-Login-Page"
+git push -u origin LARAVEL-24-Remember-me-Laravel-functionality-Remember-me-functionality-in-Login-Page
 
 
 

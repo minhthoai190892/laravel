@@ -1198,15 +1198,19 @@ cần phải thiết lập lại **admin model**
         return redirect()->back()->with('success_message', 'Delete successfully' );
     }
     ```
+
 # 23 Make Admin Panel in Laravel 10 | Integrate SweetAlert2 jQuery Alert
-1) Simple JavaScript Alert
-    1) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
+
+1. Simple JavaScript Alert
+
+    1. Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
         ```
         {{-- simple aler --}}
             <a  href="{{ url('admin/delete-cms-page/' . $page['id']) }}" class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
                 <i class="fas fa-trash"></i></a>
         ```
-    2) Update <a href='public\admin\js\custom.js'>custom.js</a> 
+    2. Update <a href='public\admin\js\custom.js'>custom.js</a>
+
         ```
         $(document).on("click", ".confirmDelete", function (e) {
          var name = $(this).attr("name");
@@ -1218,20 +1222,24 @@ cần phải thiết lập lại **admin model**
         });
 
         ```
-2) SweetAlert 2 Javascript Library
-    <a href='https://sweetalert2.github.io/'>SweetAlert 2 Javascript Library</a> 
-    1) install sweetalert2
-        >npm install sweetalert2
-    2) update  <a href='resources\views\admin\layout\layout.blade.php'>SweetAlert 2 Javascript Library</a> 
-        ><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    3) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
+
+2. SweetAlert 2 Javascript Library
+   <a href='https://sweetalert2.github.io/'>SweetAlert 2 Javascript Library</a>
+
+    1. install sweetalert2
+        > npm install sweetalert2
+    2. update <a href='resources\views\admin\layout\layout.blade.php'>SweetAlert 2 Javascript Library</a>
+        > <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    3. Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
+
         ```
         {{-- simple aler --}}
            <a  href="javascript:void(0)"  <?php /*href="{{ url('admin/delete-cms-page/' . $page['id']) }}"*/?> class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
                 <i class="fas fa-trash"></i></a>
         ```
 
-     4) Update <a href='public\admin\js\custom.js'>custom.js</a> 
+    4. Update <a href='public\admin\js\custom.js'>custom.js</a>
+
         ```
         $(document).on("click", ".confirmDelete", function (e) {
             var record = $(this).attr("record");
@@ -1258,3 +1266,47 @@ cần phải thiết lập lại **admin model**
 
 
         ```
+
+# 24 Remember me Laravel functionality| Remember me functionality in Login Page
+
+1. Update <a href='resources\views\admin\login.blade.php'>login.blade.php</a> file :-
+   First of all, we will add a "**Remember Me**" checkbox at the admin login form with the **name "remember"**.
+
+2)  Update <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController.php</a>login function:-
+    Now we will update the login function at AdminController and will set cookies both for email and password when the remember post data is not empty means when the user checks at Remember Me checkbox at the admin login form.
+
+    ```
+    if (Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
+                // *TODO remember admin email and password with cookie
+                //   ? - kiểm tra có được thiết lập không và không được để trống
+                if (isset ($data['remember']) && !empty ($data['remember'])) {
+                    // * thiết lập lưu cookie và thiết lập thời gian hết hạn
+                    setcookie('email', $data['email'], time() + 3600);
+                    setcookie('password', $data['password'], time() + 3600);
+                } else {
+                    // * người dùng không chọn remember me
+
+                    setcookie('email', '');
+                    setcookie('password', '');
+                }
+                # đi đến trang dashboard
+                return redirect('admin/dashboard');
+            } else {
+                // thông báo lỗi nếu sai
+                return redirect()->back()->with('error_message', 'Invalid email or password');
+            }
+    ```
+
+3)  Update <a href='resources\views\admin\login.blade.php'>login.blade.php</a> file :-
+    Now we will update the **login.blade.php** file once again to show the username and password that we have stored in cookies when the user checks the "Remember Me" checkbox.
+
+        ```
+           {{-- ! hiển thị dữ liệu từ cookie  --}}
+             @if (isset($_COOKIE['email'])) value="{{ $_COOKIE['email'] }}" @endif
+
+            {{-- ! hiển thị dữ liệu từ cookie  --}}
+            @if (isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif
+
+        {{-- ! hiển thị dữ liệu từ cookie remember me --}}
+            @if (isset($\_COOKIE['email'])) checked @endif
+    ```
