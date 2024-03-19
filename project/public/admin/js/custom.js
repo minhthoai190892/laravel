@@ -29,33 +29,69 @@ $(document).ready(function () {
     });
 });
 //TODO: Update CMS Page Status
-$(document).on('click','.updateCmsPageStatus',function () {
+$(document).on("click", ".updateCmsPageStatus", function () {
     // <a href="javascript:void(0)" class="updateCmsPageStatus">  <i
     // class="fas fa-toggle-on" status="Active"></i> </a>
     // parent:  $(this) -> <a>
     // children: <i>
     // attr: status="Active"
-    var status = $(this).children('i').attr('status');
-    var page_id = $(this).attr('page_id');
+    var status = $(this).children("i").attr("status");
+    var page_id = $(this).attr("page_id");
     // alert( page_id);
     $.ajax({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         type: "POST",
-        url:'/admin/update-cms-page-status',
-        data:{status:status,page_id:page_id},
-        success:function (resp) {
+        url: "/admin/update-cms-page-status",
+        data: { status: status, page_id: page_id },
+        success: function (resp) {
             // kiểm tra kết quả json trả về
-            if (resp['status'] == 0) {
-                $('#page-'+page_id).html('<i class="fas fa-toggle-off" style="color: grey" status="Inactive"></i>');
-            } else  if (resp['status'] == 1) {
-                $('#page-'+page_id).html('<i class="fas fa-toggle-on" style="color: #007bff" status="Active"></i>');
-                
+            if (resp["status"] == 0) {
+                $("#page-" + page_id).html(
+                    '<i class="fas fa-toggle-off" style="color: grey" status="Inactive"></i>'
+                );
+            } else if (resp["status"] == 1) {
+                $("#page-" + page_id).html(
+                    '<i class="fas fa-toggle-on" style="color: #007bff" status="Active"></i>'
+                );
             }
         },
-        error:function (){
+        error: function () {
             alert("Error");
+        },
+    });
+});
+// confirm the delete of CMS Page
+// $(document).on("click", ".confirmDelete", function (e) {
+//     var name = $(this).attr("name");
+
+//     if (confirm("Are you sure you want to delete this " + name + "?")) {
+//         return true;
+//     }
+//     return false;
+// });
+
+// confirm delete with sweetalert
+$(document).on("click", ".confirmDelete", function (e) {
+    var record = $(this).attr("record");
+    var recordid = $(this).attr("recordid");
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success",
+            });
+            window.location.href='/admin/delete-'+record+'/'+recordid;
         }
     });
-})
+});

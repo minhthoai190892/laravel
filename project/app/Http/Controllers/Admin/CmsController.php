@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CmsPage;
 use Illuminate\Http\Request;
-
+use Session;
 class CmsController extends Controller
 {
     /**
@@ -13,6 +13,7 @@ class CmsController extends Controller
      */
     public function index()
     {
+        Session::put('page','cms-pages');
         //lấy tất cả các trang và chuyển đổi sang mảng
         $CmsPages = CmsPage::get()->toArray();
         // xem mảng danh sách
@@ -50,6 +51,8 @@ class CmsController extends Controller
      */
     public function edit(Request $request, $id = null)
     {
+        Session::put('page','cms-pages');
+
         //kiểm tra id có hay không
         if ($id == '') {
             # không có id 
@@ -59,6 +62,9 @@ class CmsController extends Controller
         } else {
             # có id 
             $title = 'Edit CMS Page';
+            // tìm id 
+            $cmspage=  CmsPage::find($id);
+            $message = 'CMS Page updated successfully';
         }
         // kiểm tra loại phương thức
         if ($request->isMethod('POST')) {
@@ -88,7 +94,7 @@ class CmsController extends Controller
             return redirect('admin/cms-pages')->with('success_message', $message );
         }
         // trả về đăng add hoặc edit 
-        return view('admin.pages.add_edit_cmspage')->with(compact('title'));
+        return view('admin.pages.add_edit_cmspage')->with(compact('title','cmspage'));
 
     }
 
@@ -120,8 +126,10 @@ class CmsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CmsPage $cmsPage)
+    public function destroy($id)
     {
-        //
+        //delete cms page
+        CmsPage::where('id', $id)->delete();
+        return redirect()->back()->with('success_message', 'Delete successfully' );
     }
 }

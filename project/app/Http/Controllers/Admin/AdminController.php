@@ -24,7 +24,7 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        Session::put('page','dashboard');
+        Session::put('page', 'dashboard');
         return view('admin.dashboard');
     }
     /**
@@ -58,6 +58,18 @@ class AdminController extends Controller
 
             // xác minh dữ liệu có đúng trong database không
             if (Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
+                // *TODO remember admin email and password with cookie
+                //   ? - kiểm tra có được thiết lập không và không được để trống
+                if (isset ($data['remember']) && !empty ($data['remember'])) {
+                    // * thiết lập lưu cookie và thiết lập thời gian hết hạn
+                    setcookie('email', $data['email'], time() + 3600);
+                    setcookie('password', $data['password'], time() + 3600);
+                } else {
+                    // * người dùng không chọn remember me
+
+                    setcookie('email', '');
+                    setcookie('password', '');
+                }
                 # đi đến trang dashboard
                 return redirect('admin/dashboard');
             } else {
@@ -85,7 +97,7 @@ class AdminController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        Session::put('page','update-password');
+        Session::put('page', 'update-password');
 
         if ($request->isMethod('post')) {
             // lấy hết tất cả yêu cầu của người dùng
@@ -136,7 +148,7 @@ class AdminController extends Controller
      */
     public function updateDetails(Request $request)
     {
-        Session::put('page','update-details');
+        Session::put('page', 'update-details');
 
         // kiểm tra loại phương thức
         if ($request->isMethod('post')) {
@@ -164,7 +176,7 @@ class AdminController extends Controller
                 'admin_image.image' => 'Valid Image is required',
             ];
             $this->validate($request, $rules, $customMessages);
-         
+
             // update admin image
             // kiểm tra file hình ảnh
             if ($request->hasFile('admin_image')) {
@@ -175,18 +187,18 @@ class AdminController extends Controller
                     // Generate new Image Name
                     $imageName = rand(111, 99999) . '.' . $extension;
                     // tạo đường dẫn luư hình ảnh
-                    $image_path = 'admin/images/photos/'.$imageName;
+                    $image_path = 'admin/images/photos/' . $imageName;
                     // tải hình ảnh
                     Image::make($image_tmp)->save($image_path);
                 }
             } else if (
-                !empty($data['current_image'])
+                !empty ($data['current_image'])
             ) {
                 # code...
                 $imageName = $data['current_image'];
             } else {
                 # code...
-                $imageName='';
+                $imageName = '';
             }
 
             Admin::where('email', Auth::guard('admin')->user()->email)->update(
@@ -195,5 +207,18 @@ class AdminController extends Controller
             return redirect()->back()->with('success_message', 'Admin Details has been updated successfully');
         }
         return view('admin.update_details');
+    }
+    /**
+     * show sub admins 
+     */
+    public function subadmins(){
+        Session::put('page', 'subadmins');
+
+        // * lấy tất cả các sub admins với loại subadmin
+        $subadmins = Admin::where('type','subadmin')->get();
+        //  echo "<pre>";
+        //     print_r($subadmins);
+        //     die;
+        return view('admin.subadmins.subadmins')->with(compact('subadmins'));
     }
 }

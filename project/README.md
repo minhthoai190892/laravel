@@ -1124,4 +1124,245 @@ cần phải thiết lập lại **admin model**
           {{-- Show message --}}
     ```
 6) Update database.php file :-
-   If Undefined array key error comes for any of the fields that you left empty like meta_title, meta_decription or meta_keywords then update **strict to false** in database.php file 
+   If Undefined array key error comes for any of the fields that you left empty like meta_title, meta_decription or meta_keywords then update **strict to false** in database.php file
+
+# CMS / Dynamic Pages (VI) | Edit CMS Page Functionality
+
+1. Update edit function:-
+   Now we will update the "**edit**" function at CmsController to add a query for editing cms page details in the cms_pages table and return the user to cms pages with a success message.
+    ```
+     //kiểm tra id có hay không
+        if ($id == '') {
+            # không có id
+            $title = 'Add CMS Page';
+            $cmspage= new CmsPage;
+            $message = 'CMS Page added successfully';
+        } else {
+            # có id
+            $title = 'Edit CMS Page';
+            // tìm id
+            $cmspage=  CmsPage::find($id);
+            $message = 'CMS Page updated successfully';
+        }
+    ```
+
+2) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a> file :-
+   Now we will update the cms pages file to update form action and show data in fields in case the cms page already has data.
+    ```
+    <a href="{{ url('admin/add-edit-cms-page/' . $page['id']) }}"> <i class="fas fa-edit"></i></a>
+    ```
+3) update <a href='resources\views\admin\pages\add_edit_cmspage.blade.php'>add_edit_cmspage.blade.php</a>
+
+    ```
+      <form name="cmsForm" id="cmsForm"
+              @if (empty($cmspage['id'])) action="{{ url('admin/add-edit-cms-page') }}"
+          @else
+          action="{{ url('admin/add-edit-cms-page/' . $cmspage['id']) }}" @endif
+              method="POST">
+              @csrf
+              <!-- sử dụng if để kiểm tra xem là tạo mới hay cập nhật -->
+               <div class="form-group">
+                      <label for="title">Title*</label>
+                      <input type="text" class="form-control" id="title" name="title"
+                          placeholder="Enter Title"
+                          @if (!empty($cmspage['title'])) value="{{ $cmspage['title'] }}" @endif>
+                  </div>
+                  ....
+      </form>
+
+    ```
+
+# CMS / Dynamic Pages (VII) | Delete CMS Page Functionality
+
+1. Update **cms_pages.blade.php** file :-
+   First of all, we will update the <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a> file to **add delete** CMS Page link with every CMS Page listing.
+    ```
+     <a href="{{ url('admin/add-delete-cms-page/' . $page['id']) }}"><i class="fas fa-trash"></i></a>
+    ```
+
+2) Create Route :-
+   Now we will create GET route with parameter page id to delete cms page in web.php file like below :-
+
+    > Route::get('delete-cms-page/{id}','CmsController@destroy');
+
+3) Update destroy function :-
+   Now we will update **destroy** function in **CmsController** that automatically gets created earlier as the part of the CRUD operations by generating Resource Controller. Now we will write the query to delete the cms page with page id that we will get as parameter. After deleting the cms page, we will return to cms pages with success message.
+    ```
+        /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        //delete cms page
+        CmsPage::where('id', $id)->delete();
+        return redirect()->back()->with('success_message', 'Delete successfully' );
+    }
+    ```
+
+# 23 Make Admin Panel in Laravel 10 | Integrate SweetAlert2 jQuery Alert
+
+1. Simple JavaScript Alert
+
+    1. Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
+        ```
+        {{-- simple aler --}}
+            <a  href="{{ url('admin/delete-cms-page/' . $page['id']) }}" class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
+                <i class="fas fa-trash"></i></a>
+        ```
+    2. Update <a href='public\admin\js\custom.js'>custom.js</a>
+
+        ```
+        $(document).on("click", ".confirmDelete", function (e) {
+         var name = $(this).attr("name");
+
+            if (confirm("Are you sure you want to delete this " + name + "?")) {
+         return true;
+             }
+            return false;
+        });
+
+        ```
+
+2. SweetAlert 2 Javascript Library
+   <a href='https://sweetalert2.github.io/'>SweetAlert 2 Javascript Library</a>
+
+    1. install sweetalert2
+        > npm install sweetalert2
+    2. update <a href='resources\views\admin\layout\layout.blade.php'>SweetAlert 2 Javascript Library</a>
+        > <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    3. Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a>
+
+        ```
+        {{-- simple aler --}}
+           <a  href="javascript:void(0)"  <?php /*href="{{ url('admin/delete-cms-page/' . $page['id']) }}"*/?> class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
+                <i class="fas fa-trash"></i></a>
+        ```
+
+    4. Update <a href='public\admin\js\custom.js'>custom.js</a>
+
+        ```
+        $(document).on("click", ".confirmDelete", function (e) {
+            var record = $(this).attr("record");
+            var recordid = $(this).attr("recordid");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success",
+                    });
+                    window.location.href='/admin/delete-'+record+'/'+recordid;
+                }
+            });
+        });
+
+
+        ```
+
+# 24 Remember me Laravel functionality| Remember me functionality in Login Page
+
+1. Update <a href='resources\views\admin\login.blade.php'>login.blade.php</a> file :-
+   First of all, we will add a "**Remember Me**" checkbox at the admin login form with the **name "remember"**.
+
+2)  Update <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController.php</a>login function:-
+    Now we will update the login function at AdminController and will set cookies both for email and password when the remember post data is not empty means when the user checks at Remember Me checkbox at the admin login form.
+
+    ```
+    if (Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
+                // *TODO remember admin email and password with cookie
+                //   ? - kiểm tra có được thiết lập không và không được để trống
+                if (isset ($data['remember']) && !empty ($data['remember'])) {
+                    // * thiết lập lưu cookie và thiết lập thời gian hết hạn
+                    setcookie('email', $data['email'], time() + 3600);
+                    setcookie('password', $data['password'], time() + 3600);
+                } else {
+                    // * người dùng không chọn remember me
+
+                    setcookie('email', '');
+                    setcookie('password', '');
+                }
+                # đi đến trang dashboard
+                return redirect('admin/dashboard');
+            } else {
+                // thông báo lỗi nếu sai
+                return redirect()->back()->with('error_message', 'Invalid email or password');
+            }
+    ```
+
+3)  Update <a href='resources\views\admin\login.blade.php'>login.blade.php</a> file :-
+    Now we will update the **login.blade.php** file once again to show the username and password that we have stored in cookies when the user checks the "Remember Me" checkbox.
+
+        ```
+           {{-- ! hiển thị dữ liệu từ cookie  --}}
+             @if (isset($_COOKIE['email'])) value="{{ $_COOKIE['email'] }}" @endif
+
+            {{-- ! hiển thị dữ liệu từ cookie  --}}
+            @if (isset($_COOKIE['password'])) value="{{ $_COOKIE['password'] }}" @endif
+
+        {{-- ! hiển thị dữ liệu từ cookie remember me --}}
+            @if (isset($\_COOKIE['email'])) checked @endif
+
+    ```
+
+    ```
+
+# 25 Roles and Permissions in Laravel 10 (I) | Display Subadmins in Admin Panel
+
+1. Update <a href='resources\views\admin\layout\sidebar.blade.php'>sidebar.blade.php</a> file :-
+   Now, update **sidebar.blade.php** file to show Add/View Sub-Admins links at admin sidebar.
+
+    ```
+         {{-- ! Sub Admins --}}
+
+                @if (Session::get('page') == 'subadmins')
+                    @php
+                        $active = 'active';
+                    @endphp
+                @else
+                    @php
+                        $active = '';
+                    @endphp
+                @endif
+                <li class="nav-item">
+                    <a href="{{ url('admin/subadmins') }}" class="nav-link {{ $active }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Subadmins
+                        </p>
+                    </a>
+                </li>
+                {{-- ! Sub Admins --}}
+    ```
+
+2) Create Route <a href='routes\web.php'>web.php</a>
+   Now create GET Route for displaying subadmins in admin panel.
+    > Route::get('subadmins', 'AdminController@subadmins');
+3) Create subadmins function :-
+   Now we will create subadmins function in <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> where we will add query to select all subadmins from admins table to show in **subadmins.blade.php** file that we will create in our next step.
+
+    ```
+      /**
+     * show sub admins
+     */
+    public function subadmins(){
+        Session::put('page', 'subadmins');
+
+        // * lấy tất cả các sub admins với loại subadmin
+        $subadmins = Admin::where('type','subadmin')->get();
+        //  echo "<pre>";
+        //     print_r($subadmins);
+        //     die;
+        return view('admin.subadmins.subadmins')->with(compact('subadmins'));
+    }
+    ```
+
+4) Create <a href='resources\views\admin\subadmins\subadmins.blade.php'>subadmins.blade.php</a> file :-
+   Now create subadmins folder under \resources\views\admin\ and then create **subadmins.blade.php** file under that subadmins folder.

@@ -1,14 +1,16 @@
-git checkout -b LARAVEL-CMS-Dynamic-Pages-V-Add-CMS-Page-Functionality
+git checkout -b LARAVEL-25-Roles-and-Permissions-in-Laravel-10-I-Display-Subadmins-in-Admin-Panel
 git add .
-git commit -m "LARAVEL-CMS-Dynamic-Pages-V-Add-CMS-Page-Functionality"
-git push -u origin LARAVEL-CMS-Dynamic-Pages-V-Add-CMS-Page-Functionality
+git commit -m "LARAVEL-25-Roles-and-Permissions-in-Laravel-10-I-Display-Subadmins-in-Admin-Panel"
+git push -u origin LARAVEL-25-Roles-and-Permissions-in-Laravel-10-I-Display-Subadmins-in-Admin-Panel
 
 
 
 <!-- database -->
-http://localhost/phpmyadmin/
+http://localhost/phpmyadmin/index.php?route=/database/structure&db=project
 # url dashboard
 http://127.0.0.1:8000/admin/dashboard
 
+
+<a href=''></a>
 
 
