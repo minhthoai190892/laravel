@@ -211,11 +211,12 @@ class AdminController extends Controller
     /**
      * show sub admins 
      */
-    public function subadmins(){
+    public function subadmins()
+    {
         Session::put('page', 'subadmins');
 
         // * lấy tất cả các sub admins với loại subadmin
-        $subadmins = Admin::where('type','subadmin')->get();
+        $subadmins = Admin::where('type', 'subadmin')->get();
         //  echo "<pre>";
         //     print_r($subadmins);
         //     die;
@@ -248,7 +249,7 @@ class AdminController extends Controller
             return response()->json(['status' => $status, 'subadmin_id' => $data['subadmin_id']]);
         }
     }
-    
+
     /**
      * Remove the specified resource from storage.
      */
@@ -256,7 +257,33 @@ class AdminController extends Controller
     {
         //delete cms page
         Admin::where('id', $id)->delete();
-        return redirect()->back()->with('success_message', 'Delete successfully' );
+        return redirect()->back()->with('success_message', 'Delete successfully');
     }
+     /**
+     * Add / Edit Subadmin
+     */
+    public function addEditSubadmin(Request $request, $id = null)
+    {
+        // ? kiểm tra xem id là thêm hay là update
+        // ! id =='' là thêm id !='' là update 
+        if ($id == '') {
+            # code...
+            $title = 'Add Subadmin';
+            $subadmindata = new Admin;
+            $message = 'Subadmin added successfully';
+        } else {
+            $title = 'Update Subadmin';
+            $subadmindata = Admin::find($id);
 
+            $message = 'Subadmin updated successfully';
+        }
+        if ($request->isMethod('POST')) {
+            # code...
+            $data = $request->all();
+              print_r($data);
+            die;
+
+        }
+        return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
+    }
 }

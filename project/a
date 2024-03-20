@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-26-Roles-and-Permissions-in-Laravel-II-Active/Inactive/Delete-Sub-admins
+git checkout -b LARAVEL-27-Roles-and-Permissions-in-LaravelIII-Add/Edit-Sub-Admin-in-Admin-Panel
 git add .
-git commit -m "LARAVEL-26-Roles-and-Permissions-in-Laravel-II-Active/Inactive/Delete-Sub-admins"
-git push -u origin LARAVEL-26-Roles-and-Permissions-in-Laravel-II-Active/Inactive/Delete-Sub-admins
+git commit -m "LARAVEL-27-Roles-and-Permissions-in-LaravelIII-Add/Edit-Sub-Admin-in-Admin-Panel"
+git push -u origin LARAVEL-27-Roles-and-Permissions-in-LaravelIII-Add/Edit-Sub-Admin-in-Admin-Panel
 
 
 

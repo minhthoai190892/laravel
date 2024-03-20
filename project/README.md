@@ -1453,6 +1453,7 @@ cần phải thiết lập lại **admin model**
 
 5) Create **deleteSubadmin** function :-
    Create **deleteSubadmin** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> to delete sub-admin.
+
     ```
       /**
      * Remove the specified resource from storage.
@@ -1465,3 +1466,46 @@ cần phải thiết lập lại **admin model**
     }
 
     ```
+
+# 27 Roles and Permissions in Laravel (III) | Add/Edit Sub Admin in Admin Panel
+
+1. Create Route :-
+   First of all, create GET/POST route for adding/editing admin/subadmin in web.php file :-
+    > Route::match(['get','post'],'add-edit-subadmin/{id?}','AdminController@addEditSubadmin');
+
+2) Create **addEditSubadmin** function :-
+   Now create **addEditSubadmin** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> which will work for both add and edit. When subadmin id return then it will work for edit otherwise add subadmin.
+
+    ```
+      /**
+     * Add / Edit Subadmin
+     */
+    public function addEditSubadmin(Request $request, $id = null)
+    {
+        // ? kiểm tra xem id là thêm hay là update
+        // ! id =='' là thêm id !='' là update
+        if ($id == '') {
+            # code...
+            $title = 'Add Subadmin';
+            $subadmindata = new Admin;
+            $message = 'Subadmin added successfully';
+        } else {
+            $title = 'Update Subadmin';
+            $subadmindata = Admin::find($id);
+
+            $message = 'Subadmin updated successfully';
+        }
+        if ($request->isMethod('POST')) {
+            # code...
+            $data = $request->all();
+              print_r($data);
+            die;
+
+        }
+        return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
+    }
+    ```
+
+3) Create <a href='resources\views\admin\subadmins\add_edit_subadmin.blade.php'>add_edit_subadmin.blade.php</a> file :-
+   Now create **add_edit_subadmin.blade.php** file under \resources\views\admin\subadmins\ folder in which we will display add/edit subadmin form with subadmin name, email, password, mobile and image.
+# 28 Roles and Permissions in Laravel (IV) | Add/Edit Sub Admin in Admin Panel

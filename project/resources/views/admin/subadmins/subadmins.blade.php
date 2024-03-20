@@ -42,7 +42,7 @@
                               <div class="card-header">
                                   <h3 class="card-title">Sub Admins</h3>
                                   <a style="max-width: 150px;float: right;display: inline-block;"
-                                      class="btn btn-block btn-primary" href="{{ url('admin/add-edit-cms-subadmin') }}"
+                                      class="btn btn-block btn-primary" href="{{ url('admin/add-edit-subadmin') }}"
                                       target="_blank" rel="noopener noreferrer">Add Sub Admins</a>
 
                               </div>
