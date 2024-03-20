@@ -259,7 +259,7 @@ class AdminController extends Controller
         Admin::where('id', $id)->delete();
         return redirect()->back()->with('success_message', 'Delete successfully');
     }
-     /**
+    /**
      * Add / Edit Subadmin
      */
     public function addEditSubadmin(Request $request, $id = null)
@@ -267,22 +267,104 @@ class AdminController extends Controller
         // ? kiểm tra xem id là thêm hay là update
         // ! id =='' là thêm id !='' là update 
         if ($id == '') {
-            # code...
+            // ! Add Subadmin
             $title = 'Add Subadmin';
             $subadmindata = new Admin;
+            $subadmindata->status = 1;
+
             $message = 'Subadmin added successfully';
         } else {
+              // ! Update Subadmin
             $title = 'Update Subadmin';
             $subadmindata = Admin::find($id);
-
             $message = 'Subadmin updated successfully';
         }
+        // ! kiểm tra phương thức
         if ($request->isMethod('POST')) {
-            # code...
+            // * lấy tất cả yêu cầu từ người dùng
             $data = $request->all();
-              print_r($data);
-            die;
+            //   print_r($data);
+            // die;
+            // ! kiểm tra id có tồn tại không
+            if ($id == '') {
+                // ? id không có
+                // * so sánh email với email người dùng nhập
+                $subadminCount = Admin::where('email', $data['email'])->count();
+                // ! kiểm ra $subadminCount có >0 
+                if ($subadminCount > 0) {
+                    // ? >0 email đã tồn tại
+                    return redirect()->back()->with('error_message', 'Subadmin already exists');
+                }
+                // * so sánh name với name người dùng nhập
 
+                $subadminNameCount = Admin::where('name', $data['name'])->count();
+                // ! kiểm ra $subadminNameCount có >0 
+                if ($subadminNameCount > 0) {
+                    // ? >0 name đã tồn tại
+                    return redirect()->back()->with('error_message', 'Subadmin name already exists');
+                }
+            }
+            // !  Subadmin validation
+            $rules = [
+                // 'admin_name' => 'required|max:255',
+                // regex: chỉ có alpha và white space
+                'name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+                'mobile' => 'required|numeric|digits:10',
+                'image' => 'image',
+            ];
+            $customMessages = [
+                'name.required' => 'Name is required',
+                'name.regex' => 'Valid name is required',
+                'name.max' => 'Valid name is required',
+                'mobile.required' => 'Mobile is required',
+                'mobile.numeric' => 'Valid Mobile is required',
+                'mobile.digits' => 'Valid Mobile is required',
+                'image.image' => 'Valid Image is required',
+            ];
+            $this->validate($request, $rules, $customMessages);
+            //! update admin image
+            //? kiểm tra file hình ảnh
+            if ($request->hasFile('image')) {
+                $image_tmp = $request->file('image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/images/photos/' . $imageName;
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                }
+            } else if (
+                !empty ($data['current_image'])
+            ) {
+                # code...
+                $imageName = $data['current_image'];
+            } else {
+                # code...
+                $imageName = '';
+            }
+            // ? set file
+            $subadmindata->image = $imageName;
+            $subadmindata->name = $data['name'];
+            $subadmindata->mobile = $data['mobile'];
+            // ! kiểm tra người dùng có tồn tại không 
+            if ($id == '') {
+                // ? chưa tồn tại
+                // * ta thêm dữ liệu vào
+                $subadmindata->email = $data['email'];
+                $subadmindata->type = 'subadmin';
+            }
+            // ! kiểm tra mật khẩu có được nhập không
+            if ($data['password'] != '') {
+                // ? mật khẩu được nhập
+                // * ta thêm dữ liệu vào và mã hóa mật khẩu
+                $subadmindata->password = bcrypt($data['password']);
+            }
+            $subadmindata->status = $data['status'];
+            $subadmindata->save();
+            return redirect('admin/subadmins')->with('success_message', $message);
         }
         return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
     }

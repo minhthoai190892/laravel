@@ -29,6 +29,7 @@
 
                           <!-- /.card -->
                           {{-- Show message --}}
+                          
                           @if (Session::has('success_message'))
                               <div class="alert alert-success alert-dismissible fade show" role="alert">
                                   <strong>Success:</strong> {{ Session::get('success_message') }}
@@ -43,7 +44,7 @@
                                   <h3 class="card-title">Sub Admins</h3>
                                   <a style="max-width: 150px;float: right;display: inline-block;"
                                       class="btn btn-block btn-primary" href="{{ url('admin/add-edit-subadmin') }}"
-                                      target="_blank" rel="noopener noreferrer">Add Sub Admins</a>
+                                      rel="noopener noreferrer">Add Sub Admins</a>
 
                               </div>
                               <!-- /.card-header -->
@@ -74,19 +75,24 @@
                                                   <td>
                                                       @if ($subadmin->status == 1)
                                                           <a href="javascript:void(0)" class="updateSubadminStatus"
-                                                              id="subadmin-{{$subadmin->id}}" subadmin_id={{$subadmin->id}}><i
-                                                                  class="fas fa-toggle-on" status="Active"></i></a>
+                                                              id="subadmin-{{ $subadmin->id }}"
+                                                              subadmin_id={{ $subadmin->id }}><i class="fas fa-toggle-on"
+                                                                  status="Active"></i></a>
                                                       @else
                                                           <a href="javascript:void(0)" class="updateSubadminStatus"
-                                                              id="subadmin-{{$subadmin->id}}" subadmin_id={{$subadmin->id}}
-                                                              style="color: grey"><i class="fas fa-toggle-off"
-                                                                  status="Inactive"></i></a>
+                                                              id="subadmin-{{ $subadmin->id }}"
+                                                              subadmin_id={{ $subadmin->id }} style="color: grey"><i
+                                                                  class="fas fa-toggle-off" status="Inactive"></i></a>
                                                       @endif
+                                                      &nbsp;
+                                                      &nbsp;
+                                                      <a href="{{ url('admin/add-edit-subadmin/' . $subadmin['id']) }}"> <i
+                                                        class="fas fa-edit"></i></a>
                                                       &nbsp;
                                                       &nbsp;
                                                       <a href="javascript:void(0)" <?php /*href="{{ url('admin/delete-cms-page/' . $subadmin->id) }}"*/?> class="confirmDelete"
                                                           name='Subadmin' title="Delete Subadmin" record='subadmin'
-                                                          recordid={{$subadmin->id}}>
+                                                          recordid={{ $subadmin->id }}>
                                                           <i class="fas fa-trash"></i></a>
                                                   </td>
                                               </tr>

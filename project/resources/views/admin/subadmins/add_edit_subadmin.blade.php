@@ -53,6 +53,16 @@
 
                                   {{-- Show message --}}
 
+                                  @if (Session::has('error_message'))
+                                      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                          <strong>Error:</strong> {{ Session::get('error_message') }}
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                  @endif
+                                  {{-- Show message --}}
+
                                   <form name="subadminForm" id="subadminForm"
                                       @if (empty($subadmindata['id'])) action="{{ url('admin/add-edit-subadmin') }}" 
                                   @else
@@ -64,7 +74,10 @@
                                               <label for="name">Name*</label>
                                               <input type="text" class="form-control" id="name" name="name"
                                                   placeholder="Enter Name"
-                                                  @if (!empty($subadmindata['name'])) value="{{ $subadmindata['name'] }}" @endif>
+                                                  @if (!empty($subadmindata['name'])) 
+                                                  value="{{ $subadmindata['name'] }}" 
+                                                  @else 
+                                                  value="{{ old('name') }}" @endif>
                                           </div>
                                           <div class="form-group col-md-6">
                                               <label for="mobile">Mobile*</label>
@@ -73,15 +86,17 @@
                                           </div>
 
 
-                                        
+
                                           <div class="form-group col-md-6">
                                               <label for="email">Email</label>
                                               <input type="email" class="form-control"
                                                   @if ($subadmindata['email'] != '') disabled=''
                                             @else
                                                 required='' @endif
-                                                  id="email"name="email"
-                                                  placeholder="Enter Email"@if (!empty($subadmindata['email'])) value="{{ $subadmindata['email'] }}" @endif>
+                                                  id="email"name="email" placeholder="Enter Email"
+                                                  @if (!empty($subadmindata['email'])) value="{{ $subadmindata['email'] }}"
+                                                  @else 
+                                                      value="{{ old('name') }}" @endif>
                                           </div>
 
                                           <div class="form-group col-md-6">
@@ -91,8 +106,7 @@
                                           </div>
                                           <div class="form-group col-md-6">
                                               <label for="image">Photo</label>
-                                              <input type="file" class="form-control" id="image"
-                                                  name="image">
+                                              <input type="file" class="form-control" id="image" name="image">
                                               @if (!empty($subadmindata['image']))
                                                   <a href="{{ url('admin/images/photos/' . $subadmindata['image']) }}"
                                                       target="_blank" rel="noopener noreferrer">view</a>
@@ -102,7 +116,7 @@
                                           </div>
                                       </div>
                                       <!-- /.card-body -->
-
+                                      <input type="hidden" name="status" value="{{ $subadmindata['status'] }}">
                                       <div>
                                           <button type="submit" class="btn btn-primary">Submit</button>
                                       </div>
