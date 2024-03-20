@@ -1366,3 +1366,102 @@ cần phải thiết lập lại **admin model**
 
 4) Create <a href='resources\views\admin\subadmins\subadmins.blade.php'>subadmins.blade.php</a> file :-
    Now create subadmins folder under \resources\views\admin\ and then create **subadmins.blade.php** file under that subadmins folder.
+
+# 26 Roles and Permissions in Laravel (II) | Active/Inactive/Delete Sub admins
+
+1. Update <a href='public\admin\js\custom.js'>custom.js</a> file :-
+   Add jQuery script for active/inactive status for sub admins in custom.js file.
+
+    ```
+     $(document).on("click", ".updateSubadminStatus", function () {
+     // <a href="javascript:void(0)" class="updateSubadminStatus">  <i
+     // class="fas fa-toggle-on" status="Active"></i> </a>
+     // parent:  $(this) -> <a>
+     // children: <i>
+     // attr: status="Active"
+     var status = $(this).children("i").attr("status");
+     var subadmin_id = $(this).attr("subadmin_id");
+     // alert( subadmin);
+     $.ajax({
+         headers: {
+             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+         },
+         type: "POST",
+         url: "/admin/update-subadmin-status",
+         data: { status: status, subadmin_id: subadmin_id },
+         success: function (resp) {
+             // kiểm tra kết quả json trả về
+             if (resp["status"] == 0) {
+                 $("#subadmin-" + subadmin_id).html(
+                     '<i class="fas fa-toggle-off" style="color: grey" status="Inactive"></i>'
+                 );
+             } else if (resp["status"] == 1) {
+                 $("#subadmin-" + subadmin_id).html(
+                     '<i class="fas fa-toggle-on" style="color: #007bff" status="Active"></i>'
+                 );
+             }
+         },
+         error: function () {
+             alert("Error");
+         },
+     });
+    });
+
+    ```
+
+2) Create Route :-
+   Now create post route for active/inactive status for sub-admins in web.php file :-
+    > Route::post('update-subadmin-status','AdminController@updateSubadminStatus');
+3) Create **updateSubadminStatus** function :-
+   Now create **updateSubadminStatus** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> to update active/inactive status for sub admins.
+   Now we will work on delete functionality for subadmins.
+
+    ```
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateSubadminStatus(Request $request)
+    {
+        //kiểm tra yêu cầu từ ajax
+        if ($request->ajax()) {
+            # lấy tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // echo "<pre>";print_r($data);die;
+            // Kiểm tra và thay đổi trạng thái của status
+            if ($data['status'] == "Active") {
+                # code...
+                $status = 0;
+            } else {
+                $status = 1;
+
+            }
+            // cập nhập dữ liệu trong csdl
+            // ! $data['subadmin_id'] attribute của trang php
+            Admin::where('id', $data['subadmin_id'])->update(['status' => $status]);
+            // trả về phản hồi json status and subadmin_id
+            return response()->json(['status' => $status, 'subadmin_id' => $data['subadmin_id']]);
+        }
+    }
+
+    ```
+
+4) Create Route :-
+   Create Get route for deleting subadmin in web.php file like below :-
+
+    > Route::get('delete-subadmin/{id}','AdminController@deleteSubadmin');
+
+5) Create **deleteSubadmin** function :-
+   Create **deleteSubadmin** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> to delete sub-admin.
+    ```
+      /**
+     * Remove the specified resource from storage.
+     */
+    public function deleteSubadminStatus($id)
+    {
+        //delete cms page
+        Admin::where('id', $id)->delete();
+        return redirect()->back()->with('success_message', 'Delete successfully' );
+    }
+
+    ```

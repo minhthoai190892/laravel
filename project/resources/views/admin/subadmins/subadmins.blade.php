@@ -70,8 +70,25 @@
                                                   <td>{{ $subadmin->type }}</td>
                                                   <td>{{ date('F j, Y,g:i a', strtotime($subadmin->created_ad)) }}</td>
 
-                                                  {{-- kiểm tra trạng thái --}}
-                                                
+                                                  {{-- ! kiểm tra trạng thái --}}
+                                                  <td>
+                                                      @if ($subadmin->status == 1)
+                                                          <a href="javascript:void(0)" class="updateSubadminStatus"
+                                                              id="subadmin-{{$subadmin->id}}" subadmin_id={{$subadmin->id}}><i
+                                                                  class="fas fa-toggle-on" status="Active"></i></a>
+                                                      @else
+                                                          <a href="javascript:void(0)" class="updateSubadminStatus"
+                                                              id="subadmin-{{$subadmin->id}}" subadmin_id={{$subadmin->id}}
+                                                              style="color: grey"><i class="fas fa-toggle-off"
+                                                                  status="Inactive"></i></a>
+                                                      @endif
+                                                      &nbsp;
+                                                      &nbsp;
+                                                      <a href="javascript:void(0)" <?php /*href="{{ url('admin/delete-cms-page/' . $subadmin->id) }}"*/?> class="confirmDelete"
+                                                          name='Subadmin' title="Delete Subadmin" record='subadmin'
+                                                          recordid={{$subadmin->id}}>
+                                                          <i class="fas fa-trash"></i></a>
+                                                  </td>
                                               </tr>
                                           @endforeach
 
