@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-29-Roles-and-Permissions-in-LaravelV-Set-Permissions-for-Sub-Admins
+git checkout -b LARAVEL-30-Roles-and-Permissions-in-Laravel-VI-Update-Permissions-for-Subadmins
 git add .
-git commit -m "LARAVEL-29-Roles-and-Permissions-in-LaravelV-Set-Permissions-for-Sub-Admins"
-git push -u origin LARAVEL-29-Roles-and-Permissions-in-LaravelV-Set-Permissions-for-Sub-Admins
+git commit -m "LARAVEL-30-Roles-and-Permissions-in-Laravel-VI-Update-Permissions-for-Subadmins"
+git push -u origin LARAVEL-30-Roles-and-Permissions-in-Laravel-VI-Update-Permissions-for-Subadmins
 
 
 

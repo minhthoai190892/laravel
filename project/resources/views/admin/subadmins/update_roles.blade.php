@@ -53,9 +53,9 @@
 
                                   {{-- Show message --}}
 
-                                  @if (Session::has('error_message'))
-                                      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                          <strong>Error:</strong> {{ Session::get('error_message') }}
+                                  @if (Session::has('success_message'))
+                                      <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                          <strong>Success:</strong> {{ Session::get('success_message') }}
                                           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                               <span aria-hidden="true">&times;</span>
                                           </button>
@@ -66,7 +66,7 @@
                                   <form name="subadminForm" id="subadminForm" action="{{ url('admin/update-role/' . $id) }}"
                                       method="POST">
                                       @csrf
-                                      <input type="hidden" name="subadmin_id" value="{{$id}}">
+                                      <input type="hidden" name="subadmin_id" value="{{ $id }}">
                                       <div class="card-body">
                                           {{-- <div class="form-group col-md-6">
                                               <label for="email">Email</label>
@@ -79,13 +79,64 @@
                                                   @else 
                                                       value="{{ old('name') }}" @endif>
                                           </div> --}}
+                                          {{-- ! kiểm tra roles có rỗng không --}}
+                                          @if (!empty($subadminRoles))
+                                          {{-- ! duyệt mảng để lấy các roles đã được thiết lập --}}
+                                              @foreach ($subadminRoles as $role)
+                                              {{-- ! kiểm tra loại module --}}
+                                                  @if ($role['module'] == 'cms_pages')
+                                                  {{-- ! kiểm tra có chọn role view hay không --}}
+                                                      @if ($role['view_access'] == 1)
+
+                                                      {{-- ! có thì thêm attribute 'checked' --}}
+                                                          @php
+                                                              $viewCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                      {{-- ! không có để '' --}}
+                                                          @php
+                                                              $viewCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                      @if ($role['edit_access'] == 1)
+                                                          @php
+                                                              $editCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                          @php
+                                                              $editCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                      @if ($role['full_access'] == 1)
+                                                          @php
+                                                              $fullCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                          @php
+                                                              $fullCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                  @endif
+                                              @endforeach
+                                          @endif
                                           <div class="form-group col-md-6">
                                               <label for="cms_page">CMS Pages:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                              <input type="checkbox" id="cms_page" value="1" name="cms_page[view]">View Access
+                                              <input type="checkbox" id="cms_page" value="1"
+                                              {{-- ! kiểm tra view có được thiết lập không --}}
+                                               @if (isset( $viewCMSPages))
+                                              {{$viewCMSPages}}
+                                              @endif
+                                                  name="cms_page[view]">View Access
                                               &nbsp;&nbsp;&nbsp;&nbsp;
-                                              <input type="checkbox" id="cms_page" value="1" name="cms_page[edit]">View/Edit Access
+                                              <input type="checkbox" id="cms_page" value="1"
+                                                  name="cms_page[edit]" @if (isset( $editCMSPages))
+                                                  {{$editCMSPages}}
+                                                  @endif>View/Edit Access
                                               &nbsp;&nbsp;&nbsp;&nbsp;
-                                              <input type="checkbox" id="cms_page" value="1" name="cms_page[full]">Full Access
+                                              <input type="checkbox" id="cms_page" value="1"
+                                                  name="cms_page[full]"  @if (isset( $fullCMSPages))
+                                                  {{$fullCMSPages}}
+                                                  @endif>Full Access
                                               &nbsp;&nbsp;&nbsp;&nbsp;
 
                                           </div>

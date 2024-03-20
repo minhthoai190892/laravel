@@ -1693,4 +1693,155 @@ cần phải thiết lập lại **admin model**
 
 6) Create **update_roles.blade.php** file :-
    Now create **update_roles.blade.php** file under \resources\views\admin\subadmins\ folder in which we will add cms pages add/edit/full access as this is the only module we have created so far.
+7) Update updateRole function :-
+   Now we will update updateRole function to get the posted data and update view/edit/full access for categories, products, coupons and other modules for admins and subadmins.
+# 30 Roles and Permissions in Laravel (VI) | Update Permissions for Subadmins
+1) update updateRole method in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a>
+    ```
+    public function updateRole($id, Request $request)
+    {
+        $title = 'Update Subadmin Roles/Persmission';
+        if ($request->isMethod('post')) {
+            # code...
+            $data = $request->all();
+            //  echo "<pre>";
+            // print_r($data);
+            // die;
+            // ! delete all earlier roles for Subadmin
+            AdminsRole::where('subadmin_id', $id)->delete();
+            // ! add new roles for Subadmin
+            if (isset ($data['cms_page']['view'])) {
+                $cms_pages_view = $data['cms_page']['view'];
+            } else {
+                $cms_pages_view = 0;
+            }
+            if (isset ($data['cms_page']['edit'])) {
+                $cms_pages_edit = $data['cms_page']['edit'];
+            } else {
+                $cms_pages_edit = 0;
+            }
+            if (isset ($data['cms_page']['full'])) {
+                $cms_pages_full = $data['cms_page']['full'];
+            } else {
+                $cms_pages_full = 0;
+            }
+            $roles = new AdminsRole;
+            $roles->subadmin_id=$id;
+            $roles->module='cms_pages';
+            $roles->view_access= $cms_pages_view;
+            $roles->edit_access=$cms_pages_edit;
+            $roles->full_access=$cms_pages_full;
+            $roles->save();
+            $message = 'Subadmin Roles updated successfully';
 
+            return redirect()->back()->with('success_message', $message);
+            
+        }
+        // ! lấy dữ liệu với "subadmin_id"  sau đó chuyển sang mảng
+        $subadminRoles = AdminsRole::where('subadmin_id',$id)->get()->toArray();
+        // dd($subadminRoles);
+        return view('admin.subadmins.update_roles')->with(compact('title', 'id','subadminRoles'));
+
+    }
+    ```
+2) update  <a href='resources\views\admin\subadmins\update_roles.blade.php'>update_roles.blade.php</a>
+    ```
+        {{-- Show message --}}
+
+                                  @if (Session::has('success_message'))
+                                      <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                          <strong>Success:</strong> {{ Session::get('success_message') }}
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                  @endif
+                                  {{-- Show message --}}
+
+                                  <form name="subadminForm" id="subadminForm" action="{{ url('admin/update-role/' . $id) }}"
+                                      method="POST">
+                                      @csrf
+                                      <input type="hidden" name="subadmin_id" value="{{ $id }}">
+                                      <div class="card-body">
+                                          {{-- <div class="form-group col-md-6">
+                                              <label for="email">Email</label>
+                                              <input type="email" class="form-control"
+                                                  @if ($subadmindata['email'] != '') disabled=''
+                                            @else
+                                                required='' @endif
+                                                  id="email"name="email" placeholder="Enter Email"
+                                                  @if (!empty($subadmindata['email'])) value="{{ $subadmindata['email'] }}"
+                                                  @else 
+                                                      value="{{ old('name') }}" @endif>
+                                          </div> --}}
+                                          {{-- ! kiểm tra roles có rỗng không --}}
+                                          @if (!empty($subadminRoles))
+                                          {{-- ! duyệt mảng để lấy các roles đã được thiết lập --}}
+                                              @foreach ($subadminRoles as $role)
+                                              {{-- ! kiểm tra loại module --}}
+                                                  @if ($role['module'] == 'cms_pages')
+                                                  {{-- ! kiểm tra có chọn role view hay không --}}
+                                                      @if ($role['view_access'] == 1)
+
+                                                      {{-- ! có thì thêm attribute 'checked' --}}
+                                                          @php
+                                                              $viewCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                      {{-- ! không có để '' --}}
+                                                          @php
+                                                              $viewCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                      @if ($role['edit_access'] == 1)
+                                                          @php
+                                                              $editCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                          @php
+                                                              $editCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                      @if ($role['full_access'] == 1)
+                                                          @php
+                                                              $fullCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                          @php
+                                                              $fullCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                  @endif
+                                              @endforeach
+                                          @endif
+                                          <div class="form-group col-md-6">
+                                              <label for="cms_page">CMS Pages:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                              <input type="checkbox" id="cms_page" value="1"
+                                              {{-- ! kiểm tra view có được thiết lập không --}}
+                                               @if (isset( $viewCMSPages))
+                                              {{$viewCMSPages}}
+                                              @endif
+                                                  name="cms_page[view]">View Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                              <input type="checkbox" id="cms_page" value="1"
+                                                  name="cms_page[edit]" @if (isset( $editCMSPages))
+                                                  {{$editCMSPages}}
+                                                  @endif>View/Edit Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                              <input type="checkbox" id="cms_page" value="1"
+                                                  name="cms_page[full]"  @if (isset( $fullCMSPages))
+                                                  {{$fullCMSPages}}
+                                                  @endif>Full Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                          </div>
+                                      </div>
+                                      <!-- /.card-body -->
+                                      {{-- <input type="hidden" name="status" value="{{ $subadmindata['status'] }}"> --}}
+                                      <div>
+                                          <button type="submit" class="btn btn-primary">Submit</button>
+                                      </div>
+                                  </form>
+
+    ```
+    
