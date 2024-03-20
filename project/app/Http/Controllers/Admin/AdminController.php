@@ -311,6 +311,8 @@ class AdminController extends Controller
                 'name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
                 'mobile' => 'required|numeric|digits:10',
                 'image' => 'image',
+                'password' => 'required',
+
             ];
             $customMessages = [
                 'name.required' => 'Name is required',
@@ -320,6 +322,8 @@ class AdminController extends Controller
                 'mobile.numeric' => 'Valid Mobile is required',
                 'mobile.digits' => 'Valid Mobile is required',
                 'image.image' => 'Valid Image is required',
+                'password.required' => 'password is required',
+
             ];
             $this->validate($request, $rules, $customMessages);
             //! update admin image
@@ -367,5 +371,17 @@ class AdminController extends Controller
             return redirect('admin/subadmins')->with('success_message', $message);
         }
         return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
+    }
+    public function updateRole($id,Request $request){
+        $title= 'Update Subadmin Roles/Persmission';
+        if ($request->isMethod('post')) {
+            # code...
+            $data = $request->all();
+             echo "<pre>";
+            print_r($data);
+            die;
+        }
+        return view('admin.subadmins.update_roles')->with(compact('title','id'));
+
     }
 }

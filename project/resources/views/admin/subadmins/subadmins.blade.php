@@ -29,7 +29,7 @@
 
                           <!-- /.card -->
                           {{-- Show message --}}
-                          
+
                           @if (Session::has('success_message'))
                               <div class="alert alert-success alert-dismissible fade show" role="alert">
                                   <strong>Success:</strong> {{ Session::get('success_message') }}
@@ -87,13 +87,17 @@
                                                       &nbsp;
                                                       &nbsp;
                                                       <a href="{{ url('admin/add-edit-subadmin/' . $subadmin['id']) }}"> <i
-                                                        class="fas fa-edit"></i></a>
+                                                              class="fas fa-edit"></i></a>
                                                       &nbsp;
                                                       &nbsp;
                                                       <a href="javascript:void(0)" <?php /*href="{{ url('admin/delete-cms-page/' . $subadmin->id) }}"*/?> class="confirmDelete"
                                                           name='Subadmin' title="Delete Subadmin" record='subadmin'
                                                           recordid={{ $subadmin->id }}>
                                                           <i class="fas fa-trash"></i></a>
+                                                      &nbsp;
+                                                      &nbsp;
+                                                      <a href="{{ url('admin/update-role/' . $subadmin['id']) }}"> <i
+                                                              class="fas fa-unlock"></i></a>
                                                   </td>
                                               </tr>
                                           @endforeach

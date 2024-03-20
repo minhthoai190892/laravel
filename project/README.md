@@ -1631,3 +1631,66 @@ cần phải thiết lập lại **admin model**
     ```
      <a href="{{ url('admin/add-edit-subadmin/' . $subadmin['id']) }}"> <i class="fas fa-edit"></i></a>
     ```
+
+# 29 Roles and Permissions in Laravel (V) | Set Permissions for Sub Admins
+
+1.  Create admins_roles table :-
+    1.1 Run below command to make migration file :-
+
+            > php artisan make:migration create_admins_roles_table
+
+            1.2 Update migration file to add columns in <a href='database\migrations\2024_03_20_130431_create_admins_roles_table.php'>admins_roles</a> table
+
+            ```
+                Schema::create('admins_roles', function (Blueprint $table) {
+                    $table->id();
+                    $table->integer('admin_id');
+                    $table->string('module');
+                    $table->string('view_access');
+                    $table->string('edit_access');
+                    $table->string('full_access');
+                    $table->timestamps();
+                });
+            ```
+
+        1.3 Run below command
+
+        > php artisan migrate
+
+        Now, admins_roles table has been created.
+
+2) Create **AdminRole** Model :-
+
+    Create **AdminRole** Model with below artisan command :-
+
+    > php artisan make:model AdminRole
+
+3) Update <a href='resources\views\admin\subadmins\subadmins.blade.php'>subadmins.blade.php</a> file :-
+   Add update-role link at subadmins page for setting the permission for subadmin.
+    ```
+      <a href="{{ url('admin/update-role/' . $subadmin['id']) }}"> <i  class="fas fa-unlock"></i></a>
+    ```
+4) Create Route :-
+   Now create GET/POST route for update roles/permissions for sub admins in web.php file :-
+    > Route::match(['get','post'],'/update-role/{id}','AdminController@updateRole');
+5) Create **updateRole** function :-
+   Now create **updateRole** function at <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a> return to **update_roles.blade.php** file that we will create in next step.
+
+    ```
+      public function updateRole($id,Request $request){
+        $title= 'Update Subadmin Roles/Persmission';
+        if ($request->isMethod('post')) {
+            # code...
+            $data = $request->all();
+             echo "<pre>";
+            print_r($data);
+            die;
+        }
+        return view('admin.subadmins.update_roles')->with(compact('title','id'));
+
+    }
+    ```
+
+6) Create **update_roles.blade.php** file :-
+   Now create **update_roles.blade.php** file under \resources\views\admin\subadmins\ folder in which we will add cms pages add/edit/full access as this is the only module we have created so far.
+

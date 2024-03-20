@@ -63,29 +63,12 @@
                                   @endif
                                   {{-- Show message --}}
 
-                                  <form name="subadminForm" id="subadminForm"
-                                      @if (empty($subadmindata['id'])) action="{{ url('admin/add-edit-subadmin') }}" 
-                                  @else
-                                  action="{{ url('admin/add-edit-subadmin/' . $subadmindata['id']) }}" @endif
-                                      method="POST" enctype="multipart/form-data">
+                                  <form name="subadminForm" id="subadminForm" action="{{ url('admin/update-role/' . $id) }}"
+                                      method="POST">
                                       @csrf
+                                      <input type="hidden" name="subadmin_id" value="{{$id}}">
                                       <div class="card-body">
-                                          <div class="form-group col-md-6">
-                                              <label for="name">Name*</label>
-                                              <input type="text" class="form-control" id="name" name="name"
-                                                  placeholder="Enter Name"
-                                                  @if (!empty($subadmindata['name'])) value="{{ $subadmindata['name'] }}" 
-                                                  @else 
-                                                  value="{{ old('name') }}" @endif>
-                                          </div>
-                                          <div class="form-group col-md-6">
-                                              <label for="mobile">Mobile*</label>
-                                              <input type="text" class="form-control" id="mobile"name="mobile"
-                                                  placeholder="Enter Subadmin Mobile"@if (!empty($subadmindata['mobile'])) value="{{ $subadmindata['mobile'] }}" @endif>
-                                          </div>
-
-
-                                          <div class="form-group col-md-6">
+                                          {{-- <div class="form-group col-md-6">
                                               <label for="email">Email</label>
                                               <input type="email" class="form-control"
                                                   @if ($subadmindata['email'] != '') disabled=''
@@ -95,26 +78,20 @@
                                                   @if (!empty($subadmindata['email'])) value="{{ $subadmindata['email'] }}"
                                                   @else 
                                                       value="{{ old('name') }}" @endif>
-                                          </div>
+                                          </div> --}}
+                                          <div class="form-group col-md-6">
+                                              <label for="cms_page">CMS Pages:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                              <input type="checkbox" id="cms_page" value="1" name="cms_page[view]">View Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                              <input type="checkbox" id="cms_page" value="1" name="cms_page[edit]">View/Edit Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                              <input type="checkbox" id="cms_page" value="1" name="cms_page[full]">Full Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                          <div class="form-group col-md-6">
-                                              <label for="password">Password</label>
-                                              <input type="text" class="form-control" id="password"name="password"
-                                                  placeholder="Enter Password">
-                                          </div>
-                                          <div class="form-group col-md-6">
-                                              <label for="image">Photo</label>
-                                              <input type="file" class="form-control" id="image" name="image">
-                                              @if (!empty($subadmindata['image']))
-                                                  <a href="{{ url('admin/images/photos/' . $subadmindata['image']) }}"
-                                                      target="_blank" rel="noopener noreferrer">view</a>
-                                                  <input type="hidden" name="current_image"
-                                                      value="{{ $subadmindata['image'] }}">
-                                              @endif
                                           </div>
                                       </div>
                                       <!-- /.card-body -->
-                                      <input type="hidden" name="status" value="{{ $subadmindata['status'] }}">
+                                      {{-- <input type="hidden" name="status" value="{{ $subadmindata['status'] }}"> --}}
                                       <div>
                                           <button type="submit" class="btn btn-primary">Submit</button>
                                       </div>

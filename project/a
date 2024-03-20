@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-28-Roles-and-Permissions-in-LaravelIV-Add/Edit-Sub-Admin-in-Admin-Panel
+git checkout -b LARAVEL-29-Roles-and-Permissions-in-LaravelV-Set-Permissions-for-Sub-Admins
 git add .
-git commit -m "LARAVEL-28-Roles-and-Permissions-in-LaravelIV-Add/Edit-Sub-Admin-in-Admin-Panel"
-git push -u origin LARAVEL-28-Roles-and-Permissions-in-LaravelIV-Add/Edit-Sub-Admin-in-Admin-Panel
+git commit -m "LARAVEL-29-Roles-and-Permissions-in-LaravelV-Set-Permissions-for-Sub-Admins"
+git push -u origin LARAVEL-29-Roles-and-Permissions-in-LaravelV-Set-Permissions-for-Sub-Admins
 
 
 
