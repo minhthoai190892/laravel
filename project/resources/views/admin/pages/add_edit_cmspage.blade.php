@@ -77,8 +77,8 @@
                                               <label for="description">Description</label>
                                               <textarea class="form-control" id="description" name="description"rows="3" placeholder="Enter Description">
                                                 @if (!empty($cmspage['description']))
-{{ $cmspage['description'] }}
-@endif
+    {{ $cmspage['description'] }}
+                                                @endif
                                               </textarea>
                                           </div>
                                           <div class="form-group">

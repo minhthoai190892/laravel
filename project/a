@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-25-Roles-and-Permissions-in-Laravel-10-I-Display-Subadmins-in-Admin-Panel
+git checkout -b LARAVEL-31-Roles-and-Permissions-in-Laravel-10-VII-Update-Permissions-for-Subadmins
 git add .
-git commit -m "LARAVEL-25-Roles-and-Permissions-in-Laravel-10-I-Display-Subadmins-in-Admin-Panel"
-git push -u origin LARAVEL-25-Roles-and-Permissions-in-Laravel-10-I-Display-Subadmins-in-Admin-Panel
+git commit -m "LARAVEL-31-Roles-and-Permissions-in-Laravel-10-VII-Update-Permissions-for-Subadmins"
+git push -u origin LARAVEL-31-Roles-and-Permissions-in-Laravel-10-VII-Update-Permissions-for-Subadmins
 
 
 

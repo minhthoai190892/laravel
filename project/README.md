@@ -1366,3 +1366,512 @@ cần phải thiết lập lại **admin model**
 
 4) Create <a href='resources\views\admin\subadmins\subadmins.blade.php'>subadmins.blade.php</a> file :-
    Now create subadmins folder under \resources\views\admin\ and then create **subadmins.blade.php** file under that subadmins folder.
+
+# 26 Roles and Permissions in Laravel (II) | Active/Inactive/Delete Sub admins
+
+1. Update <a href='public\admin\js\custom.js'>custom.js</a> file :-
+   Add jQuery script for active/inactive status for sub admins in custom.js file.
+
+    ```
+     $(document).on("click", ".updateSubadminStatus", function () {
+     // <a href="javascript:void(0)" class="updateSubadminStatus">  <i
+     // class="fas fa-toggle-on" status="Active"></i> </a>
+     // parent:  $(this) -> <a>
+     // children: <i>
+     // attr: status="Active"
+     var status = $(this).children("i").attr("status");
+     var subadmin_id = $(this).attr("subadmin_id");
+     // alert( subadmin);
+     $.ajax({
+         headers: {
+             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+         },
+         type: "POST",
+         url: "/admin/update-subadmin-status",
+         data: { status: status, subadmin_id: subadmin_id },
+         success: function (resp) {
+             // kiểm tra kết quả json trả về
+             if (resp["status"] == 0) {
+                 $("#subadmin-" + subadmin_id).html(
+                     '<i class="fas fa-toggle-off" style="color: grey" status="Inactive"></i>'
+                 );
+             } else if (resp["status"] == 1) {
+                 $("#subadmin-" + subadmin_id).html(
+                     '<i class="fas fa-toggle-on" style="color: #007bff" status="Active"></i>'
+                 );
+             }
+         },
+         error: function () {
+             alert("Error");
+         },
+     });
+    });
+
+    ```
+
+2) Create Route :-
+   Now create post route for active/inactive status for sub-admins in web.php file :-
+    > Route::post('update-subadmin-status','AdminController@updateSubadminStatus');
+3) Create **updateSubadminStatus** function :-
+   Now create **updateSubadminStatus** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> to update active/inactive status for sub admins.
+   Now we will work on delete functionality for subadmins.
+
+    ```
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateSubadminStatus(Request $request)
+    {
+        //kiểm tra yêu cầu từ ajax
+        if ($request->ajax()) {
+            # lấy tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // echo "<pre>";print_r($data);die;
+            // Kiểm tra và thay đổi trạng thái của status
+            if ($data['status'] == "Active") {
+                # code...
+                $status = 0;
+            } else {
+                $status = 1;
+
+            }
+            // cập nhập dữ liệu trong csdl
+            // ! $data['subadmin_id'] attribute của trang php
+            Admin::where('id', $data['subadmin_id'])->update(['status' => $status]);
+            // trả về phản hồi json status and subadmin_id
+            return response()->json(['status' => $status, 'subadmin_id' => $data['subadmin_id']]);
+        }
+    }
+
+    ```
+
+4) Create Route :-
+   Create Get route for deleting subadmin in web.php file like below :-
+
+    > Route::get('delete-subadmin/{id}','AdminController@deleteSubadmin');
+
+5) Create **deleteSubadmin** function :-
+   Create **deleteSubadmin** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> to delete sub-admin.
+
+    ```
+      /**
+     * Remove the specified resource from storage.
+     */
+    public function deleteSubadminStatus($id)
+    {
+        //delete cms page
+        Admin::where('id', $id)->delete();
+        return redirect()->back()->with('success_message', 'Delete successfully' );
+    }
+
+    ```
+
+# 27 Roles and Permissions in Laravel (III) | Add/Edit Sub Admin in Admin Panel
+
+1. Create Route :-
+   First of all, create GET/POST route for adding/editing admin/subadmin in web.php file :-
+    > Route::match(['get','post'],'add-edit-subadmin/{id?}','AdminController@addEditSubadmin');
+
+2) Create **addEditSubadmin** function :-
+   Now create **addEditSubadmin** function at <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController</a> which will work for both add and edit. When subadmin id return then it will work for edit otherwise add subadmin.
+
+    ```
+      /**
+     * Add / Edit Subadmin
+     */
+    public function addEditSubadmin(Request $request, $id = null)
+    {
+        // ? kiểm tra xem id là thêm hay là update
+        // ! id =='' là thêm id !='' là update
+        if ($id == '') {
+            # code...
+            $title = 'Add Subadmin';
+            $subadmindata = new Admin;
+            $message = 'Subadmin added successfully';
+        } else {
+            $title = 'Update Subadmin';
+            $subadmindata = Admin::find($id);
+
+            $message = 'Subadmin updated successfully';
+        }
+        if ($request->isMethod('POST')) {
+            # code...
+            $data = $request->all();
+              print_r($data);
+            die;
+
+        }
+        return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
+    }
+    ```
+
+3) Create <a href='resources\views\admin\subadmins\add_edit_subadmin.blade.php'>add_edit_subadmin.blade.php</a> file :-
+   Now create **add_edit_subadmin.blade.php** file under \resources\views\admin\subadmins\ folder in which we will display add/edit subadmin form with subadmin name, email, password, mobile and image.
+
+# 28 Roles and Permissions in Laravel (IV) | Add/Edit Sub Admin in Admin Panel
+
+1. Update **addEditSubadmin** function in <a href='app\Http\Controllers\Admin\AdminController.php'>AdminController.php</a> :-
+   First of all, we will update **addEditSubadmin** function to add/edit subadmin details in admins table and return back to subadmins page. In case subadmin already exists in case of add then we will return with error message.
+
+    ```
+    /**
+     * Add / Edit Subadmin
+     */
+    public function addEditSubadmin(Request $request, $id = null)
+    {
+        // ? kiểm tra xem id là thêm hay là update
+        // ! id =='' là thêm id !='' là update
+        if ($id == '') {
+            // ! Add Subadmin
+            $title = 'Add Subadmin';
+            $subadmindata = new Admin;
+            $subadmindata->status = 1;
+
+            $message = 'Subadmin added successfully';
+        } else {
+              // ! Update Subadmin
+            $title = 'Update Subadmin';
+            $subadmindata = Admin::find($id);
+            $message = 'Subadmin updated successfully';
+        }
+        // ! kiểm tra phương thức
+        if ($request->isMethod('POST')) {
+            // * lấy tất cả yêu cầu từ người dùng
+            $data = $request->all();
+            //   print_r($data);
+            // die;
+            // ! kiểm tra id có tồn tại không
+            if ($id == '') {
+                // ? id không có
+                // * so sánh email với email người dùng nhập
+                $subadminCount = Admin::where('email', $data['email'])->count();
+                // ! kiểm ra $subadminCount có >0
+                if ($subadminCount > 0) {
+                    // ? >0 email đã tồn tại
+                    return redirect()->back()->with('error_message', 'Subadmin already exists');
+                }
+                // * so sánh name với name người dùng nhập
+
+                $subadminNameCount = Admin::where('name', $data['name'])->count();
+                // ! kiểm ra $subadminNameCount có >0
+                if ($subadminNameCount > 0) {
+                    // ? >0 name đã tồn tại
+                    return redirect()->back()->with('error_message', 'Subadmin name already exists');
+                }
+            }
+            // !  Subadmin validation
+            $rules = [
+                // 'admin_name' => 'required|max:255',
+                // regex: chỉ có alpha và white space
+                'name' => 'required|regex:/^[\pL\s\-]+$/u|max:255',
+                'mobile' => 'required|numeric|digits:10',
+                'image' => 'image',
+            ];
+            $customMessages = [
+                'name.required' => 'Name is required',
+                'name.regex' => 'Valid name is required',
+                'name.max' => 'Valid name is required',
+                'mobile.required' => 'Mobile is required',
+                'mobile.numeric' => 'Valid Mobile is required',
+                'mobile.digits' => 'Valid Mobile is required',
+                'image.image' => 'Valid Image is required',
+            ];
+            $this->validate($request, $rules, $customMessages);
+            //! update admin image
+            //? kiểm tra file hình ảnh
+            if ($request->hasFile('image')) {
+                $image_tmp = $request->file('image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/images/photos/' . $imageName;
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                }
+            } else if (
+                !empty ($data['current_image'])
+            ) {
+                # code...
+                $imageName = $data['current_image'];
+            } else {
+                # code...
+                $imageName = '';
+            }
+            // ? set file
+            $subadmindata->image = $imageName;
+            $subadmindata->name = $data['name'];
+            $subadmindata->mobile = $data['mobile'];
+            // ! kiểm tra người dùng có tồn tại không
+            if ($id == '') {
+                // ? chưa tồn tại
+                // * ta thêm dữ liệu vào
+                $subadmindata->email = $data['email'];
+                $subadmindata->type = 'subadmin';
+            }
+            // ! kiểm tra mật khẩu có được nhập không
+            if ($data['password'] != '') {
+                // ? mật khẩu được nhập
+                // * ta thêm dữ liệu vào và mã hóa mật khẩu
+                $subadmindata->password = bcrypt($data['password']);
+            }
+            $subadmindata->status = $data['status'];
+            $subadmindata->save();
+            return redirect('admin/subadmins')->with('success_message', $message);
+        }
+        return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
+    }
+    ```
+
+2) Update <a href='resources\views\admin\subadmins\subadmins.blade.php'>subadmins.blade.php</a> file :-
+   We will add "Edit subadmin" link with subadmin id at subadmins page in the admin panel.
+    ```
+     <a href="{{ url('admin/add-edit-subadmin/' . $subadmin['id']) }}"> <i class="fas fa-edit"></i></a>
+    ```
+
+# 29 Roles and Permissions in Laravel (V) | Set Permissions for Sub Admins
+
+1.  Create admins_roles table :-
+    1.1 Run below command to make migration file :-
+
+            > php artisan make:migration create_admins_roles_table
+
+            1.2 Update migration file to add columns in <a href='database\migrations\2024_03_20_130431_create_admins_roles_table.php'>admins_roles</a> table
+
+            ```
+                Schema::create('admins_roles', function (Blueprint $table) {
+                    $table->id();
+                    $table->integer('admin_id');
+                    $table->string('module');
+                    $table->string('view_access');
+                    $table->string('edit_access');
+                    $table->string('full_access');
+                    $table->timestamps();
+                });
+            ```
+
+        1.3 Run below command
+
+        > php artisan migrate
+
+        Now, admins_roles table has been created.
+
+2) Create **AdminRole** Model :-
+
+    Create **AdminRole** Model with below artisan command :-
+
+    > php artisan make:model AdminRole
+
+3) Update <a href='resources\views\admin\subadmins\subadmins.blade.php'>subadmins.blade.php</a> file :-
+   Add update-role link at subadmins page for setting the permission for subadmin.
+    ```
+      <a href="{{ url('admin/update-role/' . $subadmin['id']) }}"> <i  class="fas fa-unlock"></i></a>
+    ```
+4) Create Route :-
+   Now create GET/POST route for update roles/permissions for sub admins in web.php file :-
+    > Route::match(['get','post'],'/update-role/{id}','AdminController@updateRole');
+5) Create **updateRole** function :-
+   Now create **updateRole** function at <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a> return to **update_roles.blade.php** file that we will create in next step.
+
+    ```
+      public function updateRole($id,Request $request){
+        $title= 'Update Subadmin Roles/Persmission';
+        if ($request->isMethod('post')) {
+            # code...
+            $data = $request->all();
+             echo "<pre>";
+            print_r($data);
+            die;
+        }
+        return view('admin.subadmins.update_roles')->with(compact('title','id'));
+
+    }
+    ```
+
+6) Create **update_roles.blade.php** file :-
+   Now create **update_roles.blade.php** file under \resources\views\admin\subadmins\ folder in which we will add cms pages add/edit/full access as this is the only module we have created so far.
+7) Update updateRole function :-
+   Now we will update updateRole function to get the posted data and update view/edit/full access for categories, products, coupons and other modules for admins and subadmins.
+
+# 30 Roles and Permissions in Laravel (VI) | Update Permissions for Subadmins
+
+1. update updateRole method in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a>
+
+    ```
+    public function updateRole($id, Request $request)
+    {
+        $title = 'Update Subadmin Roles/Persmission';
+        if ($request->isMethod('post')) {
+            # code...
+            $data = $request->all();
+            //  echo "<pre>";
+            // print_r($data);
+            // die;
+            // ! delete all earlier roles for Subadmin
+            AdminsRole::where('subadmin_id', $id)->delete();
+            // ! add new roles for Subadmin
+            if (isset ($data['cms_page']['view'])) {
+                $cms_pages_view = $data['cms_page']['view'];
+            } else {
+                $cms_pages_view = 0;
+            }
+            if (isset ($data['cms_page']['edit'])) {
+                $cms_pages_edit = $data['cms_page']['edit'];
+            } else {
+                $cms_pages_edit = 0;
+            }
+            if (isset ($data['cms_page']['full'])) {
+                $cms_pages_full = $data['cms_page']['full'];
+            } else {
+                $cms_pages_full = 0;
+            }
+            $roles = new AdminsRole;
+            $roles->subadmin_id=$id;
+            $roles->module='cms_pages';
+            $roles->view_access= $cms_pages_view;
+            $roles->edit_access=$cms_pages_edit;
+            $roles->full_access=$cms_pages_full;
+            $roles->save();
+            $message = 'Subadmin Roles updated successfully';
+
+            return redirect()->back()->with('success_message', $message);
+
+        }
+        // ! lấy dữ liệu với "subadmin_id"  sau đó chuyển sang mảng
+        $subadminRoles = AdminsRole::where('subadmin_id',$id)->get()->toArray();
+        // dd($subadminRoles);
+        return view('admin.subadmins.update_roles')->with(compact('title', 'id','subadminRoles'));
+
+    }
+    ```
+
+2. update <a href='resources\views\admin\subadmins\update_roles.blade.php'>update_roles.blade.php</a>
+
+    ```
+        {{-- Show message --}}
+
+                                  @if (Session::has('success_message'))
+                                      <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                          <strong>Success:</strong> {{ Session::get('success_message') }}
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                  @endif
+                                  {{-- Show message --}}
+
+                                  <form name="subadminForm" id="subadminForm" action="{{ url('admin/update-role/' . $id) }}"
+                                      method="POST">
+                                      @csrf
+                                      <input type="hidden" name="subadmin_id" value="{{ $id }}">
+                                      <div class="card-body">
+                                          {{-- <div class="form-group col-md-6">
+                                              <label for="email">Email</label>
+                                              <input type="email" class="form-control"
+                                                  @if ($subadmindata['email'] != '') disabled=''
+                                            @else
+                                                required='' @endif
+                                                  id="email"name="email" placeholder="Enter Email"
+                                                  @if (!empty($subadmindata['email'])) value="{{ $subadmindata['email'] }}"
+                                                  @else
+                                                      value="{{ old('name') }}" @endif>
+                                          </div> --}}
+                                          {{-- ! kiểm tra roles có rỗng không --}}
+                                          @if (!empty($subadminRoles))
+                                          {{-- ! duyệt mảng để lấy các roles đã được thiết lập --}}
+                                              @foreach ($subadminRoles as $role)
+                                              {{-- ! kiểm tra loại module --}}
+                                                  @if ($role['module'] == 'cms_pages')
+                                                  {{-- ! kiểm tra có chọn role view hay không --}}
+                                                      @if ($role['view_access'] == 1)
+
+                                                      {{-- ! có thì thêm attribute 'checked' --}}
+                                                          @php
+                                                              $viewCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                      {{-- ! không có để '' --}}
+                                                          @php
+                                                              $viewCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                      @if ($role['edit_access'] == 1)
+                                                          @php
+                                                              $editCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                          @php
+                                                              $editCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                      @if ($role['full_access'] == 1)
+                                                          @php
+                                                              $fullCMSPages = 'checked';
+                                                          @endphp
+                                                      @else
+                                                          @php
+                                                              $fullCMSPages = '';
+                                                          @endphp
+                                                      @endif
+                                                  @endif
+                                              @endforeach
+                                          @endif
+                                          <div class="form-group col-md-6">
+                                              <label for="cms_page">CMS Pages:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                              <input type="checkbox" id="cms_page" value="1"
+                                              {{-- ! kiểm tra view có được thiết lập không --}}
+                                               @if (isset( $viewCMSPages))
+                                              {{$viewCMSPages}}
+                                              @endif
+                                                  name="cms_page[view]">View Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                              <input type="checkbox" id="cms_page" value="1"
+                                                  name="cms_page[edit]" @if (isset( $editCMSPages))
+                                                  {{$editCMSPages}}
+                                                  @endif>View/Edit Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                              <input type="checkbox" id="cms_page" value="1"
+                                                  name="cms_page[full]"  @if (isset( $fullCMSPages))
+                                                  {{$fullCMSPages}}
+                                                  @endif>Full Access
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                          </div>
+                                      </div>
+                                      <!-- /.card-body -->
+                                      {{-- <input type="hidden" name="status" value="{{ $subadmindata['status'] }}"> --}}
+                                      <div>
+                                          <button type="submit" class="btn btn-primary">Submit</button>
+                                      </div>
+                                  </form>
+
+    ```
+
+# 31 Roles and Permissions in Laravel 10 (VII) | Update Permissions for Subadmins
+
+## cập nhật lại updateRole method
+
+sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong mảng
+
+    ```
+        foreach ($data as $key => $value) {
+                if (isset($value['view'])) {
+                    $view = $value['view'];
+                }else {
+                    $view =0;
+                }
+                if (isset($value['edit'])) {
+                    $edit = $value['edit'];
+                }else {
+                    $edit =0;
+                }
+                if (isset($value['full'])) {
+                    $full = $value['full'];
+                }else {
+                    $full =0;
+                }
+            }
+    ```
