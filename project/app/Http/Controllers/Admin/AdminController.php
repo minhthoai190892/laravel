@@ -375,9 +375,8 @@ class AdminController extends Controller
     }
     public function updateRole($id, Request $request)
     {
-        $title = 'Update Subadmin Roles/Persmission';
         if ($request->isMethod('post')) {
-            # code...
+            // ! lấy tất cả dữ liệu trong bảng
             $data = $request->all();
             //  echo "<pre>";
             // print_r($data);
@@ -385,35 +384,39 @@ class AdminController extends Controller
             // ! delete all earlier roles for Subadmin
             AdminsRole::where('subadmin_id', $id)->delete();
             // ! add new roles for Subadmin
-            if (isset ($data['cms_page']['view'])) {
-                $cms_pages_view = $data['cms_page']['view'];
-            } else {
-                $cms_pages_view = 0;
+            foreach ($data as $key => $value) {
+                if (isset($value['view'])) {
+                    $view = $value['view'];
+                }else {
+                    $view =0;
+                }
+                if (isset($value['edit'])) {
+                    $edit = $value['edit'];
+                }else {
+                    $edit =0;
+                }
+                if (isset($value['full'])) {
+                    $full = $value['full'];
+                }else {
+                    $full =0;
+                }
             }
-            if (isset ($data['cms_page']['edit'])) {
-                $cms_pages_edit = $data['cms_page']['edit'];
-            } else {
-                $cms_pages_edit = 0;
-            }
-            if (isset ($data['cms_page']['full'])) {
-                $cms_pages_full = $data['cms_page']['full'];
-            } else {
-                $cms_pages_full = 0;
-            }
+        
             $roles = new AdminsRole;
             $roles->subadmin_id=$id;
             $roles->module='cms_pages';
-            $roles->view_access= $cms_pages_view;
-            $roles->edit_access=$cms_pages_edit;
-            $roles->full_access=$cms_pages_full;
+            $roles->view_access= $view;
+            $roles->edit_access=$edit;
+            $roles->full_access=$full;
             $roles->save();
             $message = 'Subadmin Roles updated successfully';
-
             return redirect()->back()->with('success_message', $message);
-            
         }
         // ! lấy dữ liệu với "subadmin_id"  sau đó chuyển sang mảng
         $subadminRoles = AdminsRole::where('subadmin_id',$id)->get()->toArray();
+        $subadminDetails = Admin::where('id',$id)->first()->toArray();
+        $title = 'Update '.$subadminDetails['name'].' Subadmin Roles/Persmission';
+    
         // dd($subadminRoles);
         return view('admin.subadmins.update_roles')->with(compact('title', 'id','subadminRoles'));
 

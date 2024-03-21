@@ -1695,8 +1695,11 @@ cần phải thiết lập lại **admin model**
    Now create **update_roles.blade.php** file under \resources\views\admin\subadmins\ folder in which we will add cms pages add/edit/full access as this is the only module we have created so far.
 7) Update updateRole function :-
    Now we will update updateRole function to get the posted data and update view/edit/full access for categories, products, coupons and other modules for admins and subadmins.
+
 # 30 Roles and Permissions in Laravel (VI) | Update Permissions for Subadmins
-1) update updateRole method in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a>
+
+1. update updateRole method in <a href='./app/Http/Controllers/Admin/AdminController.php'>AdminController</a>
+
     ```
     public function updateRole($id, Request $request)
     {
@@ -1735,7 +1738,7 @@ cần phải thiết lập lại **admin model**
             $message = 'Subadmin Roles updated successfully';
 
             return redirect()->back()->with('success_message', $message);
-            
+
         }
         // ! lấy dữ liệu với "subadmin_id"  sau đó chuyển sang mảng
         $subadminRoles = AdminsRole::where('subadmin_id',$id)->get()->toArray();
@@ -1744,7 +1747,9 @@ cần phải thiết lập lại **admin model**
 
     }
     ```
-2) update  <a href='resources\views\admin\subadmins\update_roles.blade.php'>update_roles.blade.php</a>
+
+2. update <a href='resources\views\admin\subadmins\update_roles.blade.php'>update_roles.blade.php</a>
+
     ```
         {{-- Show message --}}
 
@@ -1771,7 +1776,7 @@ cần phải thiết lập lại **admin model**
                                                 required='' @endif
                                                   id="email"name="email" placeholder="Enter Email"
                                                   @if (!empty($subadmindata['email'])) value="{{ $subadmindata['email'] }}"
-                                                  @else 
+                                                  @else
                                                       value="{{ old('name') }}" @endif>
                                           </div> --}}
                                           {{-- ! kiểm tra roles có rỗng không --}}
@@ -1844,4 +1849,29 @@ cần phải thiết lập lại **admin model**
                                   </form>
 
     ```
-    
+
+# 31 Roles and Permissions in Laravel 10 (VII) | Update Permissions for Subadmins
+
+## cập nhật lại updateRole method
+
+sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong mảng
+
+    ```
+        foreach ($data as $key => $value) {
+                if (isset($value['view'])) {
+                    $view = $value['view'];
+                }else {
+                    $view =0;
+                }
+                if (isset($value['edit'])) {
+                    $edit = $value['edit'];
+                }else {
+                    $edit =0;
+                }
+                if (isset($value['full'])) {
+                    $full = $value['full'];
+                }else {
+                    $full =0;
+                }
+            }
+    ```
