@@ -1934,3 +1934,4 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
     ```
 3) Update <a href='resources\views\admin\dashboard.blade.php'>dashboard.blade.php</a> file :-
    Now we will update the dashboard file to show the error message in case the module is restricted for the sub admin
+# Basic Admin Panel for All Laravel Websites

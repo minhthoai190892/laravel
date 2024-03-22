@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-32-Roles-and-Permissions-VIII-Set-Permissions-to-access-CMS-Pages-Module
+git checkout -b LARAVEL-33-Basic-Admin-Panel-for-All-Laravel-Websites
 git add .
-git commit -m "LARAVEL-32-Roles-and-Permissions-VIII-Set-Permissions-to-access-CMS-Pages-Module"
-git push -u origin LARAVEL-32-Roles-and-Permissions-VIII-Set-Permissions-to-access-CMS-Pages-Module
+git commit -m "LARAVEL-33-Basic-Admin-Panel-for-All-Laravel-Websites"
+git push -u origin LARAVEL-33-Basic-Admin-Panel-for-All-Laravel-Websites
 
 
 
