@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-31-Roles-and-Permissions-in-Laravel-10-VII-Update-Permissions-for-Subadmins
+git checkout -b LARAVEL-32-Roles-and-Permissions-VIII-Set-Permissions-to-access-CMS-Pages-Module
 git add .
-git commit -m "LARAVEL-31-Roles-and-Permissions-in-Laravel-10-VII-Update-Permissions-for-Subadmins"
-git push -u origin LARAVEL-31-Roles-and-Permissions-in-Laravel-10-VII-Update-Permissions-for-Subadmins
+git commit -m "LARAVEL-32-Roles-and-Permissions-VIII-Set-Permissions-to-access-CMS-Pages-Module"
+git push -u origin LARAVEL-32-Roles-and-Permissions-VIII-Set-Permissions-to-access-CMS-Pages-Module
 
 
 

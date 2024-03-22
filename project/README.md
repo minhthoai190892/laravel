@@ -1875,3 +1875,62 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
                 }
             }
     ```
+
+# 32 Roles and Permissions (VIII) | Set Permissions to access CMS Pages Module
+
+1. Update **index**function:-
+   First of all, update the index function at <a href='app\Http\Controllers\Admin\CmsController.php'>CmsController</a>. If the logged-in user is admin or superadmin then we will give all the access and if subadmin then we will check which access is given to him.
+
+    ```
+     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        Session::put('page', 'cms-pages');
+        //lấy tất cả các trang và chuyển đổi sang mảng
+        $CmsPages = CmsPage::get()->toArray();
+        // xem mảng danh sách
+        // dd($CmsPages);
+        // ! set Admin/Subadmin Permissions for CMS Pages
+        // ? so sánh id trong bảng AdminsRole có giống với id đăng đăng nhập và so sánh module có phải cms-pages
+        $cmspagesModuleCount = AdminsRole::where([
+            'subadmin_id' => Auth::guard('admin')->user()->id,
+            'module' => 'cms_pages'
+        ])->count();
+        $pagesModule = array();
+        // ? kiểm tra admin đang đăng nhập
+        if (Auth::guard('admin')->user()->type == 'admin') {
+            // * đây là admin
+            $pagesModule['view_access'] = 1;
+            $pagesModule['edit_access'] = 1;
+            $pagesModule['full_access'] = 1;
+
+        } else if ($cmspagesModuleCount == 0) {
+            // * chưa có quyền truy cập
+            $message = 'This feature is restricted for you';
+            return redirect('/admin/dashboard')->with('error_message', $message);
+        } else {
+            // * có một số quyền truy cập
+            $pagesModule = AdminsRole::where([
+                'subadmin_id' => Auth::guard('admin')->user()->id,
+                'module' => 'cms_pages'
+            ])->first()->toArray();
+
+        }
+        // hiển thị trang web
+        return view('admin.pages.cms_pages')->with(compact('CmsPages', 'pagesModule'));
+    }
+
+    ```
+
+2) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a> file :-
+   Update the cms_pages.blade.php file to check which access sub admin is having and show the feature according to it.
+    ```
+      @if ($pagesModule['edit_access'] == 1 || $pagesModule['full_access'] == 1)
+          <a href="{{ url('admin/add-edit-cms-page/' . $page['id']) }}"> <i
+                  class="fas fa-edit"></i></a>
+                  ...
+    ```
+3) Update <a href='resources\views\admin\dashboard.blade.php'>dashboard.blade.php</a> file :-
+   Now we will update the dashboard file to show the error message in case the module is restricted for the sub admin

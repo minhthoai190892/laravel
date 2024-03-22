@@ -373,10 +373,14 @@ class AdminController extends Controller
         }
         return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
     }
+    /**
+     * @param mixed $id id của người đăng nhập
+     * @param Request $request yêu cầu của người dùng
+     */
     public function updateRole($id, Request $request)
     {
         if ($request->isMethod('post')) {
-            // ! lấy tất cả dữ liệu trong bảng
+            // !lấy tất cả dữ liệu người dùng yêu cầu
             $data = $request->all();
             //  echo "<pre>";
             // print_r($data);
@@ -401,7 +405,7 @@ class AdminController extends Controller
                     $full =0;
                 }
             }
-        
+            // ! Thêm dữ liệu vào bảng roles
             $roles = new AdminsRole;
             $roles->subadmin_id=$id;
             $roles->module='cms_pages';
