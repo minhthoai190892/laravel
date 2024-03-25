@@ -1934,4 +1934,73 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
     ```
 3) Update <a href='resources\views\admin\dashboard.blade.php'>dashboard.blade.php</a> file :-
    Now we will update the dashboard file to show the error message in case the module is restricted for the sub admin
+
 # Basic Admin Panel for All Laravel Websites
+
+# 34 Categories Module (I) | Create Table | Insert Categories with Seeder
+
+1. Create categories table :-
+   First of all, we will create categories table with migration. Create migration file with name create_categories_table for creating categories table with below columns:-
+   id, parent_id, category_name, category_image, category_discount, description, url, meta_title, meta_description, meta_keywords and status
+
+    So, we will run below artisan command to create a migration file for categories:-
+
+    > php artisan make:migration create_categories_table
+
+    Open the create_categories_table migration file and add all required columns mentioned earlier.
+
+    ```
+         /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->integer('parent_id');
+            $table->string('category_name');
+            $table->string('category_image');
+            $table->float('category_discount');
+            $table->text('description');
+            $table->string('url');
+            $table->string('meta_title');
+            $table->string('meta_description');
+            $table->string('meta_keywords');
+            $table->tinyInteger('status');
+            $table->timestamps();
+        });
+    }
+    ```
+
+    Now, we will run below artisan command to create a categories table with required columns:-
+
+    > php artisan migrate
+
+    Now categories table has been created with all the required columns.
+
+2) Create Category model :-
+   Create Category model by running below command :-
+    > php artisan make:model Category
+3) Create CategoryController :-
+   Create CategoryController in Admin folder at /app/Http/Controllers/Admin/ by running below command :-
+
+    > php artisan make:controller Admin/CategoryController
+
+    Now, We will create a Seeding for categories table to insert a few categories like Clothing, Electronics and Appliances and we will also create few sub categories under Clothing category like Men, Women and Kids.
+
+4) Writing Seeder / Create CategoryTableSeeder file :-
+   First of all, we will generate a seeder and create a CategoryTableSeeder file from which we will add few categories and sub-categories for the categories table.
+
+    Run below artisan command to generate Seeder and create CategoryTableSeeder file:-
+    php artisan make:seeder CategoryTableSeeder
+
+    Above command will create the CategoryTableSeeder.php file at \database\seeds\
+
+    Now open the CategoryTableSeeder file and add records for the categories.
+
+5. Update DatabaseSeeder.php file:-
+   Now update DatabaseSeeder.php file located at database/seeds/ to add CategoryTableSeeder class as shown in video.
+
+6. Run below command :-
+   Now run below command that will finally insert category into categories table.
+   >php artisan db:seed

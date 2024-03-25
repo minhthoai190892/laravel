@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-33-Basic-Admin-Panel-for-All-Laravel-Websites
+git checkout -b LARAVEL-34-Categories-Module-I-Create-Table-Insert-Categories-with-Seeder
 git add .
-git commit -m "LARAVEL-33-Basic-Admin-Panel-for-All-Laravel-Websites"
-git push -u origin LARAVEL-33-Basic-Admin-Panel-for-All-Laravel-Websites
+git commit -m "LARAVEL-34-Categories-Module-I-Create-Table-Insert-Categories-with-Seeder"
+git push -u origin LARAVEL-34-Categories-Module-I-Create-Table-Insert-Categories-with-Seeder
 
 
 

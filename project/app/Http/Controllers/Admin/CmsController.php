@@ -126,7 +126,6 @@ class CmsController extends Controller
         }
         // trả về đăng add hoặc edit 
         return view('admin.pages.add_edit_cmspage')->with(compact('title', 'cmspage'));
-
     }
 
     /**

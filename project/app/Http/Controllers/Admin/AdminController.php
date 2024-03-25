@@ -26,6 +26,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         Session::put('page', 'dashboard');
+        
         return view('admin.dashboard');
     }
     /**
@@ -60,7 +61,7 @@ class AdminController extends Controller
             // xác minh dữ liệu có đúng trong database không
             if (Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
                 // *TODO remember admin email and password with cookie
-                //   ? - kiểm tra có được thiết lập không và không được để trống
+                //   ? - kiểm tra có được thiết lập không và không  để trống
                 if (isset ($data['remember']) && !empty ($data['remember'])) {
                     // * thiết lập lưu cookie và thiết lập thời gian hết hạn
                     setcookie('email', $data['email'], time() + 3600);
