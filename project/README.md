@@ -2124,10 +2124,10 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
         });
     ```
 
- Delete
+Delete
 
     ```
-    
+
         //! confirm delete with sweetalert subadmin
         $(document).on("click", ".confirmDelete", function (e) {
         var record = $(this).attr("record");
@@ -2152,3 +2152,49 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
         });
         });
     ```
+
+# 37 Categories Module (IV) | Add/Edit Category Functionality | Category Form
+
+1. Update <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file :-
+   First of all, we will show "**Add Category**" link at top right side of the categories page in admin panel.
+    ```
+     <a style="max-width: 150px;float: right;display: inline-block;"
+          class="btn btn-block btn-primary" href="{{ url('admin/add-edit-category') }}"
+          rel="noopener noreferrer">Add Category</a>
+    ```
+
+2) Create Route :-
+   Create GET/POST route for Add/Edit Category in web.php file under admin group with id parameter as optional (that is required in case of edit category) like below :-
+
+    > Route::match(['get','post'],'add-edit-category/{id?}','CategoryController@addEditCategory');
+
+3) Create **addEditCategory** function :-
+   Create **addEditCategory** function in <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> with parameter $id as optional. We will add condition to execute "Add Category" functionality in case $id is empty otherwise "Edit Category" functionality if $id is coming.
+
+    ```
+         /**
+     * add/edit category
+     * @param Request $request yêu cầu của người dùng
+     * @param mixed $id id category
+      */
+    public function addEditCategory(Request $request,$id = null)
+    {
+        // ! kiểm tra id có tồn tại không
+        if ($id == "") {
+            // ? id chưa tồn tại
+            $title = 'Add Category';
+        } else {
+            // ? id đã tồn tại
+            $title = 'Edit Category';
+
+
+        }
+        // ! hiển thị trang web add/edit category
+        return view('admin.categories.add_edit_category')->with(compact('title'));
+
+    }
+    ```
+
+4) Create <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Now we will create add_edit_category.blade.php file at path /resources/views/admin/categories/ and will add admin design to it and will create add/edit category form.
+

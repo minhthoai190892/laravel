@@ -53,8 +53,30 @@ class CategoryController extends Controller
      */
     public function deleteCategory($id)
     {
-        //delete cms page
+        //delete category
         Category::where('id', $id)->delete();
         return redirect()->back()->with('success_message', 'Delete successfully');
     }
+    /**
+     * add/edit category
+     * @param Request $request yêu cầu của người dùng
+     * @param mixed $id id category
+      */
+    public function addEditCategory(Request $request,$id = null)
+    {
+        // ! kiểm tra id có tồn tại không
+        if ($id == "") {
+            // ? id chưa tồn tại
+            $title = 'Add Category';
+        } else {
+            // ? id đã tồn tại
+            $title = 'Edit Category';
+
+
+        }
+        // ! hiển thị trang web add/edit category
+        return view('admin.categories.add_edit_category')->with(compact('title'));
+
+    }
+
 }
