@@ -2041,4 +2041,114 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
    We will update layout.blade.php file to call datatable for categories
 
     > $("#categories").DataTable();
-# 36
+
+# 36 Categories Module (III) | Active/Inactive/Delete Categories in Admin Panel
+
+1. Update <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file:-
+   Add updateCategoryStatus class with id and category_id for active/inactive status at categories.blade.php file
+
+2) Create Route:-
+   Create Post route to update status of category in web.php file :-
+
+    > Route::post('update-category-status','CategoryController@updateCatgoryStatus');
+
+3) Create updateCategoryStatus function :-
+   Create updateCategoryStatus function in CategoryController to update the category status to active or inactive.
+
+    ```
+      /**
+     * Update the specified resource in storage.
+     * @param Request $request yêu cầu cập nhật status
+     * trả về phản hồi json
+     */
+    public function updateCategoryStatus(Request $request)
+    {
+        //kiểm tra yêu cầu từ ajax
+        if ($request->ajax()) {
+            # lấy tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // echo "<pre>";print_r($data);die;
+            // Kiểm tra và thay đổi trạng thái của status
+            if ($data['status'] == "Active") {
+                # code...
+                $status = 0;
+            } else {
+                $status = 1;
+
+            }
+            //! cập nhập dữ liệu trong csdl
+            // ? so sánh id trong csdl với id trong categories.blade.php có giống nhau không -> update status
+            Category::where('id', $data['category_id'])->update(['status' => $status]);
+            // trả về phản hồi json status and category_id
+            return response()->json(['status' => $status, 'category_id' => $data['category_id']]);
+        }
+    }
+    ```
+
+4) Update **custom.js** file :-
+   Add jquery function to update active/inactive status for categories in custom.js file.
+    ```
+            //TODO: Update Category Status
+        $(document).on("click", ".updateCategoryStatus", function () {
+        // <a href="javascript:void(0)" class="updateCategoryStatus">  <i
+        // class="fas fa-toggle-on" status="Active"></i> </a>
+        // parent:  $(this) -> <a>
+        // children: <i>
+        // attr: status="Active"
+        var status = $(this).children("i").attr("status");
+        var category_id = $(this).attr("category_id");
+        // alert( category);
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "POST",
+            url: "/admin/update-category-status",
+            data: { status: status, category_id: category_id },
+            success: function (resp) {
+                // kiểm tra kết quả json trả về
+                if (resp["status"] == 0) {
+                    $("#category-" + category_id).html(
+                        '<i class="fas fa-toggle-off" style="color: grey" status="Inactive"></i>'
+                    );
+                } else if (resp["status"] == 1) {
+                    $("#category-" + category_id).html(
+                        '<i class="fas fa-toggle-on" style="color: #007bff" status="Active"></i>'
+                    );
+                }
+            },
+            error: function () {
+                alert("Error");
+            },
+        });
+        });
+    ```
+
+ Delete
+
+    ```
+    
+        //! confirm delete with sweetalert subadmin
+        $(document).on("click", ".confirmDelete", function (e) {
+        var record = $(this).attr("record");
+        var recordid = $(this).attr("recordid");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success",
+                });
+                window.location.href='/admin/delete-'+record+'/'+recordid;
+            }
+        });
+        });
+    ```

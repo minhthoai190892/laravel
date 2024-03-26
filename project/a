@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-35-Categories-Module-II-Display-Categories-in-Admin-Panel
+git checkout -b LARAVEL-36-Categories-Module-III-Active/Inactive/Delete-Categories-in-Admin-Panel
 git add .
-git commit -m "LARAVEL-35-Categories-Module-II-Display-Categories-in-Admin-Panel"
-git push -u origin LARAVEL-35-Categories-Module-II-Display-Categories-in-Admin-Panel
+git commit -m "LARAVEL-36-Categories-Module-III-Active/Inactive/Delete-Categories-in-Admin-Panel"
+git push -u origin LARAVEL-36-Categories-Module-III-Active/Inactive/Delete-Categories-in-Admin-Panel
 
 
 
