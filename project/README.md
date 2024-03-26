@@ -2003,4 +2003,42 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
 
 6. Run below command :-
    Now run below command that will finally insert category into categories table.
-   >php artisan db:seed
+    > php artisan db:seed
+
+# 35 Categories Module (II) | Display Categories in Admin Panel
+
+1. Create Route:-
+   Create GET route in web.php file in admin middleware group prefixed with admin and having namespace Admin for displaying categories in admin panel:-
+    > Route::get('categories','CategoryController@categories');
+
+2) Create categories function:-
+   Now create categories function in **CategoryController** to write query to display all the categories in admin panel and return to categories blade file that we will create under /resources/views/admin/categories/ folder.
+3) Include Category model:-
+   Include the Category model at top of CategoryController.
+    > use App\Models\Category;
+4) Create parentcategory Relation <a href='app\Models\Category.php'>Category.php</a>:-
+   We will create parentcategory hasOne Relation to find the parent category of every category if there is any to display along with the category name in the categories module in admin panel.
+5) Update categories function:-
+   Now we will update categories function to attach parentcategory Relation to show the parent category of every category if there is any to display along with the category name in the categories module in admin panel.
+
+    ```
+     /**
+      * hiển thị danh sách categories
+      * @return View page
+      */
+    public function categories(){
+         $categories = Category::with('parentcategory')->get()->toArray();
+         // dd($categories);
+     //    return $categories;
+     return view('admin.categories.categories')->with(compact('categories'));
+     }
+    ```
+
+6) Create <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file:-
+   Now create the categories.blade.php file under /resources/views/admin/categories/ folder in which we will add content from the Skydash admin template and will display categories within foreach loop.
+
+7) Update <a href='resources\views\admin\layout\layout.blade.php'>layout.blade.php</a> file :-
+   We will update layout.blade.php file to call datatable for categories
+
+    > $("#categories").DataTable();
+# 36

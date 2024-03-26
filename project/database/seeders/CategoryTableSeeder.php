@@ -15,8 +15,12 @@ class CategoryTableSeeder extends Seeder
     {
         //
         $categoryRecords = [
-            ['id'=>5,'parent_id'=>0,'category_name'=>'Woman','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
-            ['id'=>6,'parent_id'=>0,'category_name'=>'Kid','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
+            ['id'=>7,'parent_id'=>2,'category_name'=>'Woman','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
+            ['id'=>8,'parent_id'=>2,'category_name'=>'Kid','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
+            ['id'=>9,'parent_id'=>2,'category_name'=>'Kid','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
+            ['id'=>10,'parent_id'=>2,'category_name'=>'Kid','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
+            ['id'=>11,'parent_id'=>2,'category_name'=>'Kid','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
+            ['id'=>12,'parent_id'=>2,'category_name'=>'Kid','category_image'=>'','category_discount'=>0,'description'=>'','url'=>'clothing','meta_title'=>'','meta_description'=>'','meta_keywords'=>'','status'=>1],
            
         ];
         Category::insert($categoryRecords);

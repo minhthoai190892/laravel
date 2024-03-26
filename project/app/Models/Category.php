@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
+    /**
+     * Hàm tạo mối quan hệ cha con
+     * [id] id góc 
+     * 
+     * [parent_id] id cha
+     */
+    public function parentcategory(){
+        return $this->hasOne('App\Models\Category','id','parent_id')->select('id','category_name','url')->where('status',1);
+    }
 }
