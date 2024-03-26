@@ -73,52 +73,46 @@
                                           <div class="form-group col-md-6">
                                               <label for="category_name">Category Name*</label>
                                               <input type="text" class="form-control" id="category_name"
-                                                  name="category_name" placeholder="Enter Category Name"
-                                               >
+                                                  name="category_name" placeholder="Enter Category Name" value="{{ old('category_name') }}">
                                           </div>
 
                                           <div class="form-group col-md-6">
                                               <label for="category_image">Category Image</label>
                                               <input type="file" class="form-control" id="category_image"
-                                                  name="category_image">
-                                            
+                                                  name="category_image" >
+
                                           </div>
                                           <div class="form-group col-md-6">
-                                              <label for="category_discount">Category Discount*</label>
+                                              <label for="category_discount">Category Discount</label>
                                               <input type="text" class="form-control" id="category_discount"
-                                                  name="category_discount" placeholder="Enter Category Discount"
-                                                  >
+                                                  name="category_discount" placeholder="Enter Category Discount" value="{{ old('category_discount') }}">
                                           </div>
                                           <div class="form-group col-md-6">
                                               <label for="url">Category URL*</label>
                                               <input type="text" class="form-control" id="url" name="url"
-                                                  placeholder="Enter Category URL"
-                                                  >
+                                                  placeholder="Enter Category URL" value="{{ old('url') }}">
                                           </div>
                                           <div class="form-group col-md-6">
-                                            <label for="description">Description</label>
-                                            <textarea class="form-control" id="description" name="description"rows="3" placeholder="Enter Description">
-                                             
+                                              <label for="description">Description</label>
+                                              <textarea class="form-control" id="description" name="description"rows="3" placeholder="Enter Description">
+                                                 {{ old('description') }}
                                             </textarea>
-                                        </div>
+                                          </div>
                                           <div class="form-group col-md-6">
-                                            <label for="meta_title">Meta Title</label>
-                                            <input type="text" class="form-control" id="meta_title" name="meta_title"
-                                                placeholder="Enter Category meta_title"
-                                                >
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="meta_description">Meta Description</label>
-                                            <input type="text" class="form-control" id="meta_description" name="meta_description"
-                                                placeholder="Enter Category meta_description"
-                                                >
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="meta_keywords">Meta Description</label>
-                                            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
-                                                placeholder="Enter Category meta_keywords"
-                                            >
-                                        </div>
+                                              <label for="meta_title">Meta Title</label>
+                                              <input type="text" class="form-control" id="meta_title" name="meta_title"
+                                                  placeholder="Enter Category meta_title" value="{{ old('meta_title') }}">
+                                          </div>
+                                          <div class="form-group col-md-6">
+                                              <label for="meta_description">Meta Description</label>
+                                              <input type="text" class="form-control" id="meta_description"
+                                                  name="meta_description" placeholder="Enter Category meta_description" value="{{ old('meta_description') }}">
+                                          </div>
+                                          <div class="form-group col-md-6">
+                                              <label for="meta_keywords">Meta Description</label>
+                                              <input type="text" class="form-control" id="meta_keywords"
+                                                  name="meta_keywords" placeholder="Enter Category meta_keywords" value="{{ old('meta_keywords') }}">
+                                          </div>
                                       </div>
                                       <!-- /.card-body -->
                                       {{-- <input type="hidden" name="status" value="{{ $categorydata['status'] }}"> --}}

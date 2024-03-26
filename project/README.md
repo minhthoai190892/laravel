@@ -2280,3 +2280,26 @@ Delete
     > use Image;
 4) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
    We will show success message in categories page if category successfully added.
+
+# 39 Categories Module (VI) | Add/Edit Category | Validate Add Category Form
+
+1. Update **addEditCategory** function:-
+   We will update the **addEditCategory** function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> to add Laravel validations to make sure the correct category data is added.
+    ```
+    // !validation
+            $rules=[
+                // ! bắt buộc nhập tên category
+                'category_name'=>'required',
+                // ! bắt buộc nhập url | và không trùng với url cũ
+                'url'=>'required|unique:categories',
+            ];
+            $customMessage=[
+                'category_name.required'=>'Category Name is required',
+                'url.required'=>'Category Url is required',
+                'url.unique'=>'Unique Category Url is required',
+            ];
+            $this->validate($request,$rules,$customMessage);
+    ```
+
+2) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+Now show the error message above form at add_edit_category.blade.php file.

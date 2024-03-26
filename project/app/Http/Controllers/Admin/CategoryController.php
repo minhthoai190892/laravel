@@ -81,8 +81,20 @@ class CategoryController extends Controller
             $data = $request->all();
             // echo"<pre>";
             // print_r($data);die;
+            // !validation
+            $rules=[
+                // ! bắt buộc nhập tên category
+                'category_name'=>'required',
+                // ! bắt buộc nhập url | và không trùng với url cũ
+                'url'=>'required|unique:categories',
+            ];
+            $customMessage=[
+                'category_name.required'=>'Category Name is required',
+                'url.required'=>'Category Url is required',
+                'url.unique'=>'Unique Category Url is required',
+            ];
+            $this->validate($request,$rules,$customMessage);
             // ? update category image
-              // update admin image
             // kiểm tra file hình ảnh
             if ($request->hasFile('category_image')) {
                 $image_tmp = $request->file('category_image');
