@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Session;
+use Image;
 
 class CategoryController extends Controller
 {
@@ -16,7 +17,7 @@ class CategoryController extends Controller
     public function categories()
     {
         Session::put('page', 'categories');
-        $categories = Category::with('parentcategory')->get()->toArray();
+        $categories = Category::with('parentcategory')->get();
         // dd($categories);
         //    return $categories;
         return view('admin.categories.categories')->with(compact('categories'));
@@ -68,10 +69,52 @@ class CategoryController extends Controller
         if ($id == "") {
             // ? id chưa tồn tại
             $title = 'Add Category';
+            $category = new Category;
+            $message = "Category added successfully";
         } else {
             // ? id đã tồn tại
             $title = 'Edit Category';
+            $category =  Category::find($id);
+            $message = "Category edited successfully";
+        }
+        if ($request->isMethod('POST')) {
+            $data = $request->all();
+            // echo"<pre>";
+            // print_r($data);die;
+            // ? update category image
+              // update admin image
+            // kiểm tra file hình ảnh
+            if ($request->hasFile('category_image')) {
+                $image_tmp = $request->file('category_image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/front/images/categories/' . $imageName;
 
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                    $category->category_image=$imageName;
+                }
+            } else  {
+                # code...
+                $category->category_image= '';
+            }
+            $category->category_name = $data['category_name'];
+            $category->category_discount = $data['category_discount'];
+            $category->description = $data['description'];
+            $category->url = $data['url'];
+            $category->meta_title = $data['meta_title'];
+            $category->meta_description = $data['meta_description'];
+            $category->meta_keywords = $data['meta_keywords'];
+            $category->parent_id =0;
+
+            $category->status =1;
+       
+            $category->save();
+            return redirect('admin/categories')->with('success_message',$message);
 
         }
         // ! hiển thị trang web add/edit category

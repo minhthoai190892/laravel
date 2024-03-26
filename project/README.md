@@ -2198,3 +2198,85 @@ Delete
 4) Create <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
    Now we will create add_edit_category.blade.php file at path /resources/views/admin/categories/ and will add admin design to it and will create add/edit category form.
 
+# 38 Categories Module (V) | Add/Edit Category | Add Category Details
+
+1. Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   First of all, we will update add_edit_category.blade.php file to make sure to add form action, name and id's for form and for all fields.
+
+2) Update addEditCategory function :-
+   Now we will update addEditCategory function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> to add query for adding category details in categories table and return the user to categories page with success message.
+
+    We will only add main category for now that does not have any parent category so we will add parent_id as 0 for now.
+
+    ```
+         /**
+     * add/edit category
+     * @param Request $request yêu cầu của người dùng
+     * @param mixed $id id category
+      */
+    public function addEditCategory(Request $request,$id = null)
+    {
+        // ! kiểm tra id có tồn tại không
+        if ($id == "") {
+            // ? id chưa tồn tại
+            $title = 'Add Category';
+            $category = new Category;
+            $message = "Category added successfully";
+        } else {
+            // ? id đã tồn tại
+            $title = 'Edit Category';
+            $category =  Category::find($id);
+            $message = "Category edited successfully";
+        }
+        if ($request->isMethod('POST')) {
+            $data = $request->all();
+            // echo"<pre>";
+            // print_r($data);die;
+            // ? update category image
+              // update admin image
+            // kiểm tra file hình ảnh
+            if ($request->hasFile('category_image')) {
+                $image_tmp = $request->file('category_image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/front/images/categories/' . $imageName;
+
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                    $category->category_image=$imageName;
+                }
+            } else  {
+                # code...
+                $category->category_image= '';
+            }
+            $category->category_name = $data['category_name'];
+            $category->category_discount = $data['category_discount'];
+            $category->description = $data['description'];
+            $category->url = $data['url'];
+            $category->meta_title = $data['meta_title'];
+            $category->meta_description = $data['meta_description'];
+            $category->meta_keywords = $data['meta_keywords'];
+            $category->parent_id =0;
+
+            $category->status =1;
+
+            $category->save();
+            return redirect('admin/categories')->with('success_message',$message);
+
+        }
+        // ! hiển thị trang web add/edit category
+        return view('admin.categories.add_edit_category')->with(compact('title'));
+
+    }
+    ```
+
+3) Include Header Statements :-
+   Include Session and Image class at top of CategoryController :-
+    > use Session;
+    > use Image;
+4) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   We will show success message in categories page if category successfully added.

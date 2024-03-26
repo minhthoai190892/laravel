@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-37-Categories-Module-IV-Add/Edit-Category-Functionality-Category-Form
+git checkout -b LARAVEL-38-Categories-Module-V-Add/Edit-Category-Add-Category-Details
 git add .
-git commit -m "LARAVEL-37-Categories-Module-IV-Add/Edit-Category-Functionality-Category-Form"
-git push -u origin LARAVEL-37-Categories-Module-IV-Add/Edit-Category-Functionality-Category-Form
+git commit -m "LARAVEL-38-Categories-Module-V-Add/Edit-Category-Add-Category-Details"
+git push -u origin LARAVEL-38-Categories-Module-V-Add/Edit-Category-Add-Category-Details
 
 
 
