@@ -1875,3 +1875,508 @@ sử dụng vòng lập foreach để duyệt qua tất cả dữ liệu trong m
                 }
             }
     ```
+
+# 32 Roles and Permissions (VIII) | Set Permissions to access CMS Pages Module
+
+1. Update **index**function:-
+   First of all, update the index function at <a href='app\Http\Controllers\Admin\CmsController.php'>CmsController</a>. If the logged-in user is admin or superadmin then we will give all the access and if subadmin then we will check which access is given to him.
+
+    ```
+     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        Session::put('page', 'cms-pages');
+        //lấy tất cả các trang và chuyển đổi sang mảng
+        $CmsPages = CmsPage::get()->toArray();
+        // xem mảng danh sách
+        // dd($CmsPages);
+        // ! set Admin/Subadmin Permissions for CMS Pages
+        // ? so sánh id trong bảng AdminsRole có giống với id đăng đăng nhập và so sánh module có phải cms-pages
+        $cmspagesModuleCount = AdminsRole::where([
+            'subadmin_id' => Auth::guard('admin')->user()->id,
+            'module' => 'cms_pages'
+        ])->count();
+        $pagesModule = array();
+        // ? kiểm tra admin đang đăng nhập
+        if (Auth::guard('admin')->user()->type == 'admin') {
+            // * đây là admin
+            $pagesModule['view_access'] = 1;
+            $pagesModule['edit_access'] = 1;
+            $pagesModule['full_access'] = 1;
+
+        } else if ($cmspagesModuleCount == 0) {
+            // * chưa có quyền truy cập
+            $message = 'This feature is restricted for you';
+            return redirect('/admin/dashboard')->with('error_message', $message);
+        } else {
+            // * có một số quyền truy cập
+            $pagesModule = AdminsRole::where([
+                'subadmin_id' => Auth::guard('admin')->user()->id,
+                'module' => 'cms_pages'
+            ])->first()->toArray();
+
+        }
+        // hiển thị trang web
+        return view('admin.pages.cms_pages')->with(compact('CmsPages', 'pagesModule'));
+    }
+
+    ```
+
+2) Update <a href='resources\views\admin\pages\cms_pages.blade.php'>cms_pages.blade.php</a> file :-
+   Update the cms_pages.blade.php file to check which access sub admin is having and show the feature according to it.
+    ```
+      @if ($pagesModule['edit_access'] == 1 || $pagesModule['full_access'] == 1)
+          <a href="{{ url('admin/add-edit-cms-page/' . $page['id']) }}"> <i
+                  class="fas fa-edit"></i></a>
+                  ...
+    ```
+3) Update <a href='resources\views\admin\dashboard.blade.php'>dashboard.blade.php</a> file :-
+   Now we will update the dashboard file to show the error message in case the module is restricted for the sub admin
+
+# Basic Admin Panel for All Laravel Websites
+
+# 34 Categories Module (I) | Create Table | Insert Categories with Seeder
+
+1. Create categories table :-
+   First of all, we will create categories table with migration. Create migration file with name create_categories_table for creating categories table with below columns:-
+   id, parent_id, category_name, category_image, category_discount, description, url, meta_title, meta_description, meta_keywords and status
+
+    So, we will run below artisan command to create a migration file for categories:-
+
+    > php artisan make:migration create_categories_table
+
+    Open the create_categories_table migration file and add all required columns mentioned earlier.
+
+    ```
+         /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->integer('parent_id');
+            $table->string('category_name');
+            $table->string('category_image');
+            $table->float('category_discount');
+            $table->text('description');
+            $table->string('url');
+            $table->string('meta_title');
+            $table->string('meta_description');
+            $table->string('meta_keywords');
+            $table->tinyInteger('status');
+            $table->timestamps();
+        });
+    }
+    ```
+
+    Now, we will run below artisan command to create a categories table with required columns:-
+
+    > php artisan migrate
+
+    Now categories table has been created with all the required columns.
+
+2) Create Category model :-
+   Create Category model by running below command :-
+    > php artisan make:model Category
+3) Create CategoryController :-
+   Create CategoryController in Admin folder at /app/Http/Controllers/Admin/ by running below command :-
+
+    > php artisan make:controller Admin/CategoryController
+
+    Now, We will create a Seeding for categories table to insert a few categories like Clothing, Electronics and Appliances and we will also create few sub categories under Clothing category like Men, Women and Kids.
+
+4) Writing Seeder / Create CategoryTableSeeder file :-
+   First of all, we will generate a seeder and create a CategoryTableSeeder file from which we will add few categories and sub-categories for the categories table.
+
+    Run below artisan command to generate Seeder and create CategoryTableSeeder file:-
+    php artisan make:seeder CategoryTableSeeder
+
+    Above command will create the CategoryTableSeeder.php file at \database\seeds\
+
+    Now open the CategoryTableSeeder file and add records for the categories.
+
+5. Update DatabaseSeeder.php file:-
+   Now update DatabaseSeeder.php file located at database/seeds/ to add CategoryTableSeeder class as shown in video.
+
+6. Run below command :-
+   Now run below command that will finally insert category into categories table.
+    > php artisan db:seed
+
+# 35 Categories Module (II) | Display Categories in Admin Panel
+
+1. Create Route:-
+   Create GET route in web.php file in admin middleware group prefixed with admin and having namespace Admin for displaying categories in admin panel:-
+    > Route::get('categories','CategoryController@categories');
+
+2) Create categories function:-
+   Now create categories function in **CategoryController** to write query to display all the categories in admin panel and return to categories blade file that we will create under /resources/views/admin/categories/ folder.
+3) Include Category model:-
+   Include the Category model at top of CategoryController.
+    > use App\Models\Category;
+4) Create parentcategory Relation <a href='app\Models\Category.php'>Category.php</a>:-
+   We will create parentcategory hasOne Relation to find the parent category of every category if there is any to display along with the category name in the categories module in admin panel.
+5) Update categories function:-
+   Now we will update categories function to attach parentcategory Relation to show the parent category of every category if there is any to display along with the category name in the categories module in admin panel.
+
+    ```
+     /**
+      * hiển thị danh sách categories
+      * @return View page
+      */
+    public function categories(){
+         $categories = Category::with('parentcategory')->get()->toArray();
+         // dd($categories);
+     //    return $categories;
+     return view('admin.categories.categories')->with(compact('categories'));
+     }
+    ```
+
+6) Create <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file:-
+   Now create the categories.blade.php file under /resources/views/admin/categories/ folder in which we will add content from the Skydash admin template and will display categories within foreach loop.
+
+7) Update <a href='resources\views\admin\layout\layout.blade.php'>layout.blade.php</a> file :-
+   We will update layout.blade.php file to call datatable for categories
+
+    > $("#categories").DataTable();
+
+# 36 Categories Module (III) | Active/Inactive/Delete Categories in Admin Panel
+
+1. Update <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file:-
+   Add updateCategoryStatus class with id and category_id for active/inactive status at categories.blade.php file
+
+2) Create Route:-
+   Create Post route to update status of category in web.php file :-
+
+    > Route::post('update-category-status','CategoryController@updateCatgoryStatus');
+
+3) Create updateCategoryStatus function :-
+   Create updateCategoryStatus function in CategoryController to update the category status to active or inactive.
+
+    ```
+      /**
+     * Update the specified resource in storage.
+     * @param Request $request yêu cầu cập nhật status
+     * trả về phản hồi json
+     */
+    public function updateCategoryStatus(Request $request)
+    {
+        //kiểm tra yêu cầu từ ajax
+        if ($request->ajax()) {
+            # lấy tất cả yêu cầu của người dùng
+            $data = $request->all();
+            // echo "<pre>";print_r($data);die;
+            // Kiểm tra và thay đổi trạng thái của status
+            if ($data['status'] == "Active") {
+                # code...
+                $status = 0;
+            } else {
+                $status = 1;
+
+            }
+            //! cập nhập dữ liệu trong csdl
+            // ? so sánh id trong csdl với id trong categories.blade.php có giống nhau không -> update status
+            Category::where('id', $data['category_id'])->update(['status' => $status]);
+            // trả về phản hồi json status and category_id
+            return response()->json(['status' => $status, 'category_id' => $data['category_id']]);
+        }
+    }
+    ```
+
+4) Update **custom.js** file :-
+   Add jquery function to update active/inactive status for categories in custom.js file.
+    ```
+            //TODO: Update Category Status
+        $(document).on("click", ".updateCategoryStatus", function () {
+        // <a href="javascript:void(0)" class="updateCategoryStatus">  <i
+        // class="fas fa-toggle-on" status="Active"></i> </a>
+        // parent:  $(this) -> <a>
+        // children: <i>
+        // attr: status="Active"
+        var status = $(this).children("i").attr("status");
+        var category_id = $(this).attr("category_id");
+        // alert( category);
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "POST",
+            url: "/admin/update-category-status",
+            data: { status: status, category_id: category_id },
+            success: function (resp) {
+                // kiểm tra kết quả json trả về
+                if (resp["status"] == 0) {
+                    $("#category-" + category_id).html(
+                        '<i class="fas fa-toggle-off" style="color: grey" status="Inactive"></i>'
+                    );
+                } else if (resp["status"] == 1) {
+                    $("#category-" + category_id).html(
+                        '<i class="fas fa-toggle-on" style="color: #007bff" status="Active"></i>'
+                    );
+                }
+            },
+            error: function () {
+                alert("Error");
+            },
+        });
+        });
+    ```
+
+Delete
+
+    ```
+
+        //! confirm delete with sweetalert subadmin
+        $(document).on("click", ".confirmDelete", function (e) {
+        var record = $(this).attr("record");
+        var recordid = $(this).attr("recordid");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success",
+                });
+                window.location.href='/admin/delete-'+record+'/'+recordid;
+            }
+        });
+        });
+    ```
+
+# 37 Categories Module (IV) | Add/Edit Category Functionality | Category Form
+
+1. Update <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file :-
+   First of all, we will show "**Add Category**" link at top right side of the categories page in admin panel.
+    ```
+     <a style="max-width: 150px;float: right;display: inline-block;"
+          class="btn btn-block btn-primary" href="{{ url('admin/add-edit-category') }}"
+          rel="noopener noreferrer">Add Category</a>
+    ```
+
+2) Create Route :-
+   Create GET/POST route for Add/Edit Category in web.php file under admin group with id parameter as optional (that is required in case of edit category) like below :-
+
+    > Route::match(['get','post'],'add-edit-category/{id?}','CategoryController@addEditCategory');
+
+3) Create **addEditCategory** function :-
+   Create **addEditCategory** function in <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> with parameter $id as optional. We will add condition to execute "Add Category" functionality in case $id is empty otherwise "Edit Category" functionality if $id is coming.
+
+    ```
+         /**
+     * add/edit category
+     * @param Request $request yêu cầu của người dùng
+     * @param mixed $id id category
+      */
+    public function addEditCategory(Request $request,$id = null)
+    {
+        // ! kiểm tra id có tồn tại không
+        if ($id == "") {
+            // ? id chưa tồn tại
+            $title = 'Add Category';
+        } else {
+            // ? id đã tồn tại
+            $title = 'Edit Category';
+
+
+        }
+        // ! hiển thị trang web add/edit category
+        return view('admin.categories.add_edit_category')->with(compact('title'));
+
+    }
+    ```
+
+4) Create <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Now we will create add_edit_category.blade.php file at path /resources/views/admin/categories/ and will add admin design to it and will create add/edit category form.
+
+# 38 Categories Module (V) | Add/Edit Category | Add Category Details
+
+1. Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   First of all, we will update add_edit_category.blade.php file to make sure to add form action, name and id's for form and for all fields.
+
+2) Update addEditCategory function :-
+   Now we will update addEditCategory function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> to add query for adding category details in categories table and return the user to categories page with success message.
+
+    We will only add main category for now that does not have any parent category so we will add parent_id as 0 for now.
+
+    ```
+         /**
+     * add/edit category
+     * @param Request $request yêu cầu của người dùng
+     * @param mixed $id id category
+      */
+    public function addEditCategory(Request $request,$id = null)
+    {
+        // ! kiểm tra id có tồn tại không
+        if ($id == "") {
+            // ? id chưa tồn tại
+            $title = 'Add Category';
+            $category = new Category;
+            $message = "Category added successfully";
+        } else {
+            // ? id đã tồn tại
+            $title = 'Edit Category';
+            $category =  Category::find($id);
+            $message = "Category edited successfully";
+        }
+        if ($request->isMethod('POST')) {
+            $data = $request->all();
+            // echo"<pre>";
+            // print_r($data);die;
+            // ? update category image
+              // update admin image
+            // kiểm tra file hình ảnh
+            if ($request->hasFile('category_image')) {
+                $image_tmp = $request->file('category_image');
+                if ($image_tmp->isValid()) {
+                    # Get image extension
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    // Generate new Image Name
+                    $imageName = rand(111, 99999) . '.' . $extension;
+                    // tạo đường dẫn luư hình ảnh
+                    $image_path = 'admin/front/images/categories/' . $imageName;
+
+                    // tải hình ảnh
+                    Image::make($image_tmp)->save($image_path);
+                    $category->category_image=$imageName;
+                }
+            } else  {
+                # code...
+                $category->category_image= '';
+            }
+            $category->category_name = $data['category_name'];
+            $category->category_discount = $data['category_discount'];
+            $category->description = $data['description'];
+            $category->url = $data['url'];
+            $category->meta_title = $data['meta_title'];
+            $category->meta_description = $data['meta_description'];
+            $category->meta_keywords = $data['meta_keywords'];
+            $category->parent_id =0;
+
+            $category->status =1;
+
+            $category->save();
+            return redirect('admin/categories')->with('success_message',$message);
+
+        }
+        // ! hiển thị trang web add/edit category
+        return view('admin.categories.add_edit_category')->with(compact('title'));
+
+    }
+    ```
+
+3) Include Header Statements :-
+   Include Session and Image class at top of CategoryController :-
+    > use Session;
+    > use Image;
+4) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   We will show success message in categories page if category successfully added.
+
+# 39 Categories Module (VI) | Add/Edit Category | Validate Add Category Form
+
+1. Update **addEditCategory** function:-
+   We will update the **addEditCategory** function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> to add Laravel validations to make sure the correct category data is added.
+    ```
+    // !validation
+            $rules=[
+                // ! bắt buộc nhập tên category
+                'category_name'=>'required',
+                // ! bắt buộc nhập url | và không trùng với url cũ
+                'url'=>'required|unique:categories',
+            ];
+            $customMessage=[
+                'category_name.required'=>'Category Name is required',
+                'url.required'=>'Category Url is required',
+                'url.unique'=>'Unique Category Url is required',
+            ];
+            $this->validate($request,$rules,$customMessage);
+    ```
+
+2) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Now show the error message above form at add_edit_category.blade.php file.
+
+# 40 Categories Module VII Add/Manage Multiple Category Levels
+
+1. Create getcategories function :-
+   First of all, we will create getcategories function at <a href='app\Models\Category.php'>Category</a> model and will work for one category level in which we will get Parent Categories and their Sub Categories in select box.
+
+2) Create subcategories Relation :-
+   We will create hasMany relation between Category and their Sub Categories.
+
+3) Update **addEditCategory** function :-
+   Now we will update **addEditCategory** function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> to fetch all categories and return to add/edit category blade file.
+
+    ```
+          // lấy danh sách category
+         $getCategories = Category::getCategories();
+    ```
+
+4) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Now we will update add_edit_category.blade.php file to show Category Level select box in which we will show Categories and their Sub Categories
+
+    Work for Multiple Category Level:
+
+    ```
+          <div class="form-group col-md-6">
+              <label for="category_name">Category Level*</label>
+              <select name="parent_id" id="" class="form-control">
+                  <option value="">Select</option>
+                  <option value="0">Main Category</option>
+                  @foreach ($getCategories as $cat)
+                      <option value="{{ $cat['id'] }}">{{ $cat['category_name'] }}
+                      </
+                      @if (!empty($cat['sub_categories']))
+                          @foreach ($cat['sub_categories'] as $subcat)
+                              <option value="{{ $subcat['id'] }}">
+                                  &nbsp;&nbsp;&raquo; {{ $subcat['category_name'] }}
+                              </option>
+                              @if (!empty($subcat['sub_categories']))
+                                  @foreach ($subcat['sub_categories'] as $subsubcat)
+                                      <option value="{{ $subsubcat['id'] }}">
+                                          &nbsp;&nbsp; &nbsp;&nbsp;&raquo;&raquo;
+                                          {{ $subsubcat['category_name'] }}</option>
+                                      @if (!empty($subsubcat['sub_categories']))
+                                          @foreach ($subsubcat['sub_categories'] as $subsubsubcat)
+                                              <option value="{{ $subsubsubcat['id'] }}">
+                                                  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&raquo;&raquo;&raquo;
+                                                  {{ $subsubsubcat['category_name'] }}
+                                              </option>
+                                          @endforeach
+                                      @endif
+                                  @endforeach
+                              @endif
+                          @endforeach
+                      @endif
+                  @endforeach
+              </select>
+          </div>
+    ```
+
+5) Update getcategories function :-
+   Now, we will update getcategories function at Category model and will work for multiple category level in which we will get Parent Categories, their Sub Categories and their Sub Sub Categories in select box.
+
+6) Update add_edit_category.blade.php file :-
+   Now we will update add_edit_category.blade.php file to show multiple level catgories in select box.
+
+# 41 Categories Module (VIII) Add/Edit Category Edit Category Details
+
+1. Update <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file :-
+   First of all, update the categories page in the admin panel with the Actions column that is having Edit and Delete links for categories. We will add Edit link for now for editing the category.
+    ```
+         <a href="{{ url('admin/add-edit-category/' . $category['id']) }}"> <i
+                                                              class="fas fa-edit"></i></a>
+    ```
+
+2) Update **addEditCategory** function :-
+   Now, we will update the **addEditCategory** function in <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a>. We will fetch category data from a query that we want to edit and return that category data to the <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file.
+3) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Now we will update the add_edit_category.blade.php file and show category data in the form that we want to edit. We will also change the action of the form if the category id is not empty. We will allow the admin to change the category level and other category details along with the category image.

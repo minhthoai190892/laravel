@@ -115,6 +115,7 @@
                                       </div>
                                       <!-- /.card-body -->
                                       <input type="hidden" name="status" value="{{ $subadmindata['status'] }}">
+                                      <input type="hidden" name="id" value="{{ $subadmindata['id'] }}">
                                       <div>
                                           <button type="submit" class="btn btn-primary">Submit</button>
                                       </div>

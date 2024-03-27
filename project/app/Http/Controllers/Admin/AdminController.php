@@ -26,6 +26,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         Session::put('page', 'dashboard');
+        
         return view('admin.dashboard');
     }
     /**
@@ -60,7 +61,7 @@ class AdminController extends Controller
             // xác minh dữ liệu có đúng trong database không
             if (Auth::guard('admin')->attempt(['email' => $data['email'], 'password' => $data['password']])) {
                 // *TODO remember admin email and password with cookie
-                //   ? - kiểm tra có được thiết lập không và không được để trống
+                //   ? - kiểm tra có được thiết lập không và không  để trống
                 if (isset ($data['remember']) && !empty ($data['remember'])) {
                     // * thiết lập lưu cookie và thiết lập thời gian hết hạn
                     setcookie('email', $data['email'], time() + 3600);
@@ -188,7 +189,7 @@ class AdminController extends Controller
                     // Generate new Image Name
                     $imageName = rand(111, 99999) . '.' . $extension;
                     // tạo đường dẫn luư hình ảnh
-                    $image_path = 'admin/images/photos/' . $imageName;
+                    $image_path = 's' . $imageName;
                     // tải hình ảnh
                     Image::make($image_tmp)->save($image_path);
                 }
@@ -373,10 +374,14 @@ class AdminController extends Controller
         }
         return view('admin.subadmins.add_edit_subadmin')->with(compact('title', 'subadmindata'));
     }
+    /**
+     * @param mixed $id id của người đăng nhập
+     * @param Request $request yêu cầu của người dùng
+     */
     public function updateRole($id, Request $request)
     {
         if ($request->isMethod('post')) {
-            // ! lấy tất cả dữ liệu trong bảng
+            // !lấy tất cả dữ liệu người dùng yêu cầu
             $data = $request->all();
             //  echo "<pre>";
             // print_r($data);
@@ -401,7 +406,7 @@ class AdminController extends Controller
                     $full =0;
                 }
             }
-        
+            // ! Thêm dữ liệu vào bảng roles
             $roles = new AdminsRole;
             $roles->subadmin_id=$id;
             $roles->module='cms_pages';

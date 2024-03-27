@@ -41,9 +41,11 @@
                           <div class="card">
                               <div class="card-header">
                                   <h3 class="card-title">CMS Pages</h3>
+                                  @if ($pagesModule['edit_access'] == 1 || $pagesModule['full_access'] == 1)
                                   <a style="max-width: 150px;float: right;display: inline-block;"
                                       class="btn btn-block btn-primary" href="{{ url('admin/add-edit-cms-page') }}"
                                       target="_blank" rel="noopener noreferrer">Add CMS Page</a>
+                                  @endif
 
                               </div>
                               <!-- /.card-header -->
@@ -68,27 +70,37 @@
 
                                                   {{-- kiểm tra trạng thái --}}
                                                   <td>
-                                                      @if ($page['status'] == 1)
-                                                          <a href="javascript:void(0)" class="updateCmsPageStatus"
-                                                              id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}><i
-                                                                  class="fas fa-toggle-on" status="Active"></i></a>
-                                                      @else
-                                                          <a href="javascript:void(0)" class="updateCmsPageStatus"
-                                                              id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}
-                                                              style="color: grey"><i class="fas fa-toggle-off"
-                                                                  status="Inactive"></i></a>
+                                                      @if ($pagesModule['edit_access'] == 1 || $pagesModule['full_access'] == 1)
+                                                          @if ($page['status'] == 1)
+                                                              <a href="javascript:void(0)" class="updateCmsPageStatus"
+                                                                  id="page-{{ $page['id'] }}"
+                                                                  page_id={{ $page['id'] }}><i class="fas fa-toggle-on"
+                                                                      status="Active"></i></a>
+                                                          @else
+                                                              <a href="javascript:void(0)" class="updateCmsPageStatus"
+                                                                  id="page-{{ $page['id'] }}" page_id={{ $page['id'] }}
+                                                                  style="color: grey"><i class="fas fa-toggle-off"
+                                                                      status="Inactive"></i></a>
+                                                          @endif
+                                                      @endif
+
+                                                      &nbsp;
+                                                      &nbsp;
+                                                      @if ($pagesModule['edit_access'] == 1 || $pagesModule['full_access'] == 1)
+                                                          <a href="{{ url('admin/add-edit-cms-page/' . $page['id']) }}"> <i
+                                                                  class="fas fa-edit"></i></a>
                                                       @endif
                                                       &nbsp;
                                                       &nbsp;
-                                                      <a href="{{ url('admin/add-edit-cms-page/' . $page['id']) }}"> <i
-                                                              class="fas fa-edit"></i></a>
-                                                      &nbsp;
-                                                      &nbsp;
-                                                      <a  href="javascript:void(0)"  <?php /*href="{{ url('admin/delete-cms-page/' . $page['id']) }}"*/?> class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
-                                                          <i class="fas fa-trash"></i></a>
+                                                      @if ($pagesModule['full_access'] == 1)
+                                                          <a href="javascript:void(0)" <?php /*href="{{ url('admin/delete-cms-page/' . $page['id']) }}"*/?>
+                                                              class="confirmDelete" name='CMS Page' title="Delete CMS Page"
+                                                              record='cms-page' recordid={{ $page['id'] }}>
+                                                              <i class="fas fa-trash"></i></a>
                                                           {{-- simple aler --}}
                                                           {{-- <a  href="{{ url('admin/delete-cms-page/' . $page['id']) }}" class="confirmDelete" name='CMS Page' title="Delete CMS Page" record='cms-page' recordid={{ $page['id'] }}>
                                                             <i class="fas fa-trash"></i></a> --}}
+                                                      @endif
 
                                                   </td>
                                               </tr>
