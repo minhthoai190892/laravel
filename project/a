@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-40-Categories-Module-VII-Add/Manage-Multiple-Category-Levels
+git checkout -b LARAVEL-41-Categories-Module-VIII-Add/Edit-Category-Edit-Category-Details
 git add .
-git commit -m "LARAVEL-40-Categories-Module-VII-Add/Manage-Multiple-Category-Levels"
-git push -u origin LARAVEL-40-Categories-Module-VII-Add/Manage-Multiple-Category-Levels
+git commit -m "LARAVEL-41-Categories-Module-VIII-Add/Edit-Category-Edit-Category-Details"
+git push -u origin LARAVEL-41-Categories-Module-VIII-Add/Edit-Category-Edit-Category-Details
 
 
 

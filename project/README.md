@@ -2366,3 +2366,17 @@ Delete
 
 6) Update add_edit_category.blade.php file :-
    Now we will update add_edit_category.blade.php file to show multiple level catgories in select box.
+
+# 41 Categories Module (VIII) Add/Edit Category Edit Category Details
+
+1. Update <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file :-
+   First of all, update the categories page in the admin panel with the Actions column that is having Edit and Delete links for categories. We will add Edit link for now for editing the category.
+    ```
+         <a href="{{ url('admin/add-edit-category/' . $category['id']) }}"> <i
+                                                              class="fas fa-edit"></i></a>
+    ```
+
+2) Update **addEditCategory** function :-
+   Now, we will update the **addEditCategory** function in <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a>. We will fetch category data from a query that we want to edit and return that category data to the <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file.
+3) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Now we will update the add_edit_category.blade.php file and show category data in the form that we want to edit. We will also change the action of the form if the category id is not empty. We will allow the admin to change the category level and other category details along with the category image.

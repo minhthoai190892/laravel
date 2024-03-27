@@ -189,7 +189,7 @@ class AdminController extends Controller
                     // Generate new Image Name
                     $imageName = rand(111, 99999) . '.' . $extension;
                     // tạo đường dẫn luư hình ảnh
-                    $image_path = 'admin/images/photos/' . $imageName;
+                    $image_path = 's' . $imageName;
                     // tải hình ảnh
                     Image::make($image_tmp)->save($image_path);
                 }

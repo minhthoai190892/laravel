@@ -62,6 +62,7 @@
                                           @foreach ($categories as $category)
                                               <tr>
                                                   <td>{{ $category['id'] }}</td>
+                                                  <input type="hidden" name="" value="{{ $category['id'] }}">
                                                   <td>{{ $category['category_name'] }}</td>
                                                   <td>
                                                       @if (isset($category['parentcategory']['category_name']))

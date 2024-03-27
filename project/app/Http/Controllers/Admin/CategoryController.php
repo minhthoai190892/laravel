@@ -86,12 +86,23 @@ class CategoryController extends Controller
             // echo"<pre>";
             // print_r($data);die;
             // !validation
-            $rules = [
-                // ! bắt buộc nhập tên category
-                'category_name' => 'required',
-                // ! bắt buộc nhập url | và không trùng với url cũ
-                'url' => 'required|unique:categories',
-            ];
+            if ($id=='') {
+                $rules = [
+                    // ! bắt buộc nhập tên category
+                    'category_name' => 'required',
+                    // ! bắt buộc nhập url | và không trùng với url cũ
+                    'url' => 'required|unique:categories',
+                ];
+            } else {
+                $rules = [
+                    // ! bắt buộc nhập tên category
+                    'category_name' => 'required',
+                    // ! bắt buộc nhập url | và không trùng với url cũ
+                    'url' => 'required',
+                ];
+            }
+            
+          
             $customMessage = [
                 'category_name.required' => 'Category Name is required',
                 'url.required' => 'Category Url is required',
@@ -108,21 +119,33 @@ class CategoryController extends Controller
                     // Generate new Image Name
                     $imageName = rand(111, 99999) . '.' . $extension;
                     // tạo đường dẫn luư hình ảnh
-                    $image_path = 'admin/front/images/categories/' . $imageName;
+                    $image_path = 'admin/images/categories/' . $imageName;
 
                     // tải hình ảnh
                     Image::make($image_tmp)->save($image_path);
-                    $category->category_image = $imageName;
+                    // $category->category_image = $imageName;
                 }
+            }
+            //  else {
+            //     # code...
+            //     $category->category_image = '';
+            // }
+            else if (
+                !empty ($data['current_image'])
+            ) {
+                # code...
+                $imageName = $data['current_image'];
             } else {
                 # code...
-                $category->category_image = '';
+                $imageName = '';
             }
+
             if (empty($data['category_discount'])) {
                 # code...
                 $data['category_discount']=0;
             }
             $category->category_name = $data['category_name'];
+            $category->category_image =   $imageName;
             $category->category_discount = $data['category_discount'];
             $category->description = $data['description'];
             $category->url = $data['url'];
@@ -138,7 +161,7 @@ class CategoryController extends Controller
 
         }
         // ! hiển thị trang web add/edit category
-        return view('admin.categories.add_edit_category')->with(compact('title', 'getCategories'));
+        return view('admin.categories.add_edit_category')->with(compact('title', 'getCategories','category'));
 
     }
 
