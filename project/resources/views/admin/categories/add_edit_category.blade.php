@@ -73,19 +73,54 @@
                                           <div class="form-group col-md-6">
                                               <label for="category_name">Category Name*</label>
                                               <input type="text" class="form-control" id="category_name"
-                                                  name="category_name" placeholder="Enter Category Name" value="{{ old('category_name') }}">
+                                                  name="category_name" placeholder="Enter Category Name"
+                                                  value="{{ old('category_name') }}">
                                           </div>
+                                          <div class="form-group col-md-6">
+                                              <label for="category_name">Category Level*</label>
+                                              <select name="parent_id" id="" class="form-control">
+                                                  <option value="">Select</option>
+                                                  <option value="0">Main Category</option>
+                                                  @foreach ($getCategories as $cat)
+                                                      <option value="{{ $cat['id'] }}">{{ $cat['category_name'] }}
+                                                      </option>
 
+                                                      @if (!empty($cat['sub_categories']))
+                                                          @foreach ($cat['sub_categories'] as $subcat)
+                                                              <option value="{{ $subcat['id'] }}">
+                                                                  &nbsp;&nbsp;&raquo; {{ $subcat['category_name'] }}
+                                                              </option>
+                                                              @if (!empty($subcat['sub_categories']))
+                                                                  @foreach ($subcat['sub_categories'] as $subsubcat)
+                                                                      <option value="{{ $subsubcat['id'] }}">
+                                                                          &nbsp;&nbsp; &nbsp;&nbsp;&raquo;&raquo;
+                                                                          {{ $subsubcat['category_name'] }}</option>
+                                                                      @if (!empty($subsubcat['sub_categories']))
+                                                                          @foreach ($subsubcat['sub_categories'] as $subsubsubcat)
+                                                                              <option value="{{ $subsubsubcat['id'] }}">
+                                                                                  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&raquo;&raquo;&raquo;
+                                                                                  {{ $subsubsubcat['category_name'] }}
+                                                                              </option>
+                                                                          @endforeach
+                                                                      @endif
+                                                                  @endforeach
+                                                              @endif
+                                                          @endforeach
+                                                      @endif
+                                                  @endforeach
+                                              </select>
+                                          </div>
                                           <div class="form-group col-md-6">
                                               <label for="category_image">Category Image</label>
                                               <input type="file" class="form-control" id="category_image"
-                                                  name="category_image" >
+                                                  name="category_image">
 
                                           </div>
                                           <div class="form-group col-md-6">
                                               <label for="category_discount">Category Discount</label>
                                               <input type="text" class="form-control" id="category_discount"
-                                                  name="category_discount" placeholder="Enter Category Discount" value="{{ old('category_discount') }}">
+                                                  name="category_discount" placeholder="Enter Category Discount"
+                                                  value="{{ old('category_discount') }}">
                                           </div>
                                           <div class="form-group col-md-6">
                                               <label for="url">Category URL*</label>
@@ -106,12 +141,14 @@
                                           <div class="form-group col-md-6">
                                               <label for="meta_description">Meta Description</label>
                                               <input type="text" class="form-control" id="meta_description"
-                                                  name="meta_description" placeholder="Enter Category meta_description" value="{{ old('meta_description') }}">
+                                                  name="meta_description" placeholder="Enter Category meta_description"
+                                                  value="{{ old('meta_description') }}">
                                           </div>
                                           <div class="form-group col-md-6">
                                               <label for="meta_keywords">Meta Description</label>
                                               <input type="text" class="form-control" id="meta_keywords"
-                                                  name="meta_keywords" placeholder="Enter Category meta_keywords" value="{{ old('meta_keywords') }}">
+                                                  name="meta_keywords" placeholder="Enter Category meta_keywords"
+                                                  value="{{ old('meta_keywords') }}">
                                           </div>
                                       </div>
                                       <!-- /.card-body -->

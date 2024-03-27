@@ -62,9 +62,13 @@ class CategoryController extends Controller
      * add/edit category
      * @param Request $request yêu cầu của người dùng
      * @param mixed $id id category
-      */
-    public function addEditCategory(Request $request,$id = null)
+     */
+    public function addEditCategory(Request $request, $id = null)
     {
+        // lấy danh sách category
+        $getCategories = Category::getCategories();
+        //    return $getCategories;
+        // dd($getCategories);
         // ! kiểm tra id có tồn tại không
         if ($id == "") {
             // ? id chưa tồn tại
@@ -74,7 +78,7 @@ class CategoryController extends Controller
         } else {
             // ? id đã tồn tại
             $title = 'Edit Category';
-            $category =  Category::find($id);
+            $category = Category::find($id);
             $message = "Category edited successfully";
         }
         if ($request->isMethod('POST')) {
@@ -82,18 +86,18 @@ class CategoryController extends Controller
             // echo"<pre>";
             // print_r($data);die;
             // !validation
-            $rules=[
+            $rules = [
                 // ! bắt buộc nhập tên category
-                'category_name'=>'required',
+                'category_name' => 'required',
                 // ! bắt buộc nhập url | và không trùng với url cũ
-                'url'=>'required|unique:categories',
+                'url' => 'required|unique:categories',
             ];
-            $customMessage=[
-                'category_name.required'=>'Category Name is required',
-                'url.required'=>'Category Url is required',
-                'url.unique'=>'Unique Category Url is required',
+            $customMessage = [
+                'category_name.required' => 'Category Name is required',
+                'url.required' => 'Category Url is required',
+                'url.unique' => 'Unique Category Url is required',
             ];
-            $this->validate($request,$rules,$customMessage);
+            $this->validate($request, $rules, $customMessage);
             // ? update category image
             // kiểm tra file hình ảnh
             if ($request->hasFile('category_image')) {
@@ -108,11 +112,15 @@ class CategoryController extends Controller
 
                     // tải hình ảnh
                     Image::make($image_tmp)->save($image_path);
-                    $category->category_image=$imageName;
+                    $category->category_image = $imageName;
                 }
-            } else  {
+            } else {
                 # code...
-                $category->category_image= '';
+                $category->category_image = '';
+            }
+            if (empty($data['category_discount'])) {
+                # code...
+                $data['category_discount']=0;
             }
             $category->category_name = $data['category_name'];
             $category->category_discount = $data['category_discount'];
@@ -121,16 +129,16 @@ class CategoryController extends Controller
             $category->meta_title = $data['meta_title'];
             $category->meta_description = $data['meta_description'];
             $category->meta_keywords = $data['meta_keywords'];
-            $category->parent_id =0;
+            $category->parent_id =  $data['parent_id'];
 
-            $category->status =1;
-       
+            $category->status = 1;
+
             $category->save();
-            return redirect('admin/categories')->with('success_message',$message);
+            return redirect('admin/categories')->with('success_message', $message);
 
         }
         // ! hiển thị trang web add/edit category
-        return view('admin.categories.add_edit_category')->with(compact('title'));
+        return view('admin.categories.add_edit_category')->with(compact('title', 'getCategories'));
 
     }
 

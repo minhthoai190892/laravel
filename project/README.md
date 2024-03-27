@@ -2302,4 +2302,67 @@ Delete
     ```
 
 2) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
-Now show the error message above form at add_edit_category.blade.php file.
+   Now show the error message above form at add_edit_category.blade.php file.
+
+# 40 Categories Module VII Add/Manage Multiple Category Levels
+
+1. Create getcategories function :-
+   First of all, we will create getcategories function at <a href='app\Models\Category.php'>Category</a> model and will work for one category level in which we will get Parent Categories and their Sub Categories in select box.
+
+2) Create subcategories Relation :-
+   We will create hasMany relation between Category and their Sub Categories.
+
+3) Update **addEditCategory** function :-
+   Now we will update **addEditCategory** function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> to fetch all categories and return to add/edit category blade file.
+
+    ```
+          // lấy danh sách category
+         $getCategories = Category::getCategories();
+    ```
+
+4) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Now we will update add_edit_category.blade.php file to show Category Level select box in which we will show Categories and their Sub Categories
+
+    Work for Multiple Category Level:
+
+    ```
+          <div class="form-group col-md-6">
+              <label for="category_name">Category Level*</label>
+              <select name="parent_id" id="" class="form-control">
+                  <option value="">Select</option>
+                  <option value="0">Main Category</option>
+                  @foreach ($getCategories as $cat)
+                      <option value="{{ $cat['id'] }}">{{ $cat['category_name'] }}
+                      </
+                      @if (!empty($cat['sub_categories']))
+                          @foreach ($cat['sub_categories'] as $subcat)
+                              <option value="{{ $subcat['id'] }}">
+                                  &nbsp;&nbsp;&raquo; {{ $subcat['category_name'] }}
+                              </option>
+                              @if (!empty($subcat['sub_categories']))
+                                  @foreach ($subcat['sub_categories'] as $subsubcat)
+                                      <option value="{{ $subsubcat['id'] }}">
+                                          &nbsp;&nbsp; &nbsp;&nbsp;&raquo;&raquo;
+                                          {{ $subsubcat['category_name'] }}</option>
+                                      @if (!empty($subsubcat['sub_categories']))
+                                          @foreach ($subsubcat['sub_categories'] as $subsubsubcat)
+                                              <option value="{{ $subsubsubcat['id'] }}">
+                                                  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&raquo;&raquo;&raquo;
+                                                  {{ $subsubsubcat['category_name'] }}
+                                              </option>
+                                          @endforeach
+                                      @endif
+                                  @endforeach
+                              @endif
+                          @endforeach
+                      @endif
+                  @endforeach
+              </select>
+          </div>
+    ```
+
+5) Update getcategories function :-
+   Now, we will update getcategories function at Category model and will work for multiple category level in which we will get Parent Categories, their Sub Categories and their Sub Sub Categories in select box.
+
+6) Update add_edit_category.blade.php file :-
+   Now we will update add_edit_category.blade.php file to show multiple level catgories in select box.
