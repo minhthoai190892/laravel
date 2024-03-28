@@ -476,7 +476,7 @@ cần phải thiết lập lại **admin model**
 5) Update <a href='../project/resources/views/admin/layout/sidebar.blade.php'> sidebar page</a> file :-
    Now we will also update admin sidebar to show settings link along with admin name and type who logged in.
 
-# Update Admin Password (II) | Check Current Password via Ajax
+# Update Admin Password (II) Check Current Password via Ajax
 
 1. Update <a href='../project/resources/views/admin/update_password.blade.php'> update pasword page</a> file :
    First of all, we will update "Update Password" form by adding action, name, id to form.
@@ -2432,3 +2432,18 @@ Delete
    We will update the categories page and add conditions to show specific feature according to roles granted to sub admin.
 3) Update <a href='resources\views\admin\subadmins\update_roles.blade.php'>update_roles.blade.php</a> file :-
    Now update roles to show categories module with the view, edit, and full access that admin will update for sub admin.
+
+# 44 Create E-commerce Website Products Module (I) Create products Table
+
+1. Create products table:-
+   First of all, we will create products table with migration. Create migration file with name create_products_table for creating products table with below columns:-
+   id, category_id, brand_id, product_name, product_code, product_color, family_color, group_code, product_price, product_discount, discount_type, final_price, product_weight, product_video, description, wash_care, search_keywords, fabric, pattern, sleeve, fit, occasion, meta_title, meta_description, meta_keywords, is_featured and status
+
+    So, we will run the below artisan command to create a migration file for products:-
+    >php artisan make:migration create_products_table
+
+    Open the create_products_table migration file and add all required columns mentioned earlier.
+
+    Now, we will run below artisan command to create a products table with the required columns:-
+    >php artisan migrate
+

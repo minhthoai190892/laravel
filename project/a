@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-43-Ecommerce-Website-in-Laravel-10-Categories-Module-X-Roles/Permission
+git checkout -b LARAVEL-44-Create-E-commerce-Website-Products-Module-I-Create-products-Table
 git add .
-git commit -m "LARAVEL-43-Ecommerce-Website-in-Laravel-10-Categories-Module-X-Roles/Permission"
-git push -u origin LARAVEL-43-Ecommerce-Website-in-Laravel-10-Categories-Module-X-Roles/Permission
+git commit -m "LARAVEL-44-Create-E-commerce-Website-Products-Module-I-Create-products-Table"
+git push -u origin LARAVEL-44-Create-E-commerce-Website-Products-Module-I-Create-products-Table
 
 
 
