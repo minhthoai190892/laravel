@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminsRole;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Session;
 use Image;
+use Auth;
 
 class CategoryController extends Controller
 {
@@ -20,7 +22,33 @@ class CategoryController extends Controller
         $categories = Category::with('parentcategory')->get();
         // dd($categories);
         //    return $categories;
-        return view('admin.categories.categories')->with(compact('categories'));
+          // ! set Admin/Subadmin Permissions for Categories
+        // ? so sánh id trong bảng AdminsRole có giống với id đăng đăng nhập và so sánh module có phải categories
+        $categoriesModuleCount = AdminsRole::where([
+            'subadmin_id' => Auth::guard('admin')->user()->id,
+            'module' => 'categories'
+        ])->count();
+        $categoriesModule = array();
+        // ? kiểm tra admin đang đăng nhập
+        if (Auth::guard('admin')->user()->type == 'admin') {
+            // * đây là admin 
+            $categoriesModule['view_access'] = 1;
+            $categoriesModule['edit_access'] = 1;
+            $categoriesModule['full_access'] = 1;
+
+        } else if ($categoriesModuleCount == 0) {
+            // * chưa có quyền truy cập
+            $message = 'This feature is restricted for you';
+            return redirect('/admin/dashboard')->with('error_message', $message);
+        } else {
+            // * có một số quyền truy cập
+            $categoriesModule = AdminsRole::where([
+                'subadmin_id' => Auth::guard('admin')->user()->id,
+                'module' => 'categories'
+            ])->first()->toArray();
+           
+        }
+        return view('admin.categories.categories')->with(compact('categories','categoriesModule'));
     }
     /**
      * Update the specified resource in storage.
@@ -180,4 +208,5 @@ class CategoryController extends Controller
         
         return redirect()->back()->with('success_message', 'Category imge deleted successfully');
     }
+    
 }

@@ -73,23 +73,30 @@
                                                   <td>{{ date('F j, Y,g:i a', strtotime($category['created_at'])) }}</td>
                                                   {{-- kiểm tra trạng thái --}}
                                                   <td>
-                                                      @if ($category['status'] == 1)
-                                                          <a href="javascript:void(0)" class="updateCategoryStatus"
-                                                              id="category-{{ $category['id'] }}"
-                                                              category_id={{ $category['id'] }}><i class="fas fa-toggle-on"
-                                                                  status="Active"></i></a>
-                                                      @else
-                                                          <a href="javascript:void(0)" class="updateCategoryStatus"
-                                                              id="category-{{ $category['id'] }}"
-                                                              category_id={{ $category['id'] }} style="color: grey"><i
-                                                                  class="fas fa-toggle-off" status="Inactive"></i></a>
+                                                      @if ($categoriesModule['edit_access'] == 1 || $categoriesModule['full_access'] == 1)
+                                                          @if ($category['status'] == 1)
+                                                              <a href="javascript:void(0)" class="updateCategoryStatus"
+                                                                  id="category-{{ $category['id'] }}"
+                                                                  category_id={{ $category['id'] }}><i
+                                                                      class="fas fa-toggle-on" status="Active"></i></a>
+                                                          @else
+                                                              <a href="javascript:void(0)" class="updateCategoryStatus"
+                                                                  id="category-{{ $category['id'] }}"
+                                                                  category_id={{ $category['id'] }} style="color: grey"><i
+                                                                      class="fas fa-toggle-off" status="Inactive"></i></a>
+                                                          @endif
                                                       @endif
-                                                      <a href="{{ url('admin/add-edit-category/' . $category['id']) }}"> <i
-                                                              class="fas fa-edit"></i></a>
+                                                    @if ($categoriesModule['edit_access'] == 1 || $categoriesModule['full_access'] == 1)
+                                                    <a href="{{ url('admin/add-edit-category/' . $category['id']) }}"> <i
+                                                        class="fas fa-edit"></i></a>
+                                                    @endif
+                                                      @if ($categoriesModule['full_access'] == 1)
                                                       <a href="javascript:void(0)" <?php /*href="{{ url('admin/delete-category/' . $category['id']) }}"*/?> class="confirmDelete"
-                                                          title="Delete Category" record='category'
-                                                          recordid={{ $category['id'] }}>
-                                                          <i class="fas fa-trash"></i></a>
+                                                        title="Delete Category" record='category'
+                                                        recordid={{ $category['id'] }}>
+                                                        <i class="fas fa-trash"></i></a>
+                                                      @endif
+                                                      
                                                   </td>
                                               </tr>
                                           @endforeach

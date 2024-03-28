@@ -2388,6 +2388,7 @@ Delete
 
     Delete Category Image
     Add a "Delete Image" link where we are displaying the category image in edit category form.
+
     ```
      <a href="javascript:void(0)"  class="confirmDelete"
           title="Delete Category Image" record='category-image'
@@ -2395,6 +2396,7 @@ Delete
           <i class="fas fa-trash" style="color: #FFF"></i></a>
 
     ```
+
 2) Create Route:-
    Create GET Route with parameter category id in web.php file like below:-
 
@@ -2402,8 +2404,9 @@ Delete
 
 3) Create deleteCategoryImage Function:-
    Create deleteCategoryImage function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> where we will get category image from category id and will delete category image from categories table and from a folder as well.
+
     ```
-        
+
     public function deleteCategoryImage($id){
         // ? lấy hình ảnh của category
         $categoryImage = Category::select('category_image')->where('id',$id)->first();
@@ -2415,7 +2418,17 @@ Delete
         }
         // ? xóa hình ảnh category từ bảng categories
         Category::where('id',$id)->update(['category_image'=>'']);
-        
+
         return redirect()->back()->with('success_message', 'Category imge deleted successfully');
     }
     ```
+
+# 43 Ecommerce Website in Laravel 10 Categories Module (X) Roles/Permission
+
+1. Update **categories** function:-
+   First of all, we will update the categories function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> to get categories permissions for specific sub admin and return to the categories page in the admin panel. In the case of admin, we will show everything.
+
+2) Update <a href='resources\views\admin\categories\categories.blade.php'>categories.blade.php</a> file :-
+   We will update the categories page and add conditions to show specific feature according to roles granted to sub admin.
+3) Update <a href='resources\views\admin\subadmins\update_roles.blade.php'>update_roles.blade.php</a> file :-
+   Now update roles to show categories module with the view, edit, and full access that admin will update for sub admin.

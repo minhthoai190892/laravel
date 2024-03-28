@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-42-Categories-Module-IX-Add/Edit-Category-View/Delete-Category-Image
+git checkout -b LARAVEL-43-Ecommerce-Website-in-Laravel-10-Categories-Module-X-Roles/Permission
 git add .
-git commit -m "LARAVEL-42-Categories-Module-IX-Add/Edit-Category-View/Delete-Category-Image"
-git push -u origin LARAVEL-42-Categories-Module-IX-Add/Edit-Category-View/Delete-Category-Image
+git commit -m "LARAVEL-43-Ecommerce-Website-in-Laravel-10-Categories-Module-X-Roles/Permission"
+git push -u origin LARAVEL-43-Ecommerce-Website-in-Laravel-10-Categories-Module-X-Roles/Permission
 
 
 

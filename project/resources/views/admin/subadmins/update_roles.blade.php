@@ -67,79 +67,109 @@
                                       method="POST">
                                       @csrf
                                       <input type="hidden" name="subadmin_id" value="{{ $id }}">
-                                      <div class="card-body">
-                                          {{-- <div class="form-group col-md-6">
-                                              <label for="email">Email</label>
-                                              <input type="email" class="form-control"
-                                                  @if ($subadmindata['email'] != '') disabled=''
-                                            @else
-                                                required='' @endif
-                                                  id="email"name="email" placeholder="Enter Email"
-                                                  @if (!empty($subadmindata['email'])) value="{{ $subadmindata['email'] }}"
-                                                  @else 
-                                                      value="{{ old('name') }}" @endif>
-                                          </div> --}}
-                                          {{-- ! kiểm tra roles có rỗng không --}}
-                                          @if (!empty($subadminRoles))
+                                      {{-- ! kiểm tra roles có rỗng không --}}
+                                      @if (!empty($subadminRoles))
                                           {{-- ! duyệt mảng để lấy các roles đã được thiết lập --}}
-                                              @foreach ($subadminRoles as $role)
+                                          @foreach ($subadminRoles as $role)
                                               {{-- ! kiểm tra loại module --}}
-                                                  @if ($role['module'] == 'cms_pages')
+                                              @if ($role['module'] == 'cms_pages')
                                                   {{-- ! kiểm tra có chọn role view hay không --}}
-                                                      @if ($role['view_access'] == 1)
-
+                                                  @if ($role['view_access'] == 1)
                                                       {{-- ! có thì thêm attribute 'checked' --}}
-                                                          @php
-                                                              $viewCMSPages = 'checked';
-                                                          @endphp
-                                                      @else
+                                                      @php
+                                                          $viewCMSPages = 'checked';
+                                                      @endphp
+                                                  @else
                                                       {{-- ! không có để '' --}}
-                                                          @php
-                                                              $viewCMSPages = '';
-                                                          @endphp
-                                                      @endif
-                                                      @if ($role['edit_access'] == 1)
-                                                          @php
-                                                              $editCMSPages = 'checked';
-                                                          @endphp
-                                                      @else
-                                                          @php
-                                                              $editCMSPages = '';
-                                                          @endphp
-                                                      @endif
-                                                      @if ($role['full_access'] == 1)
-                                                          @php
-                                                              $fullCMSPages = 'checked';
-                                                          @endphp
-                                                      @else
-                                                          @php
-                                                              $fullCMSPages = '';
-                                                          @endphp
-                                                      @endif
+                                                      @php
+                                                          $viewCMSPages = '';
+                                                      @endphp
                                                   @endif
-                                              @endforeach
-                                          @endif
-                                          <div class="form-group col-md-6">
-                                              <label for="cms_page">CMS Pages:&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                                              <input type="checkbox" id="cms_page" value="1"
-                                              {{-- ! kiểm tra view có được thiết lập không --}}
-                                               @if (isset( $viewCMSPages))
-                                              {{$viewCMSPages}}
+                                                  @if ($role['edit_access'] == 1)
+                                                      @php
+                                                          $editCMSPages = 'checked';
+                                                      @endphp
+                                                  @else
+                                                      @php
+                                                          $editCMSPages = '';
+                                                      @endphp
+                                                  @endif
+                                                  @if ($role['full_access'] == 1)
+                                                      @php
+                                                          $fullCMSPages = 'checked';
+                                                      @endphp
+                                                  @else
+                                                      @php
+                                                          $fullCMSPages = '';
+                                                      @endphp
+                                                  @endif
                                               @endif
-                                                  name="cms_page[view]">View Access
+                                              @if ($role['module'] == 'categories')
+                                                  {{-- ! kiểm tra có chọn role view hay không --}}
+                                                  @if ($role['view_access'] == 1)
+                                                      {{-- ! có thì thêm attribute 'checked' --}}
+                                                      @php
+                                                          $viewCategories = 'checked';
+                                                      @endphp
+                                                  @else
+                                                      {{-- ! không có để '' --}}
+                                                      @php
+                                                          $viewCategories = '';
+                                                      @endphp
+                                                  @endif
+                                                  @if ($role['edit_access'] == 1)
+                                                      @php
+                                                          $editCategories = 'checked';
+                                                      @endphp
+                                                  @else
+                                                      @php
+                                                          $editCategories = '';
+                                                      @endphp
+                                                  @endif
+                                                  @if ($role['full_access'] == 1)
+                                                      @php
+                                                          $fullCategories = 'checked';
+                                                      @endphp
+                                                  @else
+                                                      @php
+                                                          $fullCategories = '';
+                                                      @endphp
+                                                  @endif
+                                              @endif
+                                          @endforeach
+                                      @endif
+                                      <div class="card-body">
+                                          <div class="form-group col-md-6">
+                                              <label for="cms_pages">CMS Pages:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                              <input type="checkbox" value="1" {{-- ! kiểm tra view có được thiết lập không --}}
+                                                  @if (isset($viewCMSPages)) {{ $viewCMSPages }} @endif
+                                                  name="cms_pages[view]">View Access
                                               &nbsp;&nbsp;&nbsp;&nbsp;
-                                              <input type="checkbox" id="cms_page" value="1"
-                                                  name="cms_page[edit]" @if (isset( $editCMSPages))
-                                                  {{$editCMSPages}}
-                                                  @endif>View/Edit Access
+                                              <input type="checkbox" value="1" name="cms_pages[edit]"
+                                                  @if (isset($editCMSPages)) {{ $editCMSPages }} @endif>View/Edit
+                                              Access
                                               &nbsp;&nbsp;&nbsp;&nbsp;
-                                              <input type="checkbox" id="cms_page" value="1"
-                                                  name="cms_page[full]"  @if (isset( $fullCMSPages))
-                                                  {{$fullCMSPages}}
-                                                  @endif>Full Access
+                                              <input type="checkbox" value="1" name="cms_pages[full]"
+                                                  @if (isset($fullCMSPages)) {{ $fullCMSPages }} @endif>Full Access
                                               &nbsp;&nbsp;&nbsp;&nbsp;
 
                                           </div>
+
+                                          <div class="form-group col-md-6">
+                                            <label for="categories">Categories:&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                            <input type="checkbox" value="1" {{-- ! kiểm tra view có được thiết lập không --}}
+                                                @if (isset($viewCategories)) {{ $viewCategories }} @endif
+                                                name="categories[view]">View Access
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" value="1" name="categories[edit]"
+                                                @if (isset($editCategories)) {{ $editCategories }} @endif>View/Edit
+                                            Access
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="checkbox" value="1" name="categories[full]"
+                                                @if (isset($fullCategories)) {{ $fullCategories }} @endif>Full Access
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                        </div>
                                       </div>
                                       <!-- /.card-body -->
                                       {{-- <input type="hidden" name="status" value="{{ $subadmindata['status'] }}"> --}}

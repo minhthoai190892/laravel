@@ -383,6 +383,7 @@ class AdminController extends Controller
         if ($request->isMethod('post')) {
             // !lấy tất cả dữ liệu người dùng yêu cầu
             $data = $request->all();
+            $roles = new AdminsRole;
             //  echo "<pre>";
             // print_r($data);
             // die;
@@ -407,9 +408,9 @@ class AdminController extends Controller
                 }
             }
             // ! Thêm dữ liệu vào bảng roles
-            $roles = new AdminsRole;
+         
             $roles->subadmin_id=$id;
-            $roles->module='cms_pages';
+            $roles->module=$key;
             $roles->view_access= $view;
             $roles->edit_access=$edit;
             $roles->full_access=$full;
