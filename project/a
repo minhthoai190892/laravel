@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-44-Create-E-commerce-Website-Products-Module-I-Create-products-Table
+git checkout -b LARAVEL-45-Create-E-commerce-Products-Module-II-Insert-Products-with-Seeder
 git add .
-git commit -m "LARAVEL-44-Create-E-commerce-Website-Products-Module-I-Create-products-Table"
-git push -u origin LARAVEL-44-Create-E-commerce-Website-Products-Module-I-Create-products-Table
+git commit -m "LARAVEL-45-Create-E-commerce-Products-Module-II-Insert-Products-with-Seeder"
+git push -u origin LARAVEL-45-Create-E-commerce-Products-Module-II-Insert-Products-with-Seeder
 
 
 

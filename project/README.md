@@ -2440,10 +2440,39 @@ Delete
    id, category_id, brand_id, product_name, product_code, product_color, family_color, group_code, product_price, product_discount, discount_type, final_price, product_weight, product_video, description, wash_care, search_keywords, fabric, pattern, sleeve, fit, occasion, meta_title, meta_description, meta_keywords, is_featured and status
 
     So, we will run the below artisan command to create a migration file for products:-
-    >php artisan make:migration create_products_table
+
+    > php artisan make:migration create_products_table
 
     Open the create_products_table migration file and add all required columns mentioned earlier.
 
     Now, we will run below artisan command to create a products table with the required columns:-
-    >php artisan migrate
 
+    > php artisan migrate
+
+# 45 Create E-commerce Products Module (II) Insert Products with Seeder
+
+1. Create ProductsController :-
+   Create ProductsController in Admin folder at /app/Http/Controllers/Admin/ by running below command :-
+
+    > php artisan make:controller Admin/ProductsController
+
+    Now, We will create Seeding for products table to insert one test product from file.
+
+2) Writing Seeder / Create ProductsTableSeeder file :-
+   First of all, we will generate seeder and create ProductsTableSeeder file from where we will add one product for products table.
+
+    Run below artisan command to generate Seeder and create ProductsTableSeeder file :-
+
+    > php artisan make:seeder ProductsTableSeeder
+
+    Above command will create ProductsTableSeeder.php file at \database\seeds\
+
+    Now open ProductsTableSeeder file and add record for product.
+
+    use App\Models\Product;
+
+3) Update DatabaseSeeder.php file :-
+   Now update DatabaseSeeder.php file located at database/seeds/ to add ProductsTableSeeder class
+4) Run below command :-
+   Now run below command that will finally insert product into products table.
+   php artisan db:seed

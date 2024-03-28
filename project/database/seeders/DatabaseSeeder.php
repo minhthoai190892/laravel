@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
         // gọi đến seeder 
         // $this->call(AdminsTableSeeder::class);
         // $this->call(CsmPageTableSeeder::class);
-        $this->call(CategoryTableSeeder::class);
+        // $this->call(CategoryTableSeeder::class);
+        $this->call(ProductsTableSeeder::class);
 
     }
 }
