@@ -54,6 +54,7 @@ class CategoryController extends Controller
      */
     public function deleteCategory($id)
     {
+        $this->deleteCategoryImage($id);
         //delete category
         Category::where('id', $id)->delete();
         return redirect()->back()->with('success_message', 'Delete successfully');
@@ -164,5 +165,19 @@ class CategoryController extends Controller
         return view('admin.categories.add_edit_category')->with(compact('title', 'getCategories','category'));
 
     }
-
+    
+    public function deleteCategoryImage($id){
+        // ? lấy hình ảnh của category
+        $categoryImage = Category::select('category_image')->where('id',$id)->first();
+        // ? lấy đường dẫn hình ảnh
+        $category_image_path = 'admin/images/categories/';
+        // ? xóa hình ảnh category từ thư mục categories
+        if (file_exists($category_image_path.$categoryImage->category_image)) {
+           unlink($category_image_path.$categoryImage->category_image);
+        }
+        // ? xóa hình ảnh category từ bảng categories
+        Category::where('id',$id)->update(['category_image'=>'']);
+        
+        return redirect()->back()->with('success_message', 'Category imge deleted successfully');
+    }
 }

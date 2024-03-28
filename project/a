@@ -1,7 +1,7 @@
-git checkout -b LARAVEL-41-Categories-Module-VIII-Add/Edit-Category-Edit-Category-Details
+git checkout -b LARAVEL-42-Categories-Module-IX-Add/Edit-Category-View/Delete-Category-Image
 git add .
-git commit -m "LARAVEL-41-Categories-Module-VIII-Add/Edit-Category-Edit-Category-Details"
-git push -u origin LARAVEL-41-Categories-Module-VIII-Add/Edit-Category-Edit-Category-Details
+git commit -m "LARAVEL-42-Categories-Module-IX-Add/Edit-Category-View/Delete-Category-Image"
+git push -u origin LARAVEL-42-Categories-Module-IX-Add/Edit-Category-View/Delete-Category-Image
 
 
 

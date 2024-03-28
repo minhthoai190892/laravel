@@ -53,9 +53,9 @@
 
                                   {{-- Show message --}}
 
-                                  @if (Session::has('error_message'))
-                                      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                          <strong>Error:</strong> {{ Session::get('error_message') }}
+                                  @if (Session::has('success_message'))
+                                      <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                          <strong>Success:</strong> {{ Session::get('success_message') }}
                                           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                               <span aria-hidden="true">&times;</span>
                                           </button>
@@ -69,7 +69,7 @@
                                   action="{{ url('admin/add-edit-category/' . $category['id']) }}" @endif
                                       method="POST" enctype="multipart/form-data">
                                       @csrf
-                                      <input type="hidden" name="category_id" value="{{ $category['id'] }}">
+                                      {{-- <input type="hidden" name="category_id" value="{{ $category['id'] }}"> --}}
                                       <div class="card-body">
                                           <div class="form-group col-md-6">
                                               <label for="category_name">Category Name*</label>
@@ -127,7 +127,12 @@
 
                                               @if (!empty($category['category_image']))
                                                   <a href="{{ url('admin/images/categories/' . $category['category_image']) }}"
-                                                      target="_blank" rel="noopener noreferrer">view</a>
+                                                      target="_blank" rel="noopener noreferrer"> <img style="width: 80px" src="{{ asset('admin/images/categories/'.$category['category_image']) }}" alt=""></a>
+                                                  {{-- <img style="width: 80px" src="{{ asset('admin/images/categories/'.$category['category_image']) }}" alt=""> --}}
+                                                  <a href="javascript:void(0)"  class="confirmDelete"
+                                                      title="Delete Category Image" record='category-image'
+                                                      recordid={{ $category['id'] }}>
+                                                      <i class="fas fa-trash" style="color: #FFF"></i></a>
                                                   <input type="hidden" name="current_image"
                                                       value="{{ $category['category_image'] }}">
                                               @endif

@@ -2380,3 +2380,42 @@ Delete
    Now, we will update the **addEditCategory** function in <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a>. We will fetch category data from a query that we want to edit and return that category data to the <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file.
 3) Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
    Now we will update the add_edit_category.blade.php file and show category data in the form that we want to edit. We will also change the action of the form if the category id is not empty. We will allow the admin to change the category level and other category details along with the category image.
+
+# 42 Categories Module (IX) Add/Edit Category View/Delete Category Image
+
+1. Update <a href='resources\views\admin\categories\add_edit_category.blade.php'>add_edit_category.blade.php</a> file :-
+   Show Category Image in Edit Category form when category image is added by the admin.
+
+    Delete Category Image
+    Add a "Delete Image" link where we are displaying the category image in edit category form.
+    ```
+     <a href="javascript:void(0)"  class="confirmDelete"
+          title="Delete Category Image" record='category-image'
+          recordid={{ $category['id'] }}>
+          <i class="fas fa-trash" style="color: #FFF"></i></a>
+
+    ```
+2) Create Route:-
+   Create GET Route with parameter category id in web.php file like below:-
+
+    > Route::get('delete-category-image/{id}','CategoryController@deleteCategoryImage');
+
+3) Create deleteCategoryImage Function:-
+   Create deleteCategoryImage function at <a href='app\Http\Controllers\Admin\CategoryController.php'>CategoryController</a> where we will get category image from category id and will delete category image from categories table and from a folder as well.
+    ```
+        
+    public function deleteCategoryImage($id){
+        // ? lấy hình ảnh của category
+        $categoryImage = Category::select('category_image')->where('id',$id)->first();
+        // ? lấy đường dẫn hình ảnh
+        $category_image_path = 'admin/images/categories/';
+        // ? xóa hình ảnh category từ thư mục categories
+        if (file_exists($category_image_path.$categoryImage->category_image)) {
+           unlink($category_image_path.$categoryImage->category_image);
+        }
+        // ? xóa hình ảnh category từ bảng categories
+        Category::where('id',$id)->update(['category_image'=>'']);
+        
+        return redirect()->back()->with('success_message', 'Category imge deleted successfully');
+    }
+    ```
